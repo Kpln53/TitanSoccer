@@ -22,6 +22,7 @@ public class AIStateController : MonoBehaviour
     public PlayerRole Role;
     public Transform MarkTarget;
     public Transform PressTarget;
+    public Transform Ball;
     public float ZoneWeight = 0.35f;
     public float PressDistance = 9f;
 
@@ -42,6 +43,11 @@ public class AIStateController : MonoBehaviour
 
     private void Update()
     {
+        if (Ball != null && !HasPossession && PressTarget == null)
+        {
+            PressTarget = Ball;
+        }
+
         EvaluateState();
         ExecuteState();
     }
@@ -92,7 +98,7 @@ public class AIStateController : MonoBehaviour
             case AiState.Mark:
                 if (MarkTarget != null)
                 {
-                    _player.SetMovementTarget(MarkTarget.position);
+                    _player.SetMovementTarget(GetClampedTarget(MarkTarget.position));
                 }
                 break;
             case AiState.Intercept:
@@ -101,7 +107,7 @@ public class AIStateController : MonoBehaviour
             case AiState.Press:
                 if (PressTarget != null)
                 {
-                    _player.SetMovementTarget(PressTarget.position);
+                    _player.SetMovementTarget(GetClampedTarget(PressTarget.position));
                 }
                 break;
             case AiState.SupportRun:
@@ -125,7 +131,18 @@ public class AIStateController : MonoBehaviour
         Rect zone = GetZone(Role);
         Vector2 offset = new(Mathf.Sign(zone.center.x) * zone.width * 0.25f, zone.height * 0.2f);
         Vector3 target = new(zone.center.x + offset.x, transform.position.y, zone.center.y + offset.y);
-        _player.SetMovementTarget(target);
+        _player.SetMovementTarget(GetClampedTarget(target));
+    }
+
+    private Vector3 GetClampedTarget(Vector3 target)
+    {
+        Rect zone = GetZone(Role);
+        Vector3 zoneCenter = new(zone.center.x, target.y, zone.center.y);
+        Vector3 blended = Vector3.Lerp(target, zoneCenter, ZoneWeight);
+
+        float clampedX = Mathf.Clamp(blended.x, zone.xMin, zone.xMax);
+        float clampedZ = Mathf.Clamp(blended.z, zone.yMin, zone.yMax);
+        return new Vector3(clampedX, target.y, clampedZ);
     }
 
     private void BuildRoleZones()

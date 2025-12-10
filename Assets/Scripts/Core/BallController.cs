@@ -21,7 +21,6 @@ public class BallController : MonoBehaviour
     private Rigidbody _rigidbody;
     private float _spinTimer;
     private Vector3 _spinAxis;
-
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -41,7 +40,10 @@ public class BallController : MonoBehaviour
     public void SetPossession(PlayerController player)
     {
         if (CurrentPossessor == player) return;
+
+        CurrentPossessor?.SetPossession(false);
         CurrentPossessor = player;
+        CurrentPossessor?.SetPossession(true);
         PossessionChanged?.Invoke(player);
     }
 
@@ -118,6 +120,14 @@ public class BallController : MonoBehaviour
         Release();
         _rigidbody.velocity = velocity;
         _rigidbody.angularVelocity = Vector3.zero;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.TryGetComponent(out PlayerController controller))
+        {
+            SetPossession(controller);
+        }
     }
 
     public bool IsInterceptionLikely(IEnumerable<PlayerController> defenders, Vector3 target)

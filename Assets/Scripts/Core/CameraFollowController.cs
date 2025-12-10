@@ -13,6 +13,8 @@ public class CameraFollowController : MonoBehaviour
     public float MinFov = 45f;
     public float MaxFov = 65f;
     public float DensityRadius = 12f;
+    public float RecenterLerp = 0.65f;
+    public float RecenterHeightBoost = 1.25f;
 
     private Camera _camera;
     private Vector3 _velocity;
@@ -65,7 +67,7 @@ public class CameraFollowController : MonoBehaviour
     private void OnPossessionChanged(PlayerController possessor)
     {
         if (possessor == null) return;
-        Vector3 snapPosition = possessor.transform.position - possessor.transform.forward * FollowDistance + Vector3.up * FollowHeight;
-        transform.position = Vector3.Lerp(transform.position, snapPosition, 0.4f);
+        Vector3 snapPosition = possessor.transform.position - possessor.transform.forward * FollowDistance + Vector3.up * FollowHeight * RecenterHeightBoost;
+        transform.position = Vector3.Lerp(transform.position, snapPosition, RecenterLerp);
     }
 }
