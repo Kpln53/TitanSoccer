@@ -56,8 +56,8 @@ public class PlayerController : MonoBehaviour
 
         if (_lockTimer > 0f)
         {
-            _rigidbody.velocity = Vector2.Lerp(_rigidbody.velocity, Vector2.zero, Time.fixedDeltaTime * 6f);
-            Velocity = _rigidbody.velocity;
+            _rigidbody.linearVelocity = Vector2.Lerp(_rigidbody.linearVelocity, Vector2.zero, Time.fixedDeltaTime * 6f);
+            Velocity = _rigidbody.linearVelocity;
             return;
         }
 
@@ -69,15 +69,15 @@ public class PlayerController : MonoBehaviour
         Vector2 toTarget = _pendingTarget - (Vector2)transform.position;
         if (toTarget.magnitude <= StopDistance)
         {
-            _rigidbody.velocity = Vector2.Lerp(_rigidbody.velocity, Vector2.zero, Time.fixedDeltaTime * 5f);
+            _rigidbody.linearVelocity = Vector2.Lerp(_rigidbody.linearVelocity, Vector2.zero, Time.fixedDeltaTime * 5f);
         }
         else
         {
             Vector2 desired = toTarget.normalized * Attributes.EvaluateSkill(Attributes.Speed, 2.5f, 7.5f);
-            _rigidbody.velocity = Vector2.MoveTowards(_rigidbody.velocity, desired, Attributes.Acceleration * Time.fixedDeltaTime);
+            _rigidbody.linearVelocity = Vector2.MoveTowards(_rigidbody.linearVelocity, desired, Attributes.Acceleration * Time.fixedDeltaTime);
         }
 
-        Velocity = _rigidbody.velocity;
+        Velocity = _rigidbody.linearVelocity;
     }
 
     public void SetMovementTarget(Vector2 worldPosition, bool clearQueue = true)

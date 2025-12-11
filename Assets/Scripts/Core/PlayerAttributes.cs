@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
+
 public class PlayerAttributes
 {
     [Range(1f, 100f)] public float Overall = 50f;

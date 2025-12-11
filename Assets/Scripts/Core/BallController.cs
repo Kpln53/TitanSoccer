@@ -116,7 +116,7 @@ public class BallController : MonoBehaviour
     private void FireBall(PlayerController passer, Vector2 velocity, Vector2 target, bool aerial)
     {
         Release();
-        _rigidbody.velocity = velocity;
+        _rigidbody.linearVelocity = velocity;
         _rigidbody.angularVelocity = 0f;
     }
 
