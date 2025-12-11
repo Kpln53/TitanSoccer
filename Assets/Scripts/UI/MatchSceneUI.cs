@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class MatchSceneUI : MonoBehaviour
 {
@@ -9,16 +11,26 @@ public class MatchSceneUI : MonoBehaviour
     public TextMeshProUGUI awayTeamNameText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI timeText;
+    public TextMeshProUGUI ratingText;
 
     [Header("Saha / İstatistik UI")]
     public TextMeshProUGUI possessionText;
+    public TextMeshProUGUI miniMapText;
 
     [Header("Alt Panel / Maç Kontrolleri")]
     public GameObject startButton;
-    public GameObject skipButton;
+    public GameObject simulateButton;
     public GameObject speedButton;
     public TextMeshProUGUI speedButtonText;
     public TextMeshProUGUI commentaryText;
+    public GameObject objectivesButton;
+    public GameObject squadButton;
+
+    [Header("Enerji / Moral")]
+    public Slider energySlider;
+    public Slider moraleSlider;
+    public TextMeshProUGUI energyLabelText;
+    public TextMeshProUGUI moraleLabelText;
 
     [Header("Pozisyon UI (1. Aşama: Güç)")]
     public GameObject chancePanel;
@@ -45,6 +57,39 @@ public class MatchSceneUI : MonoBehaviour
     private float nextEventTime = 0f;
     private System.Random rng;
 
+    private float homePossession = 50f;
+    private float energy = 0.85f;
+    private float morale = 0.8f;
+
+    private readonly List<string> balancedComments = new List<string>
+    {
+        "Orta sahada top dönüyor, iki takım da kontrollü.",
+        "Takımlar birbirini tartıyor, tempo dengede.",
+        "Paslaşıyoruz ama rakip de alan bırakmıyor."
+    };
+
+    private readonly List<string> homeControlComments = new List<string>
+    {
+        "Top daha çok bizde, kanattan boşluk arıyoruz.",
+        "Topa hükmediyoruz; rakip takım kendi yarı sahasında.",
+        "Sabırlı paslarla baskıyı kuruyoruz."
+    };
+
+    private readonly List<string> awayControlComments = new List<string>
+    {
+        "Rakip tempoyu yükseltti, topu geri kazanmamız lazım.",
+        "Biraz savunmada kaldık, pas kanallarını kapatıyoruz.",
+        "Rakip topa sahip, takımımız dengeli durmaya çalışıyor."
+    };
+
+    private readonly List<string> attackIntroComments = new List<string>
+    {
+        "Oyuncu şimdi pası aldı, ceza sahasına doğru hızlanıyor!",
+        "Tehlikeli bir ara pası! Hücum oyuncumuz topla buluştu.",
+        "Kanatta boşluk yakaladık, içeriye çevirmek üzereyiz.",
+        "Orta sahadan dikine oynadık, savunma arkasına sızıyoruz!"
+    };
+
     private void Start()
     {
         rng = new System.Random();
@@ -63,10 +108,15 @@ public class MatchSceneUI : MonoBehaviour
 
         if (scoreText != null) scoreText.text = "0 - 0";
         if (timeText != null) timeText.text = "00:00";
+        if (ratingText != null) ratingText.text = "Reyting: 82 - 80";
         if (possessionText != null) possessionText.text = "Topla oynama: %50 - %50";
+        if (miniMapText != null) miniMapText.text = "Saha ortasında sakin oyun";
         if (commentaryText != null) commentaryText.text = "Maç başlamak üzere...";
 
         if (speedButtonText != null) speedButtonText.text = "Hız: 1x";
+
+        RefreshEnergyUI();
+        RefreshMoraleUI();
 
         if (chancePanel != null)
             chancePanel.SetActive(false);
@@ -84,6 +134,8 @@ public class MatchSceneUI : MonoBehaviour
 
         // Zamanı ilerlet
         matchTime += Time.deltaTime * timeScale;
+
+        UpdateBars(Time.deltaTime * timeScale);
 
         int totalMinutes = Mathf.FloorToInt(matchTime / 60f);
         int seconds = Mathf.FloorToInt(matchTime % 60f);
@@ -119,51 +171,41 @@ public class MatchSceneUI : MonoBehaviour
     {
         int roll = rng.Next(0, 100);
 
-        // %20 ihtimalle SENİN pozisyonun gelsin
-        if (roll < 20)
+        UpdatePossession();
+        UpdateMiniMapStatus();
+
+        if (ShouldGivePlayerAttack())
         {
             StartPlayerChance();
             return;
         }
 
         // Basit gol / spiker olayları
-        if (roll < 30)
+        if (roll < 15)
         {
-            // Ev sahibi gol atsın
             homeScore++;
-            if (scoreText != null)
-                scoreText.text = $"{homeScore} - {awayScore}";
+            UpdateScoreText();
 
             if (commentaryText != null)
                 commentaryText.text = currentMinute + ". dakikada gol! Ev sahibi öne geçiyor!";
+
+            morale = Mathf.Clamp01(morale + 0.05f);
+            RefreshMoraleUI();
         }
-        else if (roll < 40)
+        else if (roll < 25)
         {
-            // Deplasman golü
             awayScore++;
-            if (scoreText != null)
-                scoreText.text = $"{homeScore} - {awayScore}";
+            UpdateScoreText();
 
             if (commentaryText != null)
                 commentaryText.text = currentMinute + ". dakikada gol! Deplasman ekibi golü buldu!";
-        }
-        else if (roll < 70)
-        {
-            if (commentaryText != null)
-                commentaryText.text = currentMinute + ". dakika: Orta sahada dengeli bir oyun var.";
+
+            morale = Mathf.Clamp01(morale - 0.05f);
+            RefreshMoraleUI();
         }
         else
         {
-            if (commentaryText != null)
-                commentaryText.text = currentMinute + ". dakika: Kanattan tehlikeli bir atak gelişiyor.";
-        }
-
-        // Topla oynama yüzdesi
-        if (possessionText != null)
-        {
-            int homePoss = rng.Next(40, 61); // 40–60 arası
-            int awayPoss = 100 - homePoss;
-            possessionText.text = $"Topla oynama: %{homePoss} - %{awayPoss}";
+            UpdateCommentaryBasedOnPossession(currentMinute);
         }
     }
 
@@ -173,7 +215,10 @@ public class MatchSceneUI : MonoBehaviour
     {
         // Pozisyon başladı: attack modu aktif
         if (commentaryText != null)
-            commentaryText.text = "Tehlikeli bir atak! Sahaya dokun ya da Şut Çek!";
+            commentaryText.text = GetRandomText(attackIntroComments);
+
+        if (miniMapText != null)
+            miniMapText.text = "Ceza sahası çevresinde tehlike";
 
         // Maç zamanı başlangıçta duruyor, sadece hareket ederken akacak
         isPlaying = false;
@@ -289,12 +334,14 @@ public class MatchSceneUI : MonoBehaviour
 
     public void OnStartMatchButton()
     {
-        Debug.Log("BUTON TIKLANDI");
         isPlaying = true;
         Time.timeScale = 1f;
 
         if (commentaryText != null)
             commentaryText.text = "Maç başladı!";
+
+        if (startButton != null)
+            startButton.SetActive(false);
     }
 
     public void OnToggleSpeedButton()
@@ -317,6 +364,115 @@ public class MatchSceneUI : MonoBehaviour
 
         // Şimdilik direkt CareerHub sahnesine dönüyoruz
         UnityEngine.SceneManagement.SceneManager.LoadScene("CareerHub");
+    }
+
+    public void OnObjectivesButton()
+    {
+        if (commentaryText != null)
+            commentaryText.text = "Hedefler sekmesi daha sonra detaylandırılacak.";
+    }
+
+    public void OnSquadButton()
+    {
+        if (commentaryText != null)
+            commentaryText.text = "Kadro ekranı maç öncesi düzenlemeler için hazırlanıyor.";
+    }
+
+    public void OnSimulateMatchButton()
+    {
+        OnSkipMatchButton();
+    }
+
+    private void UpdateScoreText()
+    {
+        if (scoreText != null)
+            scoreText.text = $"{homeScore} - {awayScore}";
+    }
+
+    private void UpdateBars(float deltaTime)
+    {
+        energy = Mathf.Clamp01(energy - deltaTime * 0.002f);
+        RefreshEnergyUI();
+    }
+
+    private void RefreshEnergyUI()
+    {
+        if (energySlider != null)
+            energySlider.value = energy;
+
+        if (energyLabelText != null)
+            energyLabelText.text = $"Enerji: {(int)(energy * 100f)}";
+    }
+
+    private void RefreshMoraleUI()
+    {
+        if (moraleSlider != null)
+            moraleSlider.value = morale;
+
+        if (moraleLabelText != null)
+            moraleLabelText.text = $"Moral: {(int)(morale * 100f)}";
+    }
+
+    private void UpdatePossession()
+    {
+        float possessionDrift = Random.Range(-5f, 5f);
+        homePossession = Mathf.Clamp(homePossession + possessionDrift, 35f, 65f);
+        float awayPossession = 100f - homePossession;
+
+        if (possessionText != null)
+            possessionText.text = $"Topla oynama: %{Mathf.RoundToInt(homePossession)} - %{Mathf.RoundToInt(awayPossession)}";
+    }
+
+    private void UpdateMiniMapStatus()
+    {
+        string[] zones =
+        {
+            "Saha ortasında sakin oyun",
+            "Sağ kanatta pres yapıyoruz",
+            "Sol çizgide topu taşıyoruz",
+            "Ceza sahası çevresinde baskı",
+            "Rakip kontra için hazırlanıyor"
+        };
+
+        if (miniMapText != null)
+            miniMapText.text = zones[rng.Next(0, zones.Length)];
+    }
+
+    private void UpdateCommentaryBasedOnPossession(int currentMinute)
+    {
+        List<string> pool = balancedComments;
+
+        if (homePossession > 55f)
+            pool = homeControlComments;
+        else if (homePossession < 45f)
+            pool = awayControlComments;
+
+        string text = GetRandomText(pool);
+
+        if (commentaryText != null)
+            commentaryText.text = currentMinute + ". dakika: " + text;
+    }
+
+    private bool ShouldGivePlayerAttack()
+    {
+        float possessionBonus = Mathf.Clamp01((homePossession - 50f) / 50f) * 0.2f;
+        float staminaFactor = energy * 0.25f;
+        float moraleFactor = morale * 0.25f;
+        float relationshipBoost = 0.05f; // ileride ilişkiler sistemi eklenecek
+
+        float chance = 0.18f + possessionBonus + staminaFactor + moraleFactor + relationshipBoost;
+        chance = Mathf.Clamp01(chance);
+
+        return rng.NextDouble() < chance;
+    }
+
+    private string GetRandomText(List<string> pool)
+    {
+        if (pool == null || pool.Count == 0)
+            return string.Empty;
+
+        int index = rng.Next(0, pool.Count);
+        return pool[index];
     }
 
 }
