@@ -532,7 +532,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  clubDropdown: {fileID: 957442141}
+  leagueDropdown: {fileID: 0}
 --- !u!1 &338172804
 GameObject:
   m_ObjectHideFlags: 0
@@ -566,6 +566,7 @@ MonoBehaviour:
     playerName: 
     position: 
     clubName: 
+    leagueName: 
     season: 0
     leaguePosition: 0
     overall: 0
@@ -879,7 +880,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  clubDropdown: {fileID: 957442141}
+  leagueDropdown: {fileID: 0}
 --- !u!1 &469111372
 GameObject:
   m_ObjectHideFlags: 0
@@ -1109,7 +1110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  clubDropdown: {fileID: 957442141}
+  leagueDropdown: {fileID: 0}
 --- !u!1 &482315899
 GameObject:
   m_ObjectHideFlags: 0
@@ -1976,7 +1977,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  clubDropdown: {fileID: 957442141}
+  leagueDropdown: {fileID: 0}
 --- !u!1 &1016823267
 GameObject:
   m_ObjectHideFlags: 0
@@ -2927,7 +2928,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  clubDropdown: {fileID: 957442141}
+  leagueDropdown: {fileID: 957442141}
 --- !u!4 &1625412311
 Transform:
   m_ObjectHideFlags: 0
