@@ -56,6 +56,8 @@ public class TeamSelectionUI : MonoBehaviour
     /// </summary>
     void LoadSelectedLeague()
     {
+        Debug.Log("[TeamSelectionUI] LoadSelectedLeague başlatılıyor...");
+        
         if (GameManager.Instance == null || GameManager.Instance.CurrentSave == null)
         {
             Debug.LogError("[TeamSelectionUI] GameManager veya CurrentSave bulunamadı!");
@@ -65,6 +67,7 @@ public class TeamSelectionUI : MonoBehaviour
         }
         
         selectedLeagueName = GameManager.Instance.CurrentSave.leagueName;
+        Debug.Log($"[TeamSelectionUI] Seçilen lig adı: '{selectedLeagueName}'");
         
         if (string.IsNullOrEmpty(selectedLeagueName))
         {
@@ -90,14 +93,23 @@ public class TeamSelectionUI : MonoBehaviour
             return;
         }
         
+        Debug.Log($"[TeamSelectionUI] Aktif Data Pack: {activePack.packName}, Lig sayısı: {activePack.leagues.Count}");
+        
         selectedLeague = activePack.GetLeagueByName(selectedLeagueName);
         if (selectedLeague == null)
         {
             Debug.LogError($"[TeamSelectionUI] Lig bulunamadı: {selectedLeagueName}");
+            Debug.Log($"[TeamSelectionUI] Mevcut ligler:");
+            foreach (var league in activePack.leagues)
+            {
+                Debug.Log($"  - {league.leagueName} ({league.teams?.Count ?? 0} takım)");
+            }
             if (infoText != null)
                 infoText.text = $"Hata: {selectedLeagueName} ligi bulunamadı!";
             return;
         }
+        
+        Debug.Log($"[TeamSelectionUI] Lig bulundu: {selectedLeague.leagueName}, Takım sayısı: {selectedLeague.teams?.Count ?? 0}");
         
         // En düşük güçlü 3 takımı bul ve göster
         FindLowestPowerTeams(selectedLeague);
@@ -159,7 +171,15 @@ public class TeamSelectionUI : MonoBehaviour
     /// </summary>
     void DisplayTeams()
     {
-        if (teamListParent == null) return;
+        Debug.Log($"[TeamSelectionUI] DisplayTeams çağrıldı. teamListParent: {(teamListParent != null ? "Var" : "NULL")}, availableTeams: {availableTeams.Count}");
+        
+        if (teamListParent == null)
+        {
+            Debug.LogError("[TeamSelectionUI] teamListParent NULL! Inspector'da atanmalı!");
+            if (infoText != null)
+                infoText.text = "Hata: UI referansı eksik!";
+            return;
+        }
         
         // Mevcut item'ları temizle
         ClearTeamList();
@@ -169,16 +189,21 @@ public class TeamSelectionUI : MonoBehaviour
         
         if (availableTeams.Count == 0)
         {
+            Debug.LogWarning("[TeamSelectionUI] Gösterilecek takım yok!");
             if (infoText != null)
                 infoText.text = "Seçilen ligde takım bulunamadı!";
             return;
         }
+        
+        Debug.Log($"[TeamSelectionUI] {availableTeams.Count} takım gösteriliyor...");
         
         // Her takım için item oluştur
         foreach (var team in availableTeams)
         {
             CreateTeamItem(team);
         }
+        
+        Debug.Log($"[TeamSelectionUI] {availableTeams.Count} takım item'ı oluşturuldu.");
         
         if (infoText != null)
             infoText.text = $"{selectedLeague.leagueName} liginden en düşük güçlü {availableTeams.Count} takım gösteriliyor.";

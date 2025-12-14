@@ -532,7 +532,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  leagueDropdown: {fileID: 0}
+  leagueDropdown: {fileID: 957442141}
 --- !u!1 &338172804
 GameObject:
   m_ObjectHideFlags: 0
@@ -880,7 +880,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  leagueDropdown: {fileID: 0}
+  leagueDropdown: {fileID: 957442141}
 --- !u!1 &469111372
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,7 +1110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  leagueDropdown: {fileID: 0}
+  leagueDropdown: {fileID: 957442141}
 --- !u!1 &482315899
 GameObject:
   m_ObjectHideFlags: 0
@@ -1833,7 +1833,7 @@ GameObject:
   - component: {fileID: 957442141}
   - component: {fileID: 957442144}
   m_Layer: 5
-  m_Name: clubDropdown
+  m_Name: LeagueDropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1977,7 +1977,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewGameFlowUI
   playerNameInput: {fileID: 477031641}
   positionDropdown: {fileID: 438263344}
-  leagueDropdown: {fileID: 0}
+  leagueDropdown: {fileID: 957442141}
 --- !u!1 &1016823267
 GameObject:
   m_ObjectHideFlags: 0
