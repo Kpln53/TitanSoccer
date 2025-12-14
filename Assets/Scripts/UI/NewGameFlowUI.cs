@@ -1,68 +1,101 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections.Generic;
 
 public class NewGameFlowUI : MonoBehaviour
 {
-    [Header("UI Referanslarý")]
+    [Header("UI ReferanslarÄ±")]
     public TMP_InputField playerNameInput;
     public TMP_Dropdown positionDropdown;
-    public TMP_Dropdown clubDropdown;
+    public TMP_Dropdown leagueDropdown; // Lig seÃ§imi (clubDropdown yerine)
 
     private void Start()
     {
-        // Hangi referanslar boþ, baþta bir kere loglayalým
-        if (playerNameInput == null) Debug.LogError("playerNameInput Inspector'da atanmadý!");
-        if (positionDropdown == null) Debug.LogError("positionDropdown Inspector'da atanmadý!");
-        if (clubDropdown == null) Debug.LogError("clubDropdown Inspector'da atanmadý!");
+        // Hangi referanslar boÅŸ, baÅŸta bir kere loglayalÄ±m
+        if (playerNameInput == null) Debug.LogError("playerNameInput Inspector'da atanmadÄ±!");
+        if (positionDropdown == null) Debug.LogError("positionDropdown Inspector'da atanmadÄ±!");
+        if (leagueDropdown == null) Debug.LogError("leagueDropdown Inspector'da atanmadÄ±!");
 
         // Pozisyon listesi
         if (positionDropdown != null)
         {
             positionDropdown.ClearOptions();
-            positionDropdown.AddOptions(new System.Collections.Generic.List<string>
+            positionDropdown.AddOptions(new List<string>
             {
-                "ST", "LW", "RW", "CAM", "CM", "CDM", "CB", "LB", "RB", "GK"
+                "SF", "SÄžO", "SLO", "MOO", "MDO", "SÄžK", "SLK", "STP", "SÄžB", "SLB", "KL"
             });
         }
 
-        // Baþlangýç kulüpleri
-        if (clubDropdown != null)
+        // Lig listesi (DataPackManager'dan)
+        SetupLeagueDropdown();
+    }
+    
+    /// <summary>
+    /// Lig dropdown'Ä±nÄ± ayarla
+    /// </summary>
+    void SetupLeagueDropdown()
+    {
+        if (leagueDropdown == null) return;
+        
+        leagueDropdown.ClearOptions();
+        
+        DataPackManager dataPackManager = DataPackManager.Instance;
+        if (dataPackManager == null)
         {
-            clubDropdown.ClearOptions();
-            clubDropdown.AddOptions(new System.Collections.Generic.List<string>
-            {
-                "Stalburg FC",
-                "Draymond City",
-                "Cloudbury United"
-            });
+            Debug.LogError("[NewGameFlowUI] DataPackManager bulunamadÄ±!");
+            return;
         }
+        
+        DataPack activePack = dataPackManager.GetActiveDataPack();
+        if (activePack == null)
+        {
+            Debug.LogError("[NewGameFlowUI] Aktif Data Pack bulunamadÄ±!");
+            return;
+        }
+        
+        List<string> leagueNames = new List<string>();
+        foreach (var league in activePack.leagues)
+        {
+            if (league != null && league.teams != null && league.teams.Count > 0)
+            {
+                leagueNames.Add(league.leagueName);
+            }
+        }
+        
+        if (leagueNames.Count == 0)
+        {
+            Debug.LogWarning("[NewGameFlowUI] HiÃ§ lig bulunamadÄ±!");
+            return;
+        }
+        
+        leagueDropdown.AddOptions(leagueNames);
     }
 
     public void OnStartCareerButton()
     {
-        Debug.Log("OnStartCareerButton çaðrýldý.");
+        Debug.Log("OnStartCareerButton Ã§aÄŸrÄ±ldÄ±.");
 
         if (GameManager.Instance == null)
         {
-            Debug.LogError("GameManager yok, akýþ bozuk!");
+            Debug.LogError("GameManager yok, akÄ±ÅŸ bozuk!");
             return;
         }
 
-        // --- EN ÖNEMLÝ KISIM: NULL KONTROL ---
+        // --- EN Ã–NEMLÄ° KISIM: NULL KONTROL ---
         if (playerNameInput == null)
         {
-            Debug.LogError("playerNameInput NULL! Inspector'da baðlaman lazým.");
+            Debug.LogError("playerNameInput NULL! Inspector'da baÄŸlaman lazÄ±m.");
             return;
         }
         if (positionDropdown == null)
         {
-            Debug.LogError("positionDropdown NULL! Inspector'da baðlaman lazým.");
+            Debug.LogError("positionDropdown NULL! Inspector'da baÄŸlaman lazÄ±m.");
             return;
         }
-        if (clubDropdown == null)
+        if (leagueDropdown == null)
         {
-            Debug.LogError("clubDropdown NULL! Inspector'da baðlaman lazým.");
+            Debug.LogError("leagueDropdown NULL! Inspector'da baÄŸlaman lazÄ±m.");
             return;
         }
         // ---------------------------------------
@@ -70,17 +103,18 @@ public class NewGameFlowUI : MonoBehaviour
         string playerName = playerNameInput.text;
         if (string.IsNullOrWhiteSpace(playerName))
         {
-            Debug.Log("Ýsim boþ olamaz.");
+            Debug.Log("Ä°sim boÅŸ olamaz.");
             return;
         }
 
         string pos = positionDropdown.options[positionDropdown.value].text;
-        string club = clubDropdown.options[clubDropdown.value].text;
+        string leagueName = leagueDropdown.options[leagueDropdown.value].text;
 
         SaveData data = new SaveData();
         data.playerName = playerName;
         data.position = pos;
-        data.clubName = club;
+        data.leagueName = leagueName; // SeÃ§ilen lig
+        data.clubName = ""; // TakÄ±m seÃ§im ekranÄ±nda seÃ§ilecek
         data.season = 1;
         data.leaguePosition = 12;
         data.overall = 60;
@@ -88,13 +122,15 @@ public class NewGameFlowUI : MonoBehaviour
         int slotIndex = GameManager.Instance.CurrentSaveSlotIndex;
         if (slotIndex < 0)
         {
-            Debug.LogError("Geçerli slot index yok!");
+            Debug.LogError("GeÃ§erli slot index yok!");
             return;
         }
 
+        // Ã–nce SaveData'yÄ± kaydet (takÄ±m seÃ§imi iÃ§in)
         SaveSystem.SaveGame(data, slotIndex);
         GameManager.Instance.SetCurrentSave(data, slotIndex);
 
-        SceneManager.LoadScene("CareerHub");
+        // TakÄ±m seÃ§im ekranÄ±na geÃ§
+        SceneManager.LoadScene("TeamSelection");
     }
 }

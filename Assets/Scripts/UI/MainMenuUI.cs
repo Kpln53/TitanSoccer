@@ -5,12 +5,18 @@ public class MainMenuUI : MonoBehaviour
 {
     public void OnPlayButton()
     {
-        Debug.Log("Oyna tuþuna basýldý"); // test için
+        Debug.Log("Oyna tuï¿½una basï¿½ldï¿½"); // test iï¿½in
         SceneManager.LoadScene("SaveSlots");
     }
 
     public void OnQuitButton()
     {
         Application.Quit();
+    }
+    
+    public void OnDataPackButton()
+    {
+        Debug.Log("Data Pack butonuna basÄ±ldÄ±");
+        SceneManager.LoadScene("DataPackMenu");
     }
 }
