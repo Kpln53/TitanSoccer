@@ -472,8 +472,14 @@ public class TeamSelectionUI : MonoBehaviour
         if (data == null)
         {
             data = new SaveData();
+            GameManager.Instance.InitializeSaveData(data);
         }
         
+        // ClubData'yı güncelle
+        data.clubData.clubName = selectedTeam.teamName;
+        data.clubData.clubId = selectedTeam.teamName;
+        
+        // Eski uyumluluk
         data.clubName = selectedTeam.teamName;
         
         // Kaydet
@@ -484,10 +490,17 @@ public class TeamSelectionUI : MonoBehaviour
             GameManager.Instance.SetCurrentSave(data, slotIndex);
         }
         
-        Debug.Log($"[TeamSelectionUI] Kariyer başlatılıyor: {data.playerName} - {data.clubName}");
+        Debug.Log($"[TeamSelectionUI] Kariyer başlatılıyor: {data.playerProfile?.playerName ?? data.playerName} - {data.clubData.clubName}");
         
         // CareerHub'a geç
-        SceneManager.LoadScene("CareerHub");
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.ChangeState(GameState.CareerHub);
+        }
+        else
+        {
+            SceneManager.LoadScene("CareerHub");
+        }
     }
     
     /// <summary>

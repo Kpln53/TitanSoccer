@@ -77,3 +77,5 @@
 - Font Asset: LiberationSans SDF kullanılmalı (varsayılan)
 - Canvas Scaler: Reference Resolution 800x600
 
+
+

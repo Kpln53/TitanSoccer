@@ -110,13 +110,41 @@ public class NewGameFlowUI : MonoBehaviour
         string pos = positionDropdown.options[positionDropdown.value].text;
         string leagueName = leagueDropdown.options[leagueDropdown.value].text;
 
+        // Yeni SaveData oluştur
         SaveData data = new SaveData();
+        
+        // PlayerProfile oluştur
+        data.playerProfile = new PlayerProfile();
+        data.playerProfile.playerName = playerName;
+        data.playerProfile.surname = ""; // Karakter oluşturma ekranında eklenecek
+        data.playerProfile.position = ConvertPositionStringToEnum(pos);
+        data.playerProfile.age = 18;
+        data.playerProfile.overall = 60;
+        
+        // Başlangıç statları
+        data.playerProfile.pace = 60;
+        data.playerProfile.shooting = 60;
+        data.playerProfile.passing = 60;
+        data.playerProfile.dribbling = 60;
+        data.playerProfile.defense = 60;
+        data.playerProfile.stamina = 60;
+        
+        // ClubData
+        data.clubData = new ClubData();
+        data.clubData.leagueName = leagueName;
+        data.clubData.clubName = ""; // Takım seçim ekranında seçilecek
+        
+        // SeasonData
+        data.seasonData = new SeasonData();
+        data.seasonData.seasonNumber = 1;
+        data.seasonData.currentWeek = 1;
+        
+        // Eski uyumluluk için (deprecated)
         data.playerName = playerName;
         data.position = pos;
-        data.leagueName = leagueName; // Seçilen lig
-        data.clubName = ""; // Takım seçim ekranında seçilecek
+        data.leagueName = leagueName;
+        data.clubName = "";
         data.season = 1;
-        data.leaguePosition = 12;
         data.overall = 60;
 
         int slotIndex = GameManager.Instance.CurrentSaveSlotIndex;
@@ -131,6 +159,35 @@ public class NewGameFlowUI : MonoBehaviour
         GameManager.Instance.SetCurrentSave(data, slotIndex);
 
         // Takım seçim ekranına geç
-        SceneManager.LoadScene("TeamSelection");
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.ChangeState(GameState.NewCareerFlow);
+        }
+        else
+        {
+            SceneManager.LoadScene("TeamSelection");
+        }
+    }
+    
+    /// <summary>
+    /// Position string'ini enum'a çevir
+    /// </summary>
+    private PlayerPosition ConvertPositionStringToEnum(string position)
+    {
+        switch (position)
+        {
+            case "SF": return PlayerPosition.SF;
+            case "SĞO": return PlayerPosition.SĞO;
+            case "SLO": return PlayerPosition.SLO;
+            case "MOO": return PlayerPosition.MOO;
+            case "MDO": return PlayerPosition.MDO;
+            case "SĞK": return PlayerPosition.SĞK;
+            case "SLK": return PlayerPosition.SLK;
+            case "STP": return PlayerPosition.STP;
+            case "SĞB": return PlayerPosition.SĞB;
+            case "SLB": return PlayerPosition.SLB;
+            case "KL": return PlayerPosition.KL;
+            default: return PlayerPosition.MOO;
+        }
     }
 }
