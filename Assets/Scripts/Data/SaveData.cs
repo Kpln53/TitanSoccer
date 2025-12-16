@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 /// <summary>
 /// Genişletilmiş Save Data - Tüm oyun verilerini içerir

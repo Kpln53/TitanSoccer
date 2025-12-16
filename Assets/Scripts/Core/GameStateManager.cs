@@ -98,9 +98,6 @@ public class GameStateManager : MonoBehaviour
             case GameState.Chance:
                 LoadScene(matchScene);
                 break;
-            case GameState.PostMatch:
-                // PostMatch genellikle aynı scene'de pop-up olarak gösterilir
-                break;
             case GameState.TransferWindow:
                 // TransferWindow genellikle CareerHub içinde gösterilir
                 break;
