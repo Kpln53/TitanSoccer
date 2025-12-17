@@ -240,3 +240,4 @@ public enum TransferWindowType
     Mid      // Ara transfer dönemi
 }
 
+

@@ -126,3 +126,4 @@ public enum CleatsTier
     Advanced  // Gelişmiş krampon (+5 stat)
 }
 
+

@@ -218,3 +218,4 @@ GameStateManager.cs'de scene isimlerini güncelle:
 
 Her adımda UI'lerin doğru çalıştığını kontrol et.
 
+

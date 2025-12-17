@@ -231,3 +231,4 @@ public class CharacterAppearance
     public bool hasMask = false;
 }
 
+

@@ -68,3 +68,4 @@ Write-Host "Temizlendi! Unity'yi yeniden açın."
 
 **Library klasörünü silmek** genellikle en etkili çözümdür. Unity otomatik olarak yeniden oluşturur.
 
+

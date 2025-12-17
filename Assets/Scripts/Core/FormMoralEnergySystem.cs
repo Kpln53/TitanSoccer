@@ -113,3 +113,4 @@ public enum MoraleChangeReason
     NewsNegative
 }
 
+

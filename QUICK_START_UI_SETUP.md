@@ -260,3 +260,4 @@ Tüm scene'lerde ortak yapı:
 
 Her scene için aynı pattern'i kullan!
 
+

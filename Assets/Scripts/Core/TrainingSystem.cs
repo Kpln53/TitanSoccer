@@ -137,3 +137,4 @@ public enum TrainingType
     Stamina    // Dayanıklılık antremanı
 }
 
+
