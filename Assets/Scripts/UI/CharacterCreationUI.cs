@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 /// <summary>
@@ -12,6 +13,7 @@ public class CharacterCreationUI : MonoBehaviour
     [SerializeField] private TMP_InputField playerSurnameInput;
     [SerializeField] private TMP_Dropdown nationalityDropdown;
     [SerializeField] private TMP_Dropdown positionDropdown;
+    [SerializeField] private TMP_Dropdown leagueDropdown; // Lig seçimi
     
     [Header("Karakter Özelleştirme")]
     [SerializeField] private TMP_Dropdown hairStyleDropdown;
@@ -88,6 +90,50 @@ public class CharacterCreationUI : MonoBehaviour
                 "Brezilya", "Arjantin", "Portekiz", "Hollanda", "Diğer"
             });
         }
+        
+        // Lig dropdown'ını ayarla (DataPackManager'dan)
+        SetupLeagueDropdown();
+    }
+    
+    /// <summary>
+    /// Lig dropdown'ını ayarla
+    /// </summary>
+    private void SetupLeagueDropdown()
+    {
+        if (leagueDropdown == null) return;
+        
+        leagueDropdown.ClearOptions();
+        
+        DataPackManager dataPackManager = DataPackManager.Instance;
+        if (dataPackManager == null)
+        {
+            Debug.LogError("[CharacterCreationUI] DataPackManager bulunamadı!");
+            return;
+        }
+        
+        DataPack activePack = dataPackManager.GetActiveDataPack();
+        if (activePack == null)
+        {
+            Debug.LogError("[CharacterCreationUI] Aktif Data Pack bulunamadı!");
+            return;
+        }
+        
+        System.Collections.Generic.List<string> leagueNames = new System.Collections.Generic.List<string>();
+        foreach (var league in activePack.leagues)
+        {
+            if (league != null && league.teams != null && league.teams.Count > 0)
+            {
+                leagueNames.Add(league.leagueName);
+            }
+        }
+        
+        if (leagueNames.Count == 0)
+        {
+            Debug.LogWarning("[CharacterCreationUI] Hiç lig bulunamadı!");
+            return;
+        }
+        
+        leagueDropdown.AddOptions(leagueNames);
     }
 
     private void SetupButtons()
@@ -112,25 +158,68 @@ public class CharacterCreationUI : MonoBehaviour
             return;
         }
         
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("GameManager bulunamadı!");
+            return;
+        }
+        
         // Karakter görünümünü kaydet
         SaveCharacterAppearance();
         
         // PlayerProfile oluştur
         PlayerProfile profile = CreatePlayerProfile();
+        profile.characterAppearance = characterAppearance;
         
-        // SaveData'ya kaydet
-        if (GameManager.Instance != null && GameManager.Instance.CurrentSave != null)
+        // SaveData oluştur veya güncelle
+        SaveData data = GameManager.Instance.CurrentSave;
+        if (data == null)
         {
-            GameManager.Instance.CurrentSave.playerProfile = profile;
-            GameManager.Instance.CurrentSave.playerProfile.characterAppearance = characterAppearance;
+            data = new SaveData();
         }
         
-        // Sonraki ekrana geç (Lig seçimi veya takım teklifleri)
-        if (GameStateManager.Instance != null)
+        // PlayerProfile'i kaydet
+        data.playerProfile = profile;
+        
+        // ClubData oluştur (takım seçiminde doldurulacak)
+        if (data.clubData == null)
         {
-            // NewGameFlow'dan devam et
-            GameStateManager.Instance.ChangeState(GameState.NewCareerFlow);
+            data.clubData = new ClubData();
+            data.clubData.clubName = "";
         }
+        
+        // Lig seçimini kaydet
+        if (leagueDropdown != null && leagueDropdown.options.Count > 0)
+        {
+            string leagueName = leagueDropdown.options[leagueDropdown.value].text;
+            data.clubData.leagueName = leagueName;
+            data.leagueName = leagueName; // Eski uyumluluk için
+        }
+        
+        // SeasonData oluştur
+        if (data.seasonData == null)
+        {
+            data.seasonData = new SeasonData();
+            data.seasonData.seasonNumber = 1;
+            data.seasonData.currentWeek = 1;
+        }
+        
+        // Eski uyumluluk için
+        data.playerName = profile.playerName;
+        data.position = profile.position.ToString();
+        data.overall = profile.overall;
+        data.season = 1;
+        
+        // GameManager'a kaydet
+        int slotIndex = GameManager.Instance.CurrentSaveSlotIndex;
+        if (slotIndex >= 0)
+        {
+            SaveSystem.SaveGame(data, slotIndex);
+            GameManager.Instance.SetCurrentSave(data, slotIndex);
+        }
+        
+        // TeamOffer (Takım teklifleri) ekranına geç
+        SceneManager.LoadScene("TeamOffer");
     }
 
     private void OnBackButton()
@@ -230,5 +319,10 @@ public class CharacterAppearance
     public bool hasGloves = false;
     public bool hasMask = false;
 }
+
+
+
+
+
 
 

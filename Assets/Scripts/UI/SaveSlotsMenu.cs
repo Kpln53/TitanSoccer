@@ -3,12 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class SaveSlotsMenu : MonoBehaviour
 {
-    [Header("Slot referanslarý")]
+    [Header("Slot referanslarï¿½")]
     public SaveSlotUI[] slotUIs;
 
     private void Awake()
     {
-        // Her slota bu menüyü tanýt
+        // Her slota bu menï¿½yï¿½ tanï¿½t
         foreach (var slot in slotUIs)
         {
             if (slot != null)
@@ -37,12 +37,12 @@ public class SaveSlotsMenu : MonoBehaviour
         SceneManager.LoadScene("CareerHub");
     }
 
-    // Slot boþsa "Yeni Oyun" buradan gelir
+    // Slot boï¿½sa "Yeni Oyun" buradan gelir
     public void OnSlotNewGame(int slotIndex)
     {
         GameManager.Instance.CurrentSaveSlotIndex = slotIndex;
         GameManager.Instance.CurrentSave = null; // yeni kariyer
-        SceneManager.LoadScene("NewGameFlow");
+        SceneManager.LoadScene("CharacterCreation");
     }
 
     // Geri butonu

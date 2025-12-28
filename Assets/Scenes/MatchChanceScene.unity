@@ -150,8 +150,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TeamManager
   isHomeTeam: 0
   positionConfig: {fileID: 11400000, guid: 6ed2941096ed1514797dbbde7c820cb5, type: 2}
+  teamData:
+    teamName: 
+    teamShortName: 
+    teamCountry: Unknown
+    primaryColor:
+      r: 0
+      g: 0
+      b: 1
+      a: 1
+    secondaryColor:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    players: []
+    teamPower: 0
   playerPrefab: {fileID: 0}
   teamMaterial: {fileID: 0}
+  players: []
+  teamPower: 50
 --- !u!4 &119463525
 Transform:
   m_ObjectHideFlags: 0
@@ -277,8 +295,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TeamManager
   isHomeTeam: 1
   positionConfig: {fileID: 11400000, guid: 6ed2941096ed1514797dbbde7c820cb5, type: 2}
+  teamData:
+    teamName: 
+    teamShortName: 
+    teamCountry: Unknown
+    primaryColor:
+      r: 0
+      g: 0
+      b: 1
+      a: 1
+    secondaryColor:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    players: []
+    teamPower: 0
   playerPrefab: {fileID: 0}
   teamMaterial: {fileID: 0}
+  players: []
+  teamPower: 50
 --- !u!4 &402096629
 Transform:
   m_ObjectHideFlags: 0
@@ -737,16 +773,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MatchCamera
   mainCamera: {fileID: 1148224952}
-  ball: {fileID: 0}
+  ballTarget: {fileID: 0}
   playerTarget: {fileID: 0}
   currentMode: 0
-  overviewOrthographicSize: 60
-  overviewPosition: {x: 0, y: 0, z: 0}
-  chanceOrthographicSize: 20
-  playerFocusOrthographicSize: 25
+  overviewSize: 55
+  overviewOffset: {x: 0, y: 0, z: -10}
+  followBallSize: 35
+  followBallSmooth: 5
+  playerFocusSize: 25
+  playerFocusSmooth: 8
+  chanceSize: 20
+  chanceSmooth: 10
   zoomSpeed: 5
-  followSpeed: 5
-  rotationSpeed: 3
+  minSize: 15
+  maxSize: 70
 --- !u!1 &1354335289
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,9 +821,23 @@ MonoBehaviour:
   goalWidth: 7.32
   pitchSpriteRenderer: {fileID: 0}
   pitchSprite: {fileID: 0}
-  pitchColor: {r: 0.2, g: 0.6, b: 0.2, a: 1}
+  pitchColor:
+    r: 0.2
+    g: 0.6
+    b: 0.2
+    a: 1
   homeGoalCenter: {fileID: 0}
   awayGoalCenter: {fileID: 0}
+  lineColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  lineWidth: 0.15
+  lineMaterial: {fileID: 0}
+  showCornerFlags: 1
+  showGoalPosts: 1
+  pitchLines: []
 --- !u!4 &1354335291
 Transform:
   m_ObjectHideFlags: 0
@@ -848,7 +902,10 @@ MonoBehaviour:
   awayTeamManager: {fileID: 119463524}
   matchCamera: {fileID: 1148224954}
   ballPrefab: {fileID: 0}
+  ballControlSystem: {fileID: 0}
   spawnOnStart: 1
+  currentBall: {fileID: 0}
+  playerCharacter: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
