@@ -83,10 +83,23 @@ public class TransferAISystem : MonoBehaviour
 
         float tis = CalculateTIS(player, team, league);
 
-        // TIS düşükse teklif oluşturma
-        if (tis < 30f)
+        // Düşük güçlü takımlar için bonus (TeamOfferUI'de zaten düşük güçlü takımları seçiyoruz)
+        int teamPower = team != null ? team.GetTeamPower() : 50;
+        if (teamPower < 75)
         {
-            Debug.Log($"[TransferAISystem] TIS too low ({tis:F1}) to generate offer.");
+            // Düşük güçlü takımlar yeni oyunculara daha fazla ilgi gösterir
+            float bonus = (75f - teamPower) * 0.3f; // Her güç puanı için +0.3 bonus
+            tis += bonus;
+            Debug.Log($"[TransferAISystem] Low power team bonus: +{bonus:F1} (Team Power: {teamPower})");
+        }
+
+        // TIS eşiği: Yeni oyuncular için daha düşük eşik (10), deneyimli oyuncular için daha yüksek (20)
+        float threshold = player.overall < 70 ? 10f : 20f;
+
+        // TIS düşükse teklif oluşturma
+        if (tis < threshold)
+        {
+            Debug.Log($"[TransferAISystem] TIS too low ({tis:F1}) to generate offer. Threshold: {threshold}");
             return null;
         }
 

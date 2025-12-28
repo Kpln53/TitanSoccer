@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Sözleşme verisi - Oyuncunun kulüp sözleşmesi
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class ContractData
 {
     [Header("Sözleşme Temel Bilgileri")]
@@ -105,7 +106,7 @@ public class ContractData
 /// <summary>
 /// Sözleşme bonusu
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class ContractBonus
 {
     public BonusType type;     // Bonus türü

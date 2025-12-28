@@ -3140,17 +3140,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterCreationUI
   playerNameInput: {fileID: 289833005}
   playerSurnameInput: {fileID: 1408861748}
-  nationalityDropdown: {fileID: 782928102}
   positionDropdown: {fileID: 1241630348}
+  nationalityDropdown: {fileID: 782928102}
   leagueDropdown: {fileID: 1511013888}
-  hairStyleDropdown: {fileID: 954764782}
-  skinColorDropdown: {fileID: 1385721254}
-  jerseyLengthDropdown: {fileID: 485550321}
-  glovesToggle: {fileID: 1083868532}
-  maskToggle: {fileID: 1546550558}
-  continueButton: {fileID: 2006005903}
+  createButton: {fileID: 2006005903}
   backButton: {fileID: 2108008610}
-  characterPreview: {fileID: 0}
 --- !u!4 &760193116
 Transform:
   m_ObjectHideFlags: 0

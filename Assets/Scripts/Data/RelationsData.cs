@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// İlişkiler verisi - Oyuncunun çevresiyle ilişkileri
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class RelationsData
 {
     [Header("Takım İlişkileri")]
@@ -82,7 +83,7 @@ public class RelationsData
 /// <summary>
 /// Takım arkadaşı ilişkisi (JSON serialization için)
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class TeammateRelation
 {
     public string teammateName;      // Takım arkadaşı adı

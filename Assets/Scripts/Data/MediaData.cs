@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Medya verisi - Haberler ve sosyal medya
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class MediaData
 {
     [Header("Haberler")]

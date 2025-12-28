@@ -1,9 +1,10 @@
 using System;
+using UnityEngine;
 
 /// <summary>
 /// Haber item'ı - Haber sistemi için
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class NewsItem
 {
     [Header("Temel Bilgiler")]

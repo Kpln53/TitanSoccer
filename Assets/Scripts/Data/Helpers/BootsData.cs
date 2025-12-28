@@ -1,7 +1,9 @@
+using UnityEngine;
+
 /// <summary>
 /// Krampon verisi - Oyuncunun giydiği kramponlar
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class BootsData
 {
     [Header("Krampon Bilgileri")]

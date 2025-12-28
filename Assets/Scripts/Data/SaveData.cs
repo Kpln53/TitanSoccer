@@ -1,9 +1,10 @@
 using System;
+using UnityEngine;
 
 /// <summary>
 /// Ana kayıt dosyası - Tüm oyun verilerini içerir
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class SaveData
 {
     [Header("Kayıt Bilgileri")]

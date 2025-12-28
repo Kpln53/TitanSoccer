@@ -55,7 +55,7 @@ public class MarketUI : MonoBehaviour
 
         // Para göster
         if (moneyText != null)
-            moneyText.text = $"Para: {economy.currentMoney:N0}€";
+            moneyText.text = $"Para: {economy.money:N0}€";
 
         // Fiyatları göster
         if (energyDrinkPriceText != null)
@@ -86,9 +86,9 @@ public class MarketUI : MonoBehaviour
         }
         else
         {
-            if (economy.currentMoney >= price)
+            if (economy.money >= price)
             {
-                economy.AddMoney(-price);
+                economy.SpendMoney(price);
                 economy.energyDrinkCount++;
                 Debug.Log("[MarketUI] Energy drink purchased!");
             }
@@ -116,9 +116,9 @@ public class MarketUI : MonoBehaviour
         }
         else
         {
-            if (economy.currentMoney >= price)
+            if (economy.money >= price)
             {
-                economy.AddMoney(-price);
+                economy.SpendMoney(price);
                 economy.rehabItemCount++;
                 Debug.Log("[MarketUI] Rehab item purchased!");
             }

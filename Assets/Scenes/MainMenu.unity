@@ -1175,10 +1175,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1d523133b1e70442a724093724a1325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuUI
-  careerButton: {fileID: 0}
+  careerButton: {fileID: 1991149513}
   exhibitionButton: {fileID: 0}
   trainingButton: {fileID: 0}
-  dataPackButton: {fileID: 0}
+  dataPacksButton: {fileID: 1316829364}
   settingsButton: {fileID: 0}
   quitButton: {fileID: 0}
 --- !u!4 &2026660876

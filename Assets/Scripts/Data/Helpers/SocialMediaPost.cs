@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Sosyal medya postu - Sosyal medya sistemi için
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class SocialMediaPost
 {
     [Header("Temel Bilgiler")]

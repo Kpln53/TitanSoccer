@@ -1,9 +1,10 @@
 using System;
+using UnityEngine;
 
 /// <summary>
 /// Lüks eşya - Ekonomi sistemi için
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class LuxuryItem
 {
     [Header("Eşya Bilgileri")]

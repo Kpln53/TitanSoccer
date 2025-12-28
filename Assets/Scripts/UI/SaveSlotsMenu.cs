@@ -13,22 +13,38 @@ public class SaveSlotsMenu : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log($"[SaveSlotsMenu] Awake called. Found {slotUIs?.Length ?? 0} slot UI(s).");
+        
         // Her slota bu menüyü tanıt
         if (slotUIs != null)
         {
-            foreach (var slot in slotUIs)
+            for (int i = 0; i < slotUIs.Length; i++)
             {
-                if (slot != null)
-                    slot.Initialize(this);
+                if (slotUIs[i] != null)
+                {
+                    Debug.Log($"[SaveSlotsMenu] Initializing slot UI {i}: {slotUIs[i].gameObject.name}");
+                    slotUIs[i].Initialize(this);
+                }
+                else
+                {
+                    Debug.LogWarning($"[SaveSlotsMenu] Slot UI {i} is NULL!");
+                }
             }
+        }
+        else
+        {
+            Debug.LogError("[SaveSlotsMenu] slotUIs array is NULL! Please assign slot UIs in Inspector.");
         }
 
         if (backButton != null)
             backButton.onClick.AddListener(OnBackButton);
+        else
+            Debug.LogWarning("[SaveSlotsMenu] Back button is NULL!");
     }
 
     private void OnEnable()
     {
+        Debug.Log("[SaveSlotsMenu] OnEnable called. Refreshing all slots...");
         RefreshAllSlots();
     }
 
@@ -37,13 +53,22 @@ public class SaveSlotsMenu : MonoBehaviour
     /// </summary>
     public void RefreshAllSlots()
     {
+        Debug.Log($"[SaveSlotsMenu] RefreshAllSlots called. Found {slotUIs?.Length ?? 0} slot UI(s).");
+        
         if (slotUIs != null)
         {
-            foreach (var slot in slotUIs)
+            for (int i = 0; i < slotUIs.Length; i++)
             {
-                if (slot != null)
-                    slot.Refresh();
+                if (slotUIs[i] != null)
+                {
+                    Debug.Log($"[SaveSlotsMenu] Refreshing slot UI {i}: {slotUIs[i].gameObject.name}");
+                    slotUIs[i].Refresh();
+                }
             }
+        }
+        else
+        {
+            Debug.LogError("[SaveSlotsMenu] slotUIs array is NULL! Cannot refresh slots.");
         }
     }
 
@@ -72,10 +97,10 @@ public class SaveSlotsMenu : MonoBehaviour
     /// </summary>
     public void OnSlotNewGame(int slotIndex)
     {
+        // Yeni oyun için slot index'i ayarla
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.CurrentSaveSlotIndex = slotIndex;
-            GameManager.Instance.CurrentSave = null; // yeni kariyer
+            GameManager.Instance.SetSaveSlotIndex(slotIndex);
         }
 
         if (GameStateManager.Instance != null)

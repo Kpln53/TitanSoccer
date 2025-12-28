@@ -990,22 +990,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 673601387}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c20a69fb643aad418c92b33bc5bd3d4, type: 3}
+  m_Script: {fileID: 11500000, guid: 0635a80e7b76c6d4da0c1e2ce4f946c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MatchPreScreenUI
   homeTeamNameText: {fileID: 861243864}
   awayTeamNameText: {fileID: 980050055}
+  matchDateText: {fileID: 0}
   squadStatusText: {fileID: 1407915992}
   squadReasonText: {fileID: 1268633969}
-  energyText: {fileID: 9727900}
-  moraleText: {fileID: 931486335}
   energySlider: {fileID: 720660552}
   moraleSlider: {fileID: 554590439}
   goToMatchButton: {fileID: 975913953}
   backButton: {fileID: 1476484869}
-  homeLineupContainer: {fileID: 0}
-  awayLineupContainer: {fileID: 0}
-  playerCardPrefab: {fileID: 0}
 --- !u!1 &720660550
 GameObject:
   m_ObjectHideFlags: 0

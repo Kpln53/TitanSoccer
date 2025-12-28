@@ -104,6 +104,7 @@ public class GameStateManager : MonoBehaviour
             GameState.CareerHub => "CareerHub",
             GameState.MatchPre => "MatchPre",
             GameState.Match => "Match",
+            GameState.MatchChance => "MatchChanceScene",
             GameState.PostMatch => "PostMatch",
             GameState.PlayerStats => "PlayerStats",
             GameState.Standings => "Standings",
@@ -128,6 +129,7 @@ public class GameStateManager : MonoBehaviour
             "CareerHub" => GameState.CareerHub,
             "MatchPre" => GameState.MatchPre,
             "Match" => GameState.Match,
+            "MatchChanceScene" => GameState.MatchChance,
             "PostMatch" => GameState.PostMatch,
             "PlayerStats" => GameState.PlayerStats,
             "Standings" => GameState.Standings,
@@ -185,6 +187,7 @@ public enum GameState
     CareerHub,          // Kariyer hub
     MatchPre,           // Maç öncesi
     Match,              // Maç
+    MatchChance,        // Maç pozisyonu (oyuncu kararı)
     PostMatch,          // Maç sonrası
     PlayerStats,        // Oyuncu istatistikleri
     Standings,          // Puan durumu

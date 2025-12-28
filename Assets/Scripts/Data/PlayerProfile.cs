@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Oyuncu profili - Oyun içi oyuncu verileri
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class PlayerProfile
 {
     [Header("Temel Bilgiler")]

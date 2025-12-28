@@ -188,7 +188,7 @@ RectTransform:
   m_Father: {fileID: 1683315567}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0.9999788}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -765,7 +765,7 @@ RectTransform:
   m_Father: {fileID: 1829840537}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2714,7 +2714,7 @@ RectTransform:
   m_Father: {fileID: 1687594291}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0.9999866}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2788,34 +2788,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510f65c6b9cf61741afee72cd0ad3926, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CareerHubUI
-  playerNameText: {fileID: 176443786}
-  clubNameText: {fileID: 178735957}
-  seasonText: {fileID: 1245573084}
-  overallText: {fileID: 400746539}
-  ageText: {fileID: 1495478078}
-  energySlider: {fileID: 645438804}
-  moraleSlider: {fileID: 1020198182}
-  energyText: {fileID: 1830056806}
-  moraleText: {fileID: 376824740}
+  topPanel: {fileID: 0}
+  homePanel: {fileID: 1330810004}
+  newsPanel: {fileID: 1858803686}
+  socialMediaPanel: {fileID: 1507942370}
+  marketPanel: {fileID: 1112088010}
+  trainingPanel: {fileID: 0}
+  lifePanel: {fileID: 0}
+  playerStatsPanel: {fileID: 0}
+  standingsPanel: {fileID: 0}
   homeButton: {fileID: 833305088}
   newsButton: {fileID: 663859226}
   socialMediaButton: {fileID: 334294049}
   marketButton: {fileID: 1903293573}
   trainingButton: {fileID: 397694121}
   lifeButton: {fileID: 444246882}
-  playerButton: {fileID: 2146727936}
-  otherButton: {fileID: 408451723}
+  playerStatsButton: {fileID: 0}
   standingsButton: {fileID: 322128216}
-  topPanel: {fileID: 1692893899}
-  bottomPanel: {fileID: 925549955}
-  homePanel: {fileID: 1330810004}
-  newsPanel: {fileID: 1858803686}
-  socialMediaPanel: {fileID: 1507942370}
-  marketPanel: {fileID: 1112088010}
-  homePanelUI: {fileID: 0}
-  newsUI: {fileID: 0}
-  socialMediaUI: {fileID: 0}
-  marketUI: {fileID: 0}
+  saveButton: {fileID: 0}
+  settingsButton: {fileID: 0}
+  mainMenuButton: {fileID: 0}
 --- !u!114 &649391742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5107,9 +5099,9 @@ RectTransform:
   m_Father: {fileID: 1555149825}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 0}
+  m_SizeDelta: {x: 20, y: -17}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1001794855
 MonoBehaviour:
@@ -5155,7 +5147,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 144199448}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9999788
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5233,9 +5225,9 @@ RectTransform:
   m_Father: {fileID: 601091053}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: -17, y: 20}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1015001407
 MonoBehaviour:
@@ -5991,9 +5983,9 @@ RectTransform:
   m_Father: {fileID: 1555149825}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: -17}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1082140791
 MonoBehaviour:
@@ -6640,7 +6632,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.00035220716}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1182187379
@@ -6861,9 +6853,9 @@ RectTransform:
   m_Father: {fileID: 601091053}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: -17}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1200762978
 MonoBehaviour:
@@ -6949,7 +6941,7 @@ RectTransform:
   m_Father: {fileID: 40094157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -7717,9 +7709,9 @@ RectTransform:
   m_Father: {fileID: 1555149825}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: -17, y: 20}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1285778631
 MonoBehaviour:
@@ -7963,7 +7955,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1330810005
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8035,19 +8027,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a78a033f6cd73243ace70d635ce77ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HomePanelUI
-  matchCardObject: {fileID: 1701470327}
-  matchCardTitle: {fileID: 488784643}
   matchTeamsText: {fileID: 520537769}
   matchTypeText: {fileID: 1555700762}
   goToMatchButton: {fileID: 1748111444}
-  standingsCardObject: {fileID: 0}
-  standingsButton: {fileID: 322128216}
-  trainingQuickCardObject: {fileID: 0}
-  statsQuickCardObject: {fileID: 0}
-  lifeQuickCardObject: {fileID: 0}
-  trainingQuickButton: {fileID: 0}
-  statsQuickButton: {fileID: 0}
-  lifeQuickButton: {fileID: 0}
+  trainingButton: {fileID: 0}
+  marketButton: {fileID: 0}
 --- !u!1 &1338055907
 GameObject:
   m_ObjectHideFlags: 0
@@ -8517,7 +8501,7 @@ GameObject:
   - component: {fileID: 1452361740}
   - component: {fileID: 1452361741}
   m_Layer: 0
-  m_Name: Content
+  m_Name: PostListContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8539,7 +8523,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0010104865}
+  m_AnchoredPosition: {x: 0, y: 0.00032336224}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1452361741
@@ -8872,13 +8856,14 @@ GameObject:
   - component: {fileID: 1507942371}
   - component: {fileID: 1507942373}
   - component: {fileID: 1507942372}
+  - component: {fileID: 1507942374}
   m_Layer: 0
   m_Name: SocialMediaPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1507942371
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8942,6 +8927,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1507942370}
   m_CullTransparentMesh: 1
+--- !u!114 &1507942374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507942370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31be47758fb9f244ab6d3f7650f63b8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SocialMediaUI
+  postListParent: {fileID: 1452361740}
+  postItemPrefab: {fileID: 0}
+  newPostButton: {fileID: 1888436385}
+  createPostPanel: {fileID: 1295503414}
+  postContentInput: {fileID: 924998940}
+  createPostButton: {fileID: 905029434}
+  cancelCreatePostButton: {fileID: 694708234}
+  detailPanel: {fileID: 2061411286}
+  detailAuthorText: {fileID: 1746893654}
+  detailContentText: {fileID: 962578893}
+  detailDateText: {fileID: 0}
+  detailLikesText: {fileID: 2019394871}
+  likeButton: {fileID: 1371818249}
+  closeDetailButton: {fileID: 877340110}
+  commentsParent: {fileID: 1182187378}
+  commentItemPrefab: {fileID: 0}
+  followersText: {fileID: 1659130100}
 --- !u!1 &1517387597
 GameObject:
   m_ObjectHideFlags: 0
@@ -9838,6 +9852,7 @@ GameObject:
   - component: {fileID: 1692893903}
   - component: {fileID: 1692893902}
   - component: {fileID: 1692893901}
+  - component: {fileID: 1692893904}
   m_Layer: 0
   m_Name: TopPanel
   m_TagString: Untagged
@@ -9930,6 +9945,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1692893899}
   m_CullTransparentMesh: 1
+--- !u!114 &1692893904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692893899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0489699f36f666f4bbd7400e6c9e4d50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TopPanelUI
+  playerNameText: {fileID: 176443786}
+  clubNameText: {fileID: 178735957}
+  ageText: {fileID: 1495478078}
+  moralText: {fileID: 376824740}
+  energyText: {fileID: 1830056806}
+  seasonText: {fileID: 1245573084}
 --- !u!1 &1701470327
 GameObject:
   m_ObjectHideFlags: 0
@@ -11196,18 +11229,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3100ad6cb4a484247ae5b87183ad8bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewsUI
-  titleText: {fileID: 1113464433}
-  backButton: {fileID: 942200919}
   newsListParent: {fileID: 573325341}
   newsItemPrefab: {fileID: 0}
-  newsDetailPanel: {fileID: 344827895}
-  newsTitleText: {fileID: 1780031635}
-  newsContentText: {fileID: 1747347005}
-  newsDateText: {fileID: 2042358158}
-  likeButton: {fileID: 0}
-  dislikeButton: {fileID: 0}
-  neutralButton: {fileID: 0}
-  reactionText: {fileID: 0}
+  detailPanel: {fileID: 344827895}
+  detailTitleText: {fileID: 1780031635}
+  detailContentText: {fileID: 1747347005}
+  detailDateText: {fileID: 2042358158}
+  detailSourceText: {fileID: 0}
+  closeDetailButton: {fileID: 942200919}
 --- !u!1 &1888436383
 GameObject:
   m_ObjectHideFlags: 0
@@ -12150,9 +12179,9 @@ RectTransform:
   m_Father: {fileID: 601091053}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 0}
+  m_SizeDelta: {x: 20, y: -17}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2039636677
 MonoBehaviour:
@@ -12198,7 +12227,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 645621996}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999989
+  m_Size: 0.9999866
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

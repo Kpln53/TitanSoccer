@@ -14,6 +14,7 @@ public class SocialMediaUI : MonoBehaviour
     public GameObject postItemPrefab;
 
     [Header("Yeni Post Oluştur")]
+    public Button newPostButton; // Yeni post panelini açan buton
     public GameObject createPostPanel;
     public TMP_InputField postContentInput;
     public Button createPostButton;
@@ -38,12 +39,64 @@ public class SocialMediaUI : MonoBehaviour
 
     private void OnEnable()
     {
+        SetupButtons();
         LoadPosts();
         RefreshFollowers();
         if (createPostPanel != null)
             createPostPanel.SetActive(false);
         if (detailPanel != null)
             detailPanel.SetActive(false);
+    }
+
+    private void Start()
+    {
+        SetupButtons();
+    }
+
+    private void SetupButtons()
+    {
+        // New Post Button - Yeni post panelini açar
+        if (newPostButton != null)
+        {
+            newPostButton.onClick.RemoveAllListeners();
+            newPostButton.onClick.AddListener(OnNewPostButton);
+        }
+
+        // Create Post Button - Post'u oluşturur
+        if (createPostButton != null)
+        {
+            createPostButton.onClick.RemoveAllListeners();
+            createPostButton.onClick.AddListener(OnCreatePostButton);
+        }
+
+        // Cancel Create Post Button - Panel'i kapatır
+        if (cancelCreatePostButton != null)
+        {
+            cancelCreatePostButton.onClick.RemoveAllListeners();
+            cancelCreatePostButton.onClick.AddListener(OnCancelCreatePostButton);
+        }
+    }
+
+    /// <summary>
+    /// New Post Button'a tıklandığında - Yeni post panelini aç
+    /// </summary>
+    private void OnNewPostButton()
+    {
+        if (createPostPanel != null)
+        {
+            createPostPanel.SetActive(true);
+            
+            // Input field'ı temizle ve focus et
+            if (postContentInput != null)
+            {
+                postContentInput.text = "";
+                postContentInput.ActivateInputField();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[SocialMediaUI] Create Post Panel not assigned!");
+        }
     }
 
     /// <summary>
@@ -74,7 +127,6 @@ public class SocialMediaUI : MonoBehaviour
         }
 
         DisplayPosts();
-        SetupCreatePostButtons();
     }
 
     /// <summary>
@@ -115,7 +167,7 @@ public class SocialMediaUI : MonoBehaviour
         else
         {
             // Prefab yoksa runtime'da oluştur
-            itemObj = new GameObject($"PostItem_{post.authorName}");
+            itemObj = new GameObject($"PostItem_{post.author}");
             itemObj.transform.SetParent(postListParent);
 
             RectTransform rect = itemObj.AddComponent<RectTransform>();
@@ -167,14 +219,6 @@ public class SocialMediaUI : MonoBehaviour
         }
     }
 
-    private void SetupCreatePostButtons()
-    {
-        if (createPostButton != null)
-            createPostButton.onClick.AddListener(OnCreatePostButton);
-
-        if (cancelCreatePostButton != null)
-            cancelCreatePostButton.onClick.AddListener(OnCancelCreatePostButton);
-    }
 
     /// <summary>
     /// Post item'ına tıklandığında

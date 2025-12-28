@@ -15,6 +15,8 @@ public class DataPackManager : MonoBehaviour
     private Dictionary<string, DataPack> loadedDataPacks = new Dictionary<string, DataPack>();
     private List<DataPack> availableDataPacks = new List<DataPack>();
 
+    private const string ACTIVE_DATAPACK_KEY = "ActiveDataPackName";
+
     private void Awake()
     {
         // Singleton pattern
@@ -33,19 +35,26 @@ public class DataPackManager : MonoBehaviour
     private void Start()
     {
         LoadAvailableDataPacks();
+        LoadActiveDataPackFromPrefs();
     }
 
     /// <summary>
-    /// Resources klasöründen mevcut DataPack'leri yükle
+    /// Resources klasöründen mevcut DataPack'leri yükle (public - manuel çağrılabilir)
     /// </summary>
-    private void LoadAvailableDataPacks()
+    public void LoadAvailableDataPacks()
     {
-        DataPack[] packs = Resources.LoadAll<DataPack>("DataPacks");
+        // Klasör adı "Datapacks" (büyük D ile)
+        DataPack[] packs = Resources.LoadAll<DataPack>("Datapacks");
         
         availableDataPacks.Clear();
         availableDataPacks.AddRange(packs);
 
-        Debug.Log($"[DataPackManager] Found {packs.Length} DataPack(s) in Resources.");
+        Debug.Log($"[DataPackManager] Found {packs.Length} DataPack(s) in Resources/Datapacks.");
+        
+        foreach (var pack in packs)
+        {
+            Debug.Log($"[DataPackManager] Loaded: {pack.packName}");
+        }
     }
 
     /// <summary>
@@ -67,6 +76,10 @@ public class DataPackManager : MonoBehaviour
             activeDataPack.packId = GeneratePackId(activeDataPack.packName);
         }
 
+        // PlayerPrefs'e kaydet (kalıcılık için)
+        PlayerPrefs.SetString(ACTIVE_DATAPACK_KEY, activeDataPack.packName);
+        PlayerPrefs.Save();
+        
         Debug.Log($"[DataPackManager] Active DataPack set: {activeDataPack.packName} (ID: {activeDataPack.packId})");
     }
 
@@ -76,7 +89,38 @@ public class DataPackManager : MonoBehaviour
     public void ClearActiveDataPack()
     {
         activeDataPack = null;
+        PlayerPrefs.DeleteKey(ACTIVE_DATAPACK_KEY);
+        PlayerPrefs.Save();
         Debug.Log("[DataPackManager] Active DataPack cleared.");
+    }
+
+    /// <summary>
+    /// PlayerPrefs'ten aktif DataPack'i yükle
+    /// </summary>
+    private void LoadActiveDataPackFromPrefs()
+    {
+        if (PlayerPrefs.HasKey(ACTIVE_DATAPACK_KEY))
+        {
+            string savedPackName = PlayerPrefs.GetString(ACTIVE_DATAPACK_KEY);
+            
+            // Kayıtlı pack'i bul
+            DataPack savedPack = availableDataPacks.FirstOrDefault(p => p != null && p.packName == savedPackName);
+            
+            if (savedPack != null)
+            {
+                activeDataPack = savedPack;
+                Debug.Log($"[DataPackManager] Active DataPack loaded from PlayerPrefs: {savedPackName}");
+            }
+            else
+            {
+                Debug.LogWarning($"[DataPackManager] Saved DataPack '{savedPackName}' not found in available packs. Clearing preference.");
+                PlayerPrefs.DeleteKey(ACTIVE_DATAPACK_KEY);
+            }
+        }
+        else
+        {
+            Debug.Log("[DataPackManager] No saved DataPack found in PlayerPrefs.");
+        }
     }
 
     /// <summary>
@@ -160,7 +204,7 @@ public class DataPackManager : MonoBehaviour
     /// </summary>
     public DataPack LoadDataPack(string packName)
     {
-        string path = $"DataPacks/{packName}";
+        string path = $"Datapacks/{packName}";
         DataPack pack = Resources.Load<DataPack>(path);
 
         if (pack != null)

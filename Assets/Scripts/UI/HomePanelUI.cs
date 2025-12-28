@@ -7,26 +7,13 @@ using TMPro;
 /// </summary>
 public class HomePanelUI : MonoBehaviour
 {
-    [Header("Oyuncu Bilgileri")]
-    public TextMeshProUGUI playerNameText;
-    public TextMeshProUGUI clubNameText;
-    public TextMeshProUGUI positionText;
-    public TextMeshProUGUI overallText;
 
-    [Header("Durum")]
-    public TextMeshProUGUI formText;
-    public TextMeshProUGUI moralText;
-    public TextMeshProUGUI energyText;
-
-    [Header("Sezon Bilgileri")]
-    public TextMeshProUGUI seasonText;
-    public TextMeshProUGUI leaguePositionText;
-
-    [Header("Para")]
-    public TextMeshProUGUI moneyText;
+    [Header("Sıradaki Maç Kartı")]
+    public TextMeshProUGUI matchTeamsText;     // "Takım A vs Takım B" formatında
+    public TextMeshProUGUI matchTypeText;      // "Lig Maçı" gibi maç türü
+    public Button goToMatchButton;             // "Maça Git" butonu
 
     [Header("Hızlı Erişim Butonları")]
-    public Button nextMatchButton;
     public Button trainingButton;
     public Button marketButton;
 
@@ -48,39 +35,125 @@ public class HomePanelUI : MonoBehaviour
 
         SaveData saveData = GameManager.Instance.CurrentSave;
 
-        // Oyuncu bilgileri
-        if (playerNameText != null && saveData.playerProfile != null)
-            playerNameText.text = saveData.playerProfile.playerName;
+        // Sıradaki maç bilgilerini göster
+        RefreshNextMatch(saveData);
+    }
 
-        if (clubNameText != null && saveData.clubData != null)
-            clubNameText.text = saveData.clubData.clubName;
+    /// <summary>
+    /// Sıradaki maç kartını güncelle
+    /// </summary>
+    private void RefreshNextMatch(SaveData saveData)
+    {
+        // SeasonCalendarSystem yoksa oluştur
+        if (SeasonCalendarSystem.Instance == null)
+        {
+            GameObject calendarObj = new GameObject("SeasonCalendarSystem");
+            calendarObj.AddComponent<SeasonCalendarSystem>();
+            Debug.Log("[HomePanelUI] SeasonCalendarSystem created automatically.");
+        }
 
-        if (positionText != null && saveData.playerProfile != null)
-            positionText.text = saveData.playerProfile.position.ToString();
+        // SeasonCalendarSystem'den sıradaki maçı al
+        MatchData nextMatch = null;
+        if (SeasonCalendarSystem.Instance != null)
+        {
+            nextMatch = SeasonCalendarSystem.Instance.GetNextMatch(saveData);
+        }
 
-        if (overallText != null && saveData.playerProfile != null)
-            overallText.text = $"OVR: {saveData.playerProfile.overall}";
+        if (matchTeamsText != null)
+        {
+            if (nextMatch != null && !string.IsNullOrEmpty(nextMatch.opponentTeam))
+            {
+                // Gerçek maç bilgisi var
+                string homeTeam = saveData.clubData != null && !string.IsNullOrEmpty(saveData.clubData.clubName) 
+                    ? saveData.clubData.clubName 
+                    : "Ev Sahibi Takım";
+                string awayTeam = nextMatch.opponentTeam;
+                
+                // Ev sahibi/deplasman durumuna göre göster
+                if (nextMatch.isHome)
+                {
+                    matchTeamsText.text = $"{homeTeam} vs {awayTeam}";
+                }
+                else
+                {
+                    matchTeamsText.text = $"{awayTeam} vs {homeTeam}";
+                }
+            }
+            else if (saveData.clubData != null && !string.IsNullOrEmpty(saveData.clubData.clubName))
+            {
+                // Maç bilgisi yok, fallback
+                matchTeamsText.text = $"{saveData.clubData.clubName} vs Takım B";
+            }
+            else
+            {
+                matchTeamsText.text = "Takım A vs Takım B";
+            }
+        }
 
-        // Durum
-        if (formText != null && saveData.playerProfile != null)
-            formText.text = $"Form: {saveData.playerProfile.currentForm}";
+        if (matchTypeText != null)
+        {
+            if (nextMatch != null && !string.IsNullOrEmpty(nextMatch.matchType))
+            {
+                // Maç türünü göster
+                string matchTypeStr = nextMatch.matchType switch
+                {
+                    "League" => "Lig Maçı",
+                    "Cup" => "Kupa Maçı",
+                    "ChampionsLeague" => "Şampiyonlar Ligi",
+                    "EuropaLeague" => "Avrupa Ligi",
+                    _ => "Maç"
+                };
+                matchTypeText.text = matchTypeStr;
+            }
+            else
+            {
+                matchTypeText.text = "Lig Maçı";
+            }
+        }
+    }
 
-        if (moralText != null && saveData.playerProfile != null)
-            moralText.text = $"Moral: {saveData.playerProfile.currentMoral}";
+    /// <summary>
+    /// Maça Git butonuna tıklandığında
+    /// </summary>
+    private void OnGoToMatchButton()
+    {
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.ChangeState(GameState.MatchPre);
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MatchPre");
+        }
+    }
 
-        if (energyText != null && saveData.playerProfile != null)
-            energyText.text = $"Enerji: {saveData.playerProfile.currentEnergy}";
+    private void Start()
+    {
+        SetupButtons();
+    }
 
-        // Sezon bilgileri
-        if (seasonText != null && saveData.seasonData != null)
-            seasonText.text = $"Sezon {saveData.seasonData.seasonNumber}";
+    private void SetupButtons()
+    {
+        if (goToMatchButton != null)
+            goToMatchButton.onClick.AddListener(OnGoToMatchButton);
 
-        if (leaguePositionText != null && saveData.seasonData != null)
-            leaguePositionText.text = $"Lig Pozisyonu: {saveData.seasonData.currentLeaguePosition}";
+        if (trainingButton != null)
+            trainingButton.onClick.AddListener(OnTrainingButton);
 
-        // Para
-        if (moneyText != null && saveData.economyData != null)
-            moneyText.text = $"Para: {saveData.economyData.currentMoney:N0}€";
+        if (marketButton != null)
+            marketButton.onClick.AddListener(OnMarketButton);
+    }
+
+    private void OnTrainingButton()
+    {
+        // Training panel'e geç (CareerHubUI üzerinden)
+        // Bu butonun işlevi CareerHubUI'da tanımlı olabilir
+    }
+
+    private void OnMarketButton()
+    {
+        // Market panel'e geç (CareerHubUI üzerinden)
+        // Bu butonun işlevi CareerHubUI'da tanımlı olabilir
     }
 }
 

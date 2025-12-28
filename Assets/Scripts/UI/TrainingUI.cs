@@ -102,7 +102,7 @@ public class TrainingUI : MonoBehaviour
 
         // Enerji göster
         if (energyText != null)
-            energyText.text = $"Enerji: {player.currentEnergy}/100";
+            energyText.text = $"Enerji: {(int)player.energy}/100";
 
         // Yetenekleri göster
         if (passingText != null)
@@ -144,7 +144,7 @@ public class TrainingUI : MonoBehaviour
 
         if (TrainingSystem.Instance != null)
         {
-            TrainingSystem.Instance.TrainSkill(player, skillName, economy);
+            TrainingSystem.Instance.TrainSkill(player, skillName);
         }
         else
         {

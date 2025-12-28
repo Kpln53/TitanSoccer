@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Kulüp verisi - Oyuncunun kulübü ve hedefleri
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class ClubData
 {
     [Header("Kulüp Bilgileri")]
@@ -28,7 +29,7 @@ public class ClubData
 /// <summary>
 /// Kulüp hedefi verisi
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class ClubObjectiveData
 {
     public ClubObjective objectiveType;    // Hedef türü

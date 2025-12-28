@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Sezon verileri - Mevcut sezon istatistikleri
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class SeasonData
 {
     [Header("Sezon Bilgileri")]
@@ -21,6 +22,9 @@ public class SeasonData
     [Header("Rating")]
     public List<float> matchRatings;   // Maç rating'leri (her maç için)
     public float averageRating = 0f;   // Ortalama rating
+    
+    [Header("Fikstür")]
+    public List<MatchData> fixtures;   // Sezon maç programı
     
     [Header("Takım İstatistikleri")]
     public int leaguePosition = 0;     // Lig pozisyonu

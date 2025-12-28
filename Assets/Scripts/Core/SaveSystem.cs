@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.IO;
 using System;
+using System.Linq;
 
 /// <summary>
 /// Kayıt/Yükleme sistemi (Static class)
@@ -35,7 +36,20 @@ public static class SaveSystem
     /// </summary>
     public static bool HasSave(int slot)
     {
-        return File.Exists(GetSavePath(slot));
+        string path = GetSavePath(slot);
+        bool exists = File.Exists(path);
+        
+        if (exists)
+        {
+            FileInfo fileInfo = new FileInfo(path);
+            Debug.Log($"[SaveSystem] HasSave({slot}): TRUE - File size: {fileInfo.Length} bytes, Path: {path}");
+        }
+        else
+        {
+            Debug.Log($"[SaveSystem] HasSave({slot}): FALSE - Path: {path}");
+        }
+        
+        return exists;
     }
 
     /// <summary>
@@ -43,24 +57,64 @@ public static class SaveSystem
     /// </summary>
     public static void SaveGame(SaveData data, int slot)
     {
+        Debug.Log($"[SaveSystem] SaveGame called for slot {slot}");
+        
         if (data == null)
         {
             Debug.LogError("[SaveSystem] Cannot save null SaveData!");
             return;
         }
 
+        Debug.Log($"[SaveSystem] SaveData is valid. Player: {data.playerProfile?.playerName ?? "NULL"}, Club: {data.clubData?.clubName ?? "NULL"}");
+
         try
         {
             EnsureSaveDirectory();
             string path = GetSavePath(slot);
+            
+            Debug.Log($"[SaveSystem] Save path: {path}");
+            
+            // DateTime'ı string'e çevir (JsonUtility DateTime'ı serialize edemez)
+            if (data.saveDate == default(DateTime))
+            {
+                data.saveDate = DateTime.Now;
+                Debug.Log("[SaveSystem] SaveDate was default, set to now");
+            }
+            data.saveDateString = data.saveDate.ToString("yyyy-MM-dd HH:mm:ss");
+            
+            Debug.Log($"[SaveSystem] Serializing SaveData to JSON...");
+            
+            // JSON'a çevir
             string json = JsonUtility.ToJson(data, true);
+            
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogError("[SaveSystem] JSON serialization resulted in empty string!");
+                return;
+            }
+            
+            Debug.Log($"[SaveSystem] JSON length: {json.Length} characters");
+            Debug.Log($"[SaveSystem] Writing to file: {path}");
+            
+            // Dosyaya yaz
             File.WriteAllText(path, json);
             
-            Debug.Log($"[SaveSystem] Game saved to slot {slot}: {path}");
+            // Dosyanın gerçekten oluşturulduğunu kontrol et
+            if (File.Exists(path))
+            {
+                FileInfo fileInfo = new FileInfo(path);
+                Debug.Log($"[SaveSystem] ✓ Game saved successfully to slot {slot}: {path}");
+                Debug.Log($"[SaveSystem] Save file size: {fileInfo.Length} bytes");
+            }
+            else
+            {
+                Debug.LogError($"[SaveSystem] ✗ File was not created! Path: {path}");
+            }
         }
         catch (Exception e)
         {
-            Debug.LogError($"[SaveSystem] Error saving game to slot {slot}: {e.Message}");
+            Debug.LogError($"[SaveSystem] ✗ Error saving game to slot {slot}: {e.Message}");
+            Debug.LogError($"[SaveSystem] StackTrace: {e.StackTrace}");
         }
     }
 
@@ -70,6 +124,9 @@ public static class SaveSystem
     public static SaveData LoadGame(int slot)
     {
         string path = GetSavePath(slot);
+        
+        Debug.Log($"[SaveSystem] LoadGame called for slot {slot}");
+        Debug.Log($"[SaveSystem] Save path: {path}");
 
         if (!File.Exists(path))
         {
@@ -79,15 +136,44 @@ public static class SaveSystem
 
         try
         {
+            Debug.Log($"[SaveSystem] Reading file: {path}");
             string json = File.ReadAllText(path);
+            
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogError($"[SaveSystem] JSON file is empty for slot {slot}!");
+                return null;
+            }
+            
+            Debug.Log($"[SaveSystem] JSON length: {json.Length} characters");
+            Debug.Log($"[SaveSystem] Deserializing JSON...");
+            
             SaveData data = JsonUtility.FromJson<SaveData>(json);
             
-            Debug.Log($"[SaveSystem] Game loaded from slot {slot}: {path}");
+            if (data == null)
+            {
+                Debug.LogError($"[SaveSystem] Failed to deserialize SaveData from JSON!");
+                return null;
+            }
+            
+            // DateTime'ı string'den parse et
+            if (!string.IsNullOrEmpty(data.saveDateString))
+            {
+                if (DateTime.TryParse(data.saveDateString, out DateTime parsedDate))
+                {
+                    data.saveDate = parsedDate;
+                }
+            }
+            
+            Debug.Log($"[SaveSystem] ✓ Game loaded successfully from slot {slot}: {path}");
+            Debug.Log($"[SaveSystem] Player: {data.playerProfile?.playerName ?? "NULL"}, Club: {data.clubData?.clubName ?? "NULL"}");
+            
             return data;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[SaveSystem] Error loading game from slot {slot}: {e.Message}");
+            Debug.LogError($"[SaveSystem] ✗ Error loading game from slot {slot}: {e.Message}");
+            Debug.LogError($"[SaveSystem] StackTrace: {e.StackTrace}");
             return null;
         }
     }

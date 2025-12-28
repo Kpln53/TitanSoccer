@@ -1,9 +1,10 @@
 using System;
+using UnityEngine;
 
 /// <summary>
 /// Sahip olunan item - Ekonomi sistemi için
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class OwnedItem
 {
     [Header("Item Bilgileri")]

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 /// </summary>
 public class CareerHubUI : MonoBehaviour
 {
+    [Header("Top Panel")]
+    public TopPanelUI topPanel; // Her sayfada görünen üst panel
+
     [Header("Ana Paneller")]
     public GameObject homePanel;
     public GameObject newsPanel;
@@ -36,7 +39,19 @@ public class CareerHubUI : MonoBehaviour
     private void Start()
     {
         SetupButtons();
+        RefreshTopPanel();
         ShowPanel(homePanel); // Başlangıçta Home panelini göster
+    }
+
+    /// <summary>
+    /// Top panel'i yenile
+    /// </summary>
+    private void RefreshTopPanel()
+    {
+        if (topPanel != null)
+        {
+            topPanel.RefreshData();
+        }
     }
 
     private void SetupButtons()
@@ -97,6 +112,9 @@ public class CareerHubUI : MonoBehaviour
         // İstenen paneli göster
         panel.SetActive(true);
         currentActivePanel = panel;
+
+        // Top panel'i yenile (her panel değiştiğinde)
+        RefreshTopPanel();
 
         Debug.Log($"[CareerHubUI] Panel shown: {panel.name}");
     }

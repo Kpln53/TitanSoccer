@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Transfer teklifi - Transfer sistemi için
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class TransferOffer
 {
     [Header("Kulüp Bilgileri")]

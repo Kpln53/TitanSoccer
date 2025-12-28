@@ -53,13 +53,13 @@ public class StandingsUI : MonoBehaviour
     /// </summary>
     private void DisplayStandings(string leagueName)
     {
-        if (standingsListParent == null || DataPackManager.Instance == null || DataPackManager.Instance.ActiveDataPack == null)
+        if (standingsListParent == null || DataPackManager.Instance == null || DataPackManager.Instance.activeDataPack == null)
         {
             Debug.LogWarning("[StandingsUI] Cannot display standings - missing references");
             return;
         }
 
-        LeagueData league = DataPackManager.Instance.GetLeague(leagueName);
+        LeagueData league = DataPackManager.Instance != null ? DataPackManager.Instance.GetLeague(leagueName) : null;
         if (league == null || league.teams == null)
         {
             Debug.LogWarning($"[StandingsUI] League not found: {leagueName}");

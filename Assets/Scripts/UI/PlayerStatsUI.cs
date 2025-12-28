@@ -109,16 +109,16 @@ public class PlayerStatsUI : MonoBehaviour
 
         // Kariyer istatistikleri
         if (totalMatchesText != null)
-            totalMatchesText.text = $"Toplam Maç: {player.totalMatches}";
+            totalMatchesText.text = $"Toplam Maç: {player.careerMatches}";
 
         if (totalGoalsText != null)
-            totalGoalsText.text = $"Toplam Gol: {player.totalGoals}";
+            totalGoalsText.text = $"Toplam Gol: {player.careerGoals}";
 
         if (totalAssistsText != null)
-            totalAssistsText.text = $"Toplam Asist: {player.totalAssists}";
+            totalAssistsText.text = $"Toplam Asist: {player.careerAssists}";
 
         if (averageRatingText != null)
-            averageRatingText.text = $"Ortalama Rating: {player.averageRating:F2}";
+            averageRatingText.text = $"Ortalama Rating: {player.careerAverageRating:F2}";
 
         // Sezon istatistikleri
         if (season != null)
@@ -135,13 +135,13 @@ public class PlayerStatsUI : MonoBehaviour
 
         // Durum
         if (formText != null)
-            formText.text = $"Form: {player.currentForm}";
+            formText.text = $"Form: {(int)player.form}";
 
         if (moralText != null)
-            moralText.text = $"Moral: {player.currentMoral}";
+            moralText.text = $"Moral: {(int)player.moral}";
 
         if (energyText != null)
-            energyText.text = $"Enerji: {player.currentEnergy}";
+            energyText.text = $"Enerji: {(int)player.energy}";
     }
 
     private void OnBackButton()

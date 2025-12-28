@@ -56,6 +56,14 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Slot index'ini ayarla (yeni oyun için)
+    /// </summary>
+    public void SetSaveSlotIndex(int slotIndex)
+    {
+        CurrentSaveSlotIndex = slotIndex;
+    }
+
+    /// <summary>
     /// Mevcut kayıt dosyasını temizle
     /// </summary>
     public void ClearCurrentSave()

@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Sakatlık kaydı - Sakatlık sistemi için
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class InjuryRecord
 {
     [Header("Sakatlık Bilgileri")]

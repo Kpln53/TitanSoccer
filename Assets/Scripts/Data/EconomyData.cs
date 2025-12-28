@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Ekonomi verisi - Oyuncunun parası ve eşyaları
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class EconomyData
 {
     [Header("Para")]

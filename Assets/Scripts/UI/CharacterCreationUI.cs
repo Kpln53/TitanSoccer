@@ -8,21 +8,11 @@ using TMPro;
 public class CharacterCreationUI : MonoBehaviour
 {
     [Header("Oyuncu Bilgileri")]
-    public TMP_InputField playerNameInput;
-    public TMP_Dropdown positionDropdown;
-    public Slider ageSlider;
-    public TextMeshProUGUI ageText;
-    public TMP_InputField nationalityInput;
-
-    [Header("Yetenekler (Slider'lar)")]
-    public Slider passingSlider;
-    public Slider shootingSlider;
-    public Slider dribblingSlider;
-    public Slider falsoSlider;
-    public Slider speedSlider;
-    public Slider staminaSlider;
-    public Slider defendingSlider;
-    public Slider physicalSlider;
+    public TMP_InputField playerNameInput;     // İsim input'u (sahne: playerNameInput)
+    public TMP_InputField playerSurnameInput;  // Soyisim input'u (sahne: playerSurnameInput)
+    public TMP_Dropdown positionDropdown;      // Pozisyon dropdown'ı
+    public TMP_Dropdown nationalityDropdown;   // Millet dropdown'ı
+    public TMP_Dropdown leagueDropdown;        // Lig dropdown'ı
 
     [Header("Butonlar")]
     public Button createButton;
@@ -38,26 +28,6 @@ public class CharacterCreationUI : MonoBehaviour
 
     private void SetupUI()
     {
-        // Yaş slider'ı
-        if (ageSlider != null)
-        {
-            ageSlider.minValue = 16;
-            ageSlider.maxValue = 35;
-            ageSlider.value = 20;
-            ageSlider.onValueChanged.AddListener(OnAgeChanged);
-            OnAgeChanged(ageSlider.value);
-        }
-
-        // Yetenek slider'ları
-        SetupSkillSlider(passingSlider);
-        SetupSkillSlider(shootingSlider);
-        SetupSkillSlider(dribblingSlider);
-        SetupSkillSlider(falsoSlider);
-        SetupSkillSlider(speedSlider);
-        SetupSkillSlider(staminaSlider);
-        SetupSkillSlider(defendingSlider);
-        SetupSkillSlider(physicalSlider);
-
         // Pozisyon dropdown'ı
         if (positionDropdown != null)
         {
@@ -70,15 +40,75 @@ public class CharacterCreationUI : MonoBehaviour
                 "Santrafor (SF)"
             });
         }
+
+        // Millet dropdown'ı
+        if (nationalityDropdown != null)
+        {
+            nationalityDropdown.ClearOptions();
+            nationalityDropdown.AddOptions(new System.Collections.Generic.List<string>
+            {
+                "Türkiye", "Almanya", "Fransa", "İspanya", "İtalya", "İngiltere",
+                "Brezilya", "Arjantin", "Portekiz", "Hollanda", "Belçika", "Hırvatistan",
+                "Polonya", "İsveç", "Norveç", "Danimarka", "Yunanistan", "Romanya",
+                "Bulgaristan", "Sırbistan", "Rusya", "Ukrayna", "Japonya", "Güney Kore",
+                "Çin", "ABD", "Meksika", "Kolombiya", "Şili", "Uruguay", "Diğer"
+            });
+        }
+
+        // Lig dropdown'ı - DataPackManager'dan ligleri yükle
+        SetupLeagueDropdown();
     }
 
-    private void SetupSkillSlider(Slider slider)
+    /// <summary>
+    /// Lig dropdown'ını aktif DataPack'ten yükle
+    /// </summary>
+    private void SetupLeagueDropdown()
     {
-        if (slider != null)
+        if (leagueDropdown == null)
         {
-            slider.minValue = 0;
-            slider.maxValue = 100;
-            slider.value = 50;
+            Debug.LogWarning("[CharacterCreationUI] League dropdown not found!");
+            return;
+        }
+
+        leagueDropdown.ClearOptions();
+
+        // DataPackManager'dan ligleri al
+        if (DataPackManager.Instance != null && DataPackManager.Instance.activeDataPack != null)
+        {
+            var leagues = DataPackManager.Instance.GetAllLeagues();
+
+            if (leagues != null && leagues.Count > 0)
+            {
+                System.Collections.Generic.List<string> leagueNames = new System.Collections.Generic.List<string>();
+                foreach (var league in leagues)
+                {
+                    if (league != null && !string.IsNullOrEmpty(league.leagueName))
+                    {
+                        leagueNames.Add(league.leagueName);
+                    }
+                }
+
+                if (leagueNames.Count > 0)
+                {
+                    leagueDropdown.AddOptions(leagueNames);
+                    Debug.Log($"[CharacterCreationUI] Loaded {leagueNames.Count} league(s) into dropdown.");
+                }
+                else
+                {
+                    leagueDropdown.AddOptions(new System.Collections.Generic.List<string> { "Lig bulunamadı" });
+                    Debug.LogWarning("[CharacterCreationUI] No valid leagues found in active DataPack!");
+                }
+            }
+            else
+            {
+                leagueDropdown.AddOptions(new System.Collections.Generic.List<string> { "Lig bulunamadı" });
+                Debug.LogWarning("[CharacterCreationUI] No leagues found in active DataPack!");
+            }
+        }
+        else
+        {
+            leagueDropdown.AddOptions(new System.Collections.Generic.List<string> { "DataPack seçilmemiş" });
+            Debug.LogWarning("[CharacterCreationUI] No active DataPack! Please select a DataPack first.");
         }
     }
 
@@ -91,26 +121,35 @@ public class CharacterCreationUI : MonoBehaviour
             backButton.onClick.AddListener(OnBackButton);
     }
 
-    private void OnAgeChanged(float value)
-    {
-        if (ageText != null)
-            ageText.text = $"Yaş: {(int)value}";
-    }
-
     private void OnCreateButton()
     {
-        if (playerNameInput == null || string.IsNullOrEmpty(playerNameInput.text))
+        Debug.Log("[CharacterCreationUI] OnCreateButton called!");
+        
+        // İsim ve soyisim kontrolü
+        string firstName = playerNameInput != null ? playerNameInput.text.Trim() : "";
+        string lastName = playerSurnameInput != null ? playerSurnameInput.text.Trim() : "";
+
+        Debug.Log($"[CharacterCreationUI] First name: '{firstName}', Last name: '{lastName}'");
+
+        if (string.IsNullOrEmpty(firstName))
         {
-            Debug.LogWarning("[CharacterCreationUI] Player name is required!");
+            Debug.LogWarning("[CharacterCreationUI] İsim gereklidir!");
             return;
         }
+
+        if (string.IsNullOrEmpty(lastName))
+        {
+            Debug.LogWarning("[CharacterCreationUI] Soyisim gereklidir!");
+            return;
+        }
+
+        // İsim ve soyisimi birleştir
+        string fullName = $"{firstName} {lastName}".Trim();
 
         // Yeni oyuncu profili oluştur
         newPlayerProfile = new PlayerProfile
         {
-            playerName = playerNameInput.text,
-            age = (int)(ageSlider != null ? ageSlider.value : 20),
-            nationality = nationalityInput != null ? nationalityInput.text : "Unknown"
+            playerName = fullName
         };
 
         // Pozisyon seç
@@ -118,23 +157,53 @@ public class CharacterCreationUI : MonoBehaviour
         {
             newPlayerProfile.position = ConvertPositionIndexToEnum(positionDropdown.value);
         }
+        else
+        {
+            newPlayerProfile.position = PlayerPosition.MOO; // Varsayılan
+        }
 
-        // Yetenekleri ayarla
-        newPlayerProfile.passingSkill = (int)(passingSlider != null ? passingSlider.value : 50);
-        newPlayerProfile.shootingSkill = (int)(shootingSlider != null ? shootingSlider.value : 50);
-        newPlayerProfile.dribblingSkill = (int)(dribblingSlider != null ? dribblingSlider.value : 50);
-        newPlayerProfile.falsoSkill = (int)(falsoSlider != null ? falsoSlider.value : 50);
-        newPlayerProfile.speed = (int)(speedSlider != null ? speedSlider.value : 50);
-        newPlayerProfile.stamina = (int)(staminaSlider != null ? staminaSlider.value : 50);
-        newPlayerProfile.defendingSkill = (int)(defendingSlider != null ? defendingSlider.value : 50);
-        newPlayerProfile.physicalStrength = (int)(physicalSlider != null ? physicalSlider.value : 50);
+        // Millet seç
+        if (nationalityDropdown != null && nationalityDropdown.options.Count > 0)
+        {
+            newPlayerProfile.nationality = nationalityDropdown.options[nationalityDropdown.value].text;
+        }
+        else
+        {
+            newPlayerProfile.nationality = "Türkiye"; // Varsayılan
+        }
 
-        // Overall hesapla
-        newPlayerProfile.CalculateOverall();
+        // Yaş otomatik belirlenecek (18-22 arası rastgele)
+        newPlayerProfile.age = UnityEngine.Random.Range(18, 23);
+
+        // Overall otomatik belirlenecek (60-75 arası rastgele)
+        int randomOverall = UnityEngine.Random.Range(60, 76);
+        newPlayerProfile.overall = randomOverall;
+
+        // Yetenekleri pozisyona göre otomatik ayarla
+        InitializePlayerSkills(newPlayerProfile, randomOverall);
+
+        // Lig seç
+        string selectedLeagueName = null;
+        if (leagueDropdown != null && leagueDropdown.options.Count > 0 && 
+            leagueDropdown.value >= 0 && leagueDropdown.value < leagueDropdown.options.Count)
+        {
+            selectedLeagueName = leagueDropdown.options[leagueDropdown.value].text;
+            
+            // "Lig bulunamadı" veya "DataPack seçilmemiş" gibi placeholder'ları kontrol et
+            if (selectedLeagueName == "Lig bulunamadı" || selectedLeagueName == "DataPack seçilmemiş")
+            {
+                selectedLeagueName = null;
+                Debug.LogWarning("[CharacterCreationUI] Invalid league selected!");
+            }
+        }
 
         // Yeni SaveData oluştur
         SaveData newSave = new SaveData
         {
+            saveName = fullName, // Oyuncu adını kayıt adı olarak kullan
+            saveDate = System.DateTime.Now,
+            saveDateString = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            version = Application.version, // Oyun versiyonu
             playerProfile = newPlayerProfile,
             clubData = new ClubData(),
             seasonData = new SeasonData(),
@@ -143,10 +212,53 @@ public class CharacterCreationUI : MonoBehaviour
             mediaData = new MediaData()
         };
 
+        // Seçilen ligi clubData'ya kaydet
+        if (!string.IsNullOrEmpty(selectedLeagueName))
+        {
+            newSave.clubData.leagueName = selectedLeagueName;
+            Debug.Log($"[CharacterCreationUI] Selected league: {selectedLeagueName}");
+        }
+
+        Debug.Log("[CharacterCreationUI] Starting save process...");
+        Debug.Log($"[CharacterCreationUI] GameManager.Instance: {(GameManager.Instance != null ? "EXISTS" : "NULL")}");
+        
+        // GameManager yoksa oluştur
+        if (GameManager.Instance == null)
+        {
+            Debug.LogWarning("[CharacterCreationUI] GameManager.Instance is NULL! Creating one...");
+            GameObject gameManagerObj = new GameObject("GameManager");
+            gameManagerObj.AddComponent<GameManager>();
+            Debug.Log("[CharacterCreationUI] GameManager created automatically.");
+        }
+        
         // GameManager'a kaydet
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.SetCurrentSave(newSave, GameManager.Instance.CurrentSaveSlotIndex);
+            int slotIndex = GameManager.Instance.CurrentSaveSlotIndex;
+            Debug.Log($"[CharacterCreationUI] Current save slot index: {slotIndex}");
+            
+            if (slotIndex < 0)
+            {
+                slotIndex = 0; // Varsayılan slot
+                GameManager.Instance.SetSaveSlotIndex(slotIndex);
+                Debug.Log($"[CharacterCreationUI] Slot index was negative, set to {slotIndex}");
+            }
+            
+            Debug.Log($"[CharacterCreationUI] Setting current save to slot {slotIndex}...");
+            Debug.Log($"[CharacterCreationUI] SaveData - Player: {newSave.playerProfile?.playerName ?? "NULL"}, Club: {newSave.clubData?.clubName ?? "NULL"}");
+            
+            GameManager.Instance.SetCurrentSave(newSave, slotIndex);
+            
+            Debug.Log($"[CharacterCreationUI] Calling SaveSystem.SaveGame for slot {slotIndex}...");
+            Debug.Log($"[CharacterCreationUI] SaveData reference: {(newSave != null ? "NOT NULL" : "NULL")}");
+            
+            // Dosyaya kaydet
+            SaveSystem.SaveGame(newSave, slotIndex);
+            Debug.Log($"[CharacterCreationUI] SaveSystem.SaveGame call completed for slot {slotIndex}");
+        }
+        else
+        {
+            Debug.LogError("[CharacterCreationUI] GameManager.Instance is still NULL after creation attempt! Cannot save game.");
         }
 
         // TeamOffer sahnesine geç
@@ -158,6 +270,116 @@ public class CharacterCreationUI : MonoBehaviour
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("TeamOffer");
         }
+    }
+
+    /// <summary>
+    /// Oyuncu yeteneklerini pozisyona göre otomatik ayarla
+    /// </summary>
+    private void InitializePlayerSkills(PlayerProfile profile, int overall)
+    {
+        int baseSkill = overall;
+        int variation = 10; // ±10 varyasyon
+
+        if (profile.position == PlayerPosition.KL)
+        {
+            // Kaleci yetenekleri
+            profile.saveReflex = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+            profile.goalkeeperPositioning = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+            profile.aerialAbility = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+            profile.oneOnOne = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+            profile.handling = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+            
+            // Diğer yetenekleri düşük tut
+            profile.passingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+            profile.shootingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+            profile.dribblingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+            profile.falsoSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+            profile.speed = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation), 0, 100);
+            profile.stamina = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+            profile.defendingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+            profile.physicalStrength = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+        }
+        else
+        {
+            // Pozisyona göre yetenekleri ayarla
+            switch (profile.position)
+            {
+                case PlayerPosition.STP:
+                case PlayerPosition.SĞB:
+                case PlayerPosition.SLB:
+                    // Defans oyuncuları
+                    profile.defendingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.physicalStrength = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.passingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.shootingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation), 0, 100);
+                    profile.dribblingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation), 0, 100);
+                    profile.falsoSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation), 0, 100);
+                    profile.speed = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.stamina = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    break;
+                    
+                case PlayerPosition.MDO:
+                    // Defansif orta saha
+                    profile.defendingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.passingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.physicalStrength = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.shootingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation), 0, 100);
+                    profile.dribblingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.falsoSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.speed = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.stamina = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    break;
+                    
+                case PlayerPosition.MOO:
+                    // Ofansif orta saha
+                    profile.passingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.dribblingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.shootingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.falsoSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.speed = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.stamina = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.defendingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation), 0, 100);
+                    profile.physicalStrength = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    break;
+                    
+                case PlayerPosition.SĞK:
+                case PlayerPosition.SLK:
+                case PlayerPosition.SĞO:
+                case PlayerPosition.SLO:
+                    // Kanat oyuncuları
+                    profile.speed = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.dribblingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.falsoSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.passingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.shootingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.stamina = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.defendingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation), 0, 100);
+                    profile.physicalStrength = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    break;
+                    
+                case PlayerPosition.SF:
+                    // Forvet
+                    profile.shootingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.physicalStrength = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.dribblingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.falsoSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.speed = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.passingSkill = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.stamina = Mathf.Clamp(baseSkill + UnityEngine.Random.Range(-variation, variation), 0, 100);
+                    profile.defendingSkill = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+                    break;
+            }
+            
+            // Kaleci yeteneklerini düşük tut
+            profile.saveReflex = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+            profile.goalkeeperPositioning = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+            profile.aerialAbility = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+            profile.oneOnOne = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+            profile.handling = Mathf.Clamp(baseSkill - UnityEngine.Random.Range(0, variation * 2), 0, 100);
+        }
+
+        // Overall'ı yeniden hesapla
+        profile.CalculateOverall();
     }
 
     private PlayerPosition ConvertPositionIndexToEnum(int index)

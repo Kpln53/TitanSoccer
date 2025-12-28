@@ -67,7 +67,7 @@ public class LifeUI : MonoBehaviour
     /// </summary>
     private void DisplayTeammates(RelationsData relations)
     {
-        if (teammatesListParent == null || relations.teammateRelationsList == null) return;
+        if (teammatesListParent == null || relations.teammateRelations == null) return;
 
         // Mevcut item'ları temizle
         foreach (Transform child in teammatesListParent)
@@ -76,7 +76,7 @@ public class LifeUI : MonoBehaviour
         }
 
         // Her takım arkadaşı için item oluştur
-        foreach (var teammate in relations.teammateRelationsList)
+        foreach (var teammate in relations.teammateRelations)
         {
             CreateTeammateItem(teammate);
         }

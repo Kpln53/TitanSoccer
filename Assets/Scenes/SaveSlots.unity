@@ -1155,12 +1155,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e846a99795d8ce542ae43a4a9a088a73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveSlotUI
-  slotIndex: 2
-  titleText: {fileID: 1356422966}
-  detailText: {fileID: 268692931}
+  slotNumberText: {fileID: 0}
+  playerNameText: {fileID: 1356422966}
+  clubNameText: {fileID: 0}
+  seasonText: {fileID: 0}
+  dateText: {fileID: 0}
   continueButton: {fileID: 658722849}
-  deleteButton: {fileID: 1822783935}
   newGameButton: {fileID: 2038251440}
+  deleteButton: {fileID: 1822783935}
+  manualSlotIndex: 2
 --- !u!1 &779008125
 GameObject:
   m_ObjectHideFlags: 0
@@ -2592,14 +2595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a02d098a405d5a4bb55597a70594ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  CurrentSave:
-    playerName: 
-    position: 
-    clubName: 
-    season: 0
-    leaguePosition: 0
-    overall: 0
-  CurrentSaveSlotIndex: -1
+  isPaused: 0
 --- !u!4 &1536546175
 Transform:
   m_ObjectHideFlags: 0
@@ -2708,12 +2704,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e846a99795d8ce542ae43a4a9a088a73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveSlotUI
-  slotIndex: 1
-  titleText: {fileID: 1083039160}
-  detailText: {fileID: 1799217790}
+  slotNumberText: {fileID: 0}
+  playerNameText: {fileID: 0}
+  clubNameText: {fileID: 0}
+  seasonText: {fileID: 0}
+  dateText: {fileID: 0}
   continueButton: {fileID: 681502048}
-  deleteButton: {fileID: 1800403652}
   newGameButton: {fileID: 1101777908}
+  deleteButton: {fileID: 1800403652}
+  manualSlotIndex: 1
 --- !u!1 &1609552903
 GameObject:
   m_ObjectHideFlags: 0
@@ -3076,12 +3075,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e846a99795d8ce542ae43a4a9a088a73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveSlotUI
-  slotIndex: 0
-  titleText: {fileID: 661210771}
-  detailText: {fileID: 1249662379}
+  slotNumberText: {fileID: 0}
+  playerNameText: {fileID: 0}
+  clubNameText: {fileID: 0}
+  seasonText: {fileID: 0}
+  dateText: {fileID: 0}
   continueButton: {fileID: 799475681}
-  deleteButton: {fileID: 438734581}
   newGameButton: {fileID: 1609552905}
+  deleteButton: {fileID: 438734581}
+  manualSlotIndex: 0
 --- !u!1 &1787247076
 GameObject:
   m_ObjectHideFlags: 0
@@ -3650,6 +3652,7 @@ MonoBehaviour:
   - {fileID: 1760361739}
   - {fileID: 1584475476}
   - {fileID: 739385047}
+  backButton: {fileID: 1787247078}
 --- !u!4 &1969368353
 Transform:
   m_ObjectHideFlags: 0
