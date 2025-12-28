@@ -1,328 +1,194 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using TMPro;
 
 /// <summary>
-/// Karakter oluşturma UI - Saç, ten rengi, forma, aksesuar seçimi
+/// Karakter oluşturma UI - Yeni kariyer için karakter oluşturma
 /// </summary>
 public class CharacterCreationUI : MonoBehaviour
 {
-    [Header("UI Referansları")]
-    [SerializeField] private TMP_InputField playerNameInput;
-    [SerializeField] private TMP_InputField playerSurnameInput;
-    [SerializeField] private TMP_Dropdown nationalityDropdown;
-    [SerializeField] private TMP_Dropdown positionDropdown;
-    [SerializeField] private TMP_Dropdown leagueDropdown; // Lig seçimi
-    
-    [Header("Karakter Özelleştirme")]
-    [SerializeField] private TMP_Dropdown hairStyleDropdown;
-    [SerializeField] private TMP_Dropdown skinColorDropdown;
-    [SerializeField] private TMP_Dropdown jerseyLengthDropdown;
-    [SerializeField] private Toggle glovesToggle;
-    [SerializeField] private Toggle maskToggle;
-    
+    [Header("Oyuncu Bilgileri")]
+    public TMP_InputField playerNameInput;
+    public TMP_Dropdown positionDropdown;
+    public Slider ageSlider;
+    public TextMeshProUGUI ageText;
+    public TMP_InputField nationalityInput;
+
+    [Header("Yetenekler (Slider'lar)")]
+    public Slider passingSlider;
+    public Slider shootingSlider;
+    public Slider dribblingSlider;
+    public Slider falsoSlider;
+    public Slider speedSlider;
+    public Slider staminaSlider;
+    public Slider defendingSlider;
+    public Slider physicalSlider;
+
     [Header("Butonlar")]
-    [SerializeField] private Button continueButton;
-    [SerializeField] private Button backButton;
-    
-    [Header("Karakter Görseli (Preview)")]
-    [SerializeField] private Image characterPreview;
-    
-    private CharacterAppearance characterAppearance = new CharacterAppearance();
+    public Button createButton;
+    public Button backButton;
+
+    private PlayerProfile newPlayerProfile;
 
     private void Start()
     {
-        SetupDropdowns();
+        SetupUI();
         SetupButtons();
     }
 
-    private void SetupDropdowns()
+    private void SetupUI()
     {
-        // Pozisyon dropdown'ını doldur (Kaleci hariç)
+        // Yaş slider'ı
+        if (ageSlider != null)
+        {
+            ageSlider.minValue = 16;
+            ageSlider.maxValue = 35;
+            ageSlider.value = 20;
+            ageSlider.onValueChanged.AddListener(OnAgeChanged);
+            OnAgeChanged(ageSlider.value);
+        }
+
+        // Yetenek slider'ları
+        SetupSkillSlider(passingSlider);
+        SetupSkillSlider(shootingSlider);
+        SetupSkillSlider(dribblingSlider);
+        SetupSkillSlider(falsoSlider);
+        SetupSkillSlider(speedSlider);
+        SetupSkillSlider(staminaSlider);
+        SetupSkillSlider(defendingSlider);
+        SetupSkillSlider(physicalSlider);
+
+        // Pozisyon dropdown'ı
         if (positionDropdown != null)
         {
             positionDropdown.ClearOptions();
             positionDropdown.AddOptions(new System.Collections.Generic.List<string>
             {
-                "Stoper", "Sağ Bek", "Sol Bek", "Merkez Orta Defans",
-                "Merkez Orta Ofans", "Sağ Kanat", "Sol Kanat", "Sağ Orta", "Sol Orta", "Santrafor"
+                "Kaleci (KL)", "Stoper (STP)", "Sağ Bek (SĞB)", "Sol Bek (SLB)",
+                "Merkez Orta Defans (MDO)", "Merkez Orta Ofans (MOO)",
+                "Sağ Kanat (SĞK)", "Sol Kanat (SLK)", "Sağ Orta (SĞO)", "Sol Orta (SLO)",
+                "Santrafor (SF)"
             });
         }
-        
-        // Saç stili
-        if (hairStyleDropdown != null)
-        {
-            hairStyleDropdown.ClearOptions();
-            hairStyleDropdown.AddOptions(new System.Collections.Generic.List<string>
-            {
-                "Kısa", "Orta", "Uzun", "Düz", "Kıvırcık", "Kel"
-            });
-        }
-        
-        // Ten rengi
-        if (skinColorDropdown != null)
-        {
-            skinColorDropdown.ClearOptions();
-            skinColorDropdown.AddOptions(new System.Collections.Generic.List<string>
-            {
-                "Açık", "Orta", "Koyu"
-            });
-        }
-        
-        // Forma uzunluğu
-        if (jerseyLengthDropdown != null)
-        {
-            jerseyLengthDropdown.ClearOptions();
-            jerseyLengthDropdown.AddOptions(new System.Collections.Generic.List<string>
-            {
-                "Kısa Kollu", "Uzun Kollu"
-            });
-        }
-        
-        // Uyruk dropdown'ını doldur (basit liste)
-        if (nationalityDropdown != null)
-        {
-            nationalityDropdown.ClearOptions();
-            nationalityDropdown.AddOptions(new System.Collections.Generic.List<string>
-            {
-                "Türkiye", "Almanya", "Fransa", "İspanya", "İtalya", "İngiltere",
-                "Brezilya", "Arjantin", "Portekiz", "Hollanda", "Diğer"
-            });
-        }
-        
-        // Lig dropdown'ını ayarla (DataPackManager'dan)
-        SetupLeagueDropdown();
     }
-    
-    /// <summary>
-    /// Lig dropdown'ını ayarla
-    /// </summary>
-    private void SetupLeagueDropdown()
+
+    private void SetupSkillSlider(Slider slider)
     {
-        if (leagueDropdown == null) return;
-        
-        leagueDropdown.ClearOptions();
-        
-        DataPackManager dataPackManager = DataPackManager.Instance;
-        if (dataPackManager == null)
+        if (slider != null)
         {
-            Debug.LogError("[CharacterCreationUI] DataPackManager bulunamadı!");
-            return;
+            slider.minValue = 0;
+            slider.maxValue = 100;
+            slider.value = 50;
         }
-        
-        DataPack activePack = dataPackManager.GetActiveDataPack();
-        if (activePack == null)
-        {
-            Debug.LogError("[CharacterCreationUI] Aktif Data Pack bulunamadı!");
-            return;
-        }
-        
-        System.Collections.Generic.List<string> leagueNames = new System.Collections.Generic.List<string>();
-        foreach (var league in activePack.leagues)
-        {
-            if (league != null && league.teams != null && league.teams.Count > 0)
-            {
-                leagueNames.Add(league.leagueName);
-            }
-        }
-        
-        if (leagueNames.Count == 0)
-        {
-            Debug.LogWarning("[CharacterCreationUI] Hiç lig bulunamadı!");
-            return;
-        }
-        
-        leagueDropdown.AddOptions(leagueNames);
     }
 
     private void SetupButtons()
     {
-        if (continueButton != null)
-        {
-            continueButton.onClick.AddListener(OnContinueButton);
-        }
-        
+        if (createButton != null)
+            createButton.onClick.AddListener(OnCreateButton);
+
         if (backButton != null)
-        {
             backButton.onClick.AddListener(OnBackButton);
+    }
+
+    private void OnAgeChanged(float value)
+    {
+        if (ageText != null)
+            ageText.text = $"Yaş: {(int)value}";
+    }
+
+    private void OnCreateButton()
+    {
+        if (playerNameInput == null || string.IsNullOrEmpty(playerNameInput.text))
+        {
+            Debug.LogWarning("[CharacterCreationUI] Player name is required!");
+            return;
+        }
+
+        // Yeni oyuncu profili oluştur
+        newPlayerProfile = new PlayerProfile
+        {
+            playerName = playerNameInput.text,
+            age = (int)(ageSlider != null ? ageSlider.value : 20),
+            nationality = nationalityInput != null ? nationalityInput.text : "Unknown"
+        };
+
+        // Pozisyon seç
+        if (positionDropdown != null)
+        {
+            newPlayerProfile.position = ConvertPositionIndexToEnum(positionDropdown.value);
+        }
+
+        // Yetenekleri ayarla
+        newPlayerProfile.passingSkill = (int)(passingSlider != null ? passingSlider.value : 50);
+        newPlayerProfile.shootingSkill = (int)(shootingSlider != null ? shootingSlider.value : 50);
+        newPlayerProfile.dribblingSkill = (int)(dribblingSlider != null ? dribblingSlider.value : 50);
+        newPlayerProfile.falsoSkill = (int)(falsoSlider != null ? falsoSlider.value : 50);
+        newPlayerProfile.speed = (int)(speedSlider != null ? speedSlider.value : 50);
+        newPlayerProfile.stamina = (int)(staminaSlider != null ? staminaSlider.value : 50);
+        newPlayerProfile.defendingSkill = (int)(defendingSlider != null ? defendingSlider.value : 50);
+        newPlayerProfile.physicalStrength = (int)(physicalSlider != null ? physicalSlider.value : 50);
+
+        // Overall hesapla
+        newPlayerProfile.CalculateOverall();
+
+        // Yeni SaveData oluştur
+        SaveData newSave = new SaveData
+        {
+            playerProfile = newPlayerProfile,
+            clubData = new ClubData(),
+            seasonData = new SeasonData(),
+            relationsData = new RelationsData(),
+            economyData = new EconomyData(),
+            mediaData = new MediaData()
+        };
+
+        // GameManager'a kaydet
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SetCurrentSave(newSave, GameManager.Instance.CurrentSaveSlotIndex);
+        }
+
+        // TeamOffer sahnesine geç
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.ChangeState(GameState.TeamOffer);
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("TeamOffer");
         }
     }
 
-    private void OnContinueButton()
+    private PlayerPosition ConvertPositionIndexToEnum(int index)
     {
-        // Validasyon
-        if (string.IsNullOrWhiteSpace(playerNameInput.text))
+        return index switch
         {
-            Debug.LogWarning("Oyuncu adı boş olamaz!");
-            return;
-        }
-        
-        if (GameManager.Instance == null)
-        {
-            Debug.LogError("GameManager bulunamadı!");
-            return;
-        }
-        
-        // Karakter görünümünü kaydet
-        SaveCharacterAppearance();
-        
-        // PlayerProfile oluştur
-        PlayerProfile profile = CreatePlayerProfile();
-        profile.characterAppearance = characterAppearance;
-        
-        // SaveData oluştur veya güncelle
-        SaveData data = GameManager.Instance.CurrentSave;
-        if (data == null)
-        {
-            data = new SaveData();
-        }
-        
-        // PlayerProfile'i kaydet
-        data.playerProfile = profile;
-        
-        // ClubData oluştur (takım seçiminde doldurulacak)
-        if (data.clubData == null)
-        {
-            data.clubData = new ClubData();
-            data.clubData.clubName = "";
-        }
-        
-        // Lig seçimini kaydet
-        if (leagueDropdown != null && leagueDropdown.options.Count > 0)
-        {
-            string leagueName = leagueDropdown.options[leagueDropdown.value].text;
-            data.clubData.leagueName = leagueName;
-            data.leagueName = leagueName; // Eski uyumluluk için
-        }
-        
-        // SeasonData oluştur
-        if (data.seasonData == null)
-        {
-            data.seasonData = new SeasonData();
-            data.seasonData.seasonNumber = 1;
-            data.seasonData.currentWeek = 1;
-        }
-        
-        // Eski uyumluluk için
-        data.playerName = profile.playerName;
-        data.position = profile.position.ToString();
-        data.overall = profile.overall;
-        data.season = 1;
-        
-        // GameManager'a kaydet
-        int slotIndex = GameManager.Instance.CurrentSaveSlotIndex;
-        if (slotIndex >= 0)
-        {
-            SaveSystem.SaveGame(data, slotIndex);
-            GameManager.Instance.SetCurrentSave(data, slotIndex);
-        }
-        
-        // TeamOffer (Takım teklifleri) ekranına geç
-        SceneManager.LoadScene("TeamOffer");
+            0 => PlayerPosition.KL,
+            1 => PlayerPosition.STP,
+            2 => PlayerPosition.SĞB,
+            3 => PlayerPosition.SLB,
+            4 => PlayerPosition.MDO,
+            5 => PlayerPosition.MOO,
+            6 => PlayerPosition.SĞK,
+            7 => PlayerPosition.SLK,
+            8 => PlayerPosition.SĞO,
+            9 => PlayerPosition.SLO,
+            10 => PlayerPosition.SF,
+            _ => PlayerPosition.MOO
+        };
     }
 
     private void OnBackButton()
     {
         if (GameStateManager.Instance != null)
         {
-            GameStateManager.Instance.ChangeState(GameState.SaveSlots);
+            GameStateManager.Instance.ReturnToPreviousState();
         }
-    }
-
-    private void SaveCharacterAppearance()
-    {
-        if (hairStyleDropdown != null)
-            characterAppearance.hairStyle = hairStyleDropdown.value;
-        
-        if (skinColorDropdown != null)
-            characterAppearance.skinColor = skinColorDropdown.value;
-        
-        if (jerseyLengthDropdown != null)
-            characterAppearance.jerseyLength = jerseyLengthDropdown.value;
-        
-        if (glovesToggle != null)
-            characterAppearance.hasGloves = glovesToggle.isOn;
-        
-        if (maskToggle != null)
-            characterAppearance.hasMask = maskToggle.isOn;
-    }
-
-    private PlayerProfile CreatePlayerProfile()
-    {
-        PlayerProfile profile = new PlayerProfile();
-        
-        profile.playerName = playerNameInput.text;
-        profile.surname = playerSurnameInput.text;
-        
-        if (nationalityDropdown != null)
-            profile.nationality = nationalityDropdown.options[nationalityDropdown.value].text;
-        
-        if (positionDropdown != null)
+        else
         {
-            string posText = positionDropdown.options[positionDropdown.value].text;
-            profile.position = ConvertPositionStringToEnum(posText);
-        }
-        
-        profile.age = 18; // Başlangıç yaşı
-        profile.overall = 60; // Başlangıç OVR
-        
-        // Başlangıç statları
-        profile.pace = 60;
-        profile.shooting = 60;
-        profile.passing = 60;
-        profile.dribbling = 60;
-        profile.defense = 60;
-        profile.stamina = 60;
-        
-        // Gizli değerler
-        profile.injuryProne = 50;
-        profile.morality = 75;
-        profile.discipline = 75;
-        
-        // Form/Moral/Energy
-        profile.form = 0.7f;
-        profile.morale = 0.7f;
-        profile.energy = 1f;
-        
-        return profile;
-    }
-
-    private PlayerPosition ConvertPositionStringToEnum(string position)
-    {
-        switch (position)
-        {
-            case "Stoper": return PlayerPosition.STP;
-            case "Sağ Bek": return PlayerPosition.SĞB;
-            case "Sol Bek": return PlayerPosition.SLB;
-            case "Merkez Orta Defans": return PlayerPosition.MDO;
-            case "Merkez Orta Ofans": return PlayerPosition.MOO;
-            case "Sağ Kanat": return PlayerPosition.SĞK;
-            case "Sol Kanat": return PlayerPosition.SLK;
-            case "Sağ Orta": return PlayerPosition.SĞO;
-            case "Sol Orta": return PlayerPosition.SLO;
-            case "Santrafor": return PlayerPosition.SF;
-            default: return PlayerPosition.MOO;
+            UnityEngine.SceneManagement.SceneManager.LoadScene("SaveSlots");
         }
     }
 }
-
-/// <summary>
-/// Karakter görünüm verileri
-/// </summary>
-[System.Serializable]
-public class CharacterAppearance
-{
-    public int hairStyle = 0;
-    public int skinColor = 0;
-    public int jerseyLength = 0; // 0 = kısa kollu, 1 = uzun kollu
-    public bool hasGloves = false;
-    public bool hasMask = false;
-}
-
-
-
-
-
-
 

@@ -1,59 +1,149 @@
 using UnityEngine;
-using TMPro;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
+/// <summary>
+/// Career Hub ana UI - Ana kariyer ekranı ve panel yönetimi
+/// </summary>
 public class CareerHubUI : MonoBehaviour
 {
-    [Header("Profil UI")]
-    public TextMeshProUGUI playerNameText;
-    public TextMeshProUGUI clubNameText;
-    public TextMeshProUGUI seasonText;
-    public TextMeshProUGUI overallText;
+    [Header("Ana Paneller")]
+    public GameObject homePanel;
+    public GameObject newsPanel;
+    public GameObject socialMediaPanel;
+    public GameObject marketPanel;
+    public GameObject trainingPanel;
+    public GameObject lifePanel;
+    public GameObject playerStatsPanel;
+    public GameObject standingsPanel;
 
-    [Header("Ma� Bilgisi UI")]
-    public TextMeshProUGUI nextMatchTitleText;
-    public TextMeshProUGUI nextMatchTeamsText;
-    public TextMeshProUGUI nextMatchTypeText;
+    [Header("Panel Butonları")]
+    public Button homeButton;
+    public Button newsButton;
+    public Button socialMediaButton;
+    public Button marketButton;
+    public Button trainingButton;
+    public Button lifeButton;
+    public Button playerStatsButton;
+    public Button standingsButton;
+
+    [Header("Diğer Butonlar")]
+    public Button saveButton;
+    public Button settingsButton;
+    public Button mainMenuButton;
+
+    private GameObject currentActivePanel;
 
     private void Start()
     {
-        if (GameManager.Instance == null || GameManager.Instance.CurrentSave == null)
+        SetupButtons();
+        ShowPanel(homePanel); // Başlangıçta Home panelini göster
+    }
+
+    private void SetupButtons()
+    {
+        // Panel butonları
+        if (homeButton != null)
+            homeButton.onClick.AddListener(() => ShowPanel(homePanel));
+
+        if (newsButton != null)
+            newsButton.onClick.AddListener(() => ShowPanel(newsPanel));
+
+        if (socialMediaButton != null)
+            socialMediaButton.onClick.AddListener(() => ShowPanel(socialMediaPanel));
+
+        if (marketButton != null)
+            marketButton.onClick.AddListener(() => ShowPanel(marketPanel));
+
+        if (trainingButton != null)
+            trainingButton.onClick.AddListener(() => ShowPanel(trainingPanel));
+
+        if (lifeButton != null)
+            lifeButton.onClick.AddListener(() => ShowPanel(lifePanel));
+
+        if (playerStatsButton != null)
+            playerStatsButton.onClick.AddListener(() => ShowPanel(playerStatsPanel));
+
+        if (standingsButton != null)
+            standingsButton.onClick.AddListener(() => ShowPanel(standingsPanel));
+
+        // Diğer butonlar
+        if (saveButton != null)
+            saveButton.onClick.AddListener(OnSaveButton);
+
+        if (settingsButton != null)
+            settingsButton.onClick.AddListener(OnSettingsButton);
+
+        if (mainMenuButton != null)
+            mainMenuButton.onClick.AddListener(OnMainMenuButton);
+    }
+
+    /// <summary>
+    /// Belirli bir paneli göster ve diğerlerini gizle
+    /// </summary>
+    private void ShowPanel(GameObject panel)
+    {
+        if (panel == null) return;
+
+        // Tüm panelleri gizle
+        if (homePanel != null) homePanel.SetActive(false);
+        if (newsPanel != null) newsPanel.SetActive(false);
+        if (socialMediaPanel != null) socialMediaPanel.SetActive(false);
+        if (marketPanel != null) marketPanel.SetActive(false);
+        if (trainingPanel != null) trainingPanel.SetActive(false);
+        if (lifePanel != null) lifePanel.SetActive(false);
+        if (playerStatsPanel != null) playerStatsPanel.SetActive(false);
+        if (standingsPanel != null) standingsPanel.SetActive(false);
+
+        // İstenen paneli göster
+        panel.SetActive(true);
+        currentActivePanel = panel;
+
+        Debug.Log($"[CareerHubUI] Panel shown: {panel.name}");
+    }
+
+    private void OnSaveButton()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
         {
-            Debug.LogError("CareerHub: CurrentSave bulunamad�!");
-            if (playerNameText != null)
-                playerNameText.text = "Kay�t bulunamad�";
-            return;
+            SaveSystem.SaveGame(GameManager.Instance.CurrentSave, GameManager.Instance.CurrentSaveSlotIndex);
+            Debug.Log("[CareerHubUI] Game saved!");
+            // TODO: Save başarı mesajı göster
+        }
+        else
+        {
+            Debug.LogWarning("[CareerHubUI] No current save to save!");
+        }
+    }
+
+    private void OnSettingsButton()
+    {
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.ChangeState(GameState.Settings);
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Settings");
+        }
+    }
+
+    private void OnMainMenuButton()
+    {
+        // Kayıt et
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
+        {
+            SaveSystem.SaveGame(GameManager.Instance.CurrentSave, GameManager.Instance.CurrentSaveSlotIndex);
         }
 
-        var data = GameManager.Instance.CurrentSave;
-
-        // Profil bilgileri
-        if (playerNameText != null)
-            playerNameText.text = $"{data.playerName} ({data.position})";
-
-        if (clubNameText != null)
-            clubNameText.text = data.clubName;
-
-        if (seasonText != null)
-            seasonText.text = $"Sezon {data.season}";
-
-        if (overallText != null)
-            overallText.text = $"OVR {data.overall}";
-
-        // Ma� bilgisi (�imdilik basit dummy veri)
-        if (nextMatchTitleText != null)
-            nextMatchTitleText.text = "S�radaki Ma�";
-
-        if (nextMatchTeamsText != null)
-            nextMatchTeamsText.text = $"{data.clubName} vs Rakip FC";
-
-        if (nextMatchTypeText != null)
-            nextMatchTypeText.text = "Lig Ma��";
-    }
-
-    public void OnGoToMatchButton()
-    {
-        Debug.Log("Ma�a Git butonuna bas�ld�! (Buradan Match sahnesine ge�ece�iz)");
-        SceneManager.LoadScene("MatchScene");
+        // Ana menüye dön
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.ReturnToMainMenu();
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
     }
 }
+

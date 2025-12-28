@@ -1,94 +1,178 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
+/// <summary>
+/// KayÄ±t slotu UI - Tek bir kayÄ±t slotunu gÃ¶sterir
+/// </summary>
 public class SaveSlotUI : MonoBehaviour
 {
-    public int slotIndex;
-
-    [Header("UI Referanslarý")]
-    public TextMeshProUGUI titleText;
-    public TextMeshProUGUI detailText;
+    [Header("UI ElemanlarÄ±")]
+    public TextMeshProUGUI slotNumberText;
+    public TextMeshProUGUI playerNameText;
+    public TextMeshProUGUI clubNameText;
+    public TextMeshProUGUI seasonText;
+    public TextMeshProUGUI dateText;
     public Button continueButton;
-    public Button deleteButton;
     public Button newGameButton;
+    public Button deleteButton;
 
-    private SaveData loadedData;
-    private SaveSlotsMenu menu;
+    private SaveSlotsMenu parentMenu;
+    private int slotIndex = -1;
+    private bool hasSave = false;
 
-    public void Initialize(SaveSlotsMenu parentMenu)
+    /// <summary>
+    /// Slot'u baÅŸlat
+    /// </summary>
+    public void Initialize(SaveSlotsMenu menu)
     {
-        menu = parentMenu;
-    }
+        parentMenu = menu;
 
-    private void Start()
-    {
-        if (menu == null)
+        if (continueButton != null)
+            continueButton.onClick.AddListener(OnContinueButton);
+
+        if (newGameButton != null)
+            newGameButton.onClick.AddListener(OnNewGameButton);
+
+        if (deleteButton != null)
+            deleteButton.onClick.AddListener(OnDeleteButton);
+
+        // Slot index'ini GameObject adÄ±ndan al (Ã¶rn: "SaveSlot0" -> 0)
+        string name = gameObject.name;
+        if (name.Contains("Slot"))
         {
-            menu = GetComponentInParent<SaveSlotsMenu>();
+            string indexStr = name.Replace("SaveSlot", "").Replace("Slot", "");
+            if (int.TryParse(indexStr, out int index))
+            {
+                slotIndex = index;
+            }
         }
-
-        // Hangi referanslar eksik, baþta bir kere loglayalým
-        if (titleText == null) Debug.LogError($"[SaveSlotUI] titleText atanmadý! Slot: {slotIndex}");
-        if (detailText == null) Debug.LogError($"[SaveSlotUI] detailText atanmadý! Slot: {slotIndex}");
-        if (continueButton == null) Debug.LogError($"[SaveSlotUI] continueButton atanmadý! Slot: {slotIndex}");
-        if (deleteButton == null) Debug.LogError($"[SaveSlotUI] deleteButton atanmadý! Slot: {slotIndex}");
-        if (newGameButton == null) Debug.LogError($"[SaveSlotUI] newGameButton atanmadý! Slot: {slotIndex}");
 
         Refresh();
     }
 
+    /// <summary>
+    /// Slot'u yenile (kayÄ±t durumuna gÃ¶re)
+    /// </summary>
     public void Refresh()
     {
-        // Koruma: UI referanslarý hiç yoksa boþuna devam etme
-        if (titleText == null || detailText == null ||
-            continueButton == null || deleteButton == null || newGameButton == null)
-        {
-            Debug.LogError($"[SaveSlotUI] Refresh çaðrýldý ama UI referanslarýndan biri NULL! Slot: {slotIndex}");
-            return;
-        }
+        hasSave = SaveSystem.HasSave(slotIndex);
 
-        if (SaveSystem.HasSave(slotIndex))
+        if (hasSave)
         {
-            loadedData = SaveSystem.LoadGame(slotIndex);
-
-            titleText.text = $"{loadedData.playerName} - {loadedData.clubName}";
-            detailText.text = $"Sezon {loadedData.season} | OVR {loadedData.overall}";
-            continueButton.gameObject.SetActive(true);
-            deleteButton.gameObject.SetActive(true);
-            newGameButton.gameObject.SetActive(false);
+            // KayÄ±t yÃ¼kle ve gÃ¶ster
+            SaveData saveData = SaveSystem.LoadGame(slotIndex);
+            if (saveData != null)
+            {
+                DisplaySaveData(saveData);
+            }
+            else
+            {
+                DisplayEmpty();
+            }
         }
         else
         {
-            loadedData = null;
-            titleText.text = "Boþ Slot";
-            detailText.text = "Yeni kariyer oluþtur.";
-            continueButton.gameObject.SetActive(false);
-            deleteButton.gameObject.SetActive(false);
-            newGameButton.gameObject.SetActive(true);
+            // BoÅŸ slot gÃ¶ster
+            DisplayEmpty();
+        }
+
+        // ButonlarÄ± ayarla
+        if (continueButton != null)
+            continueButton.gameObject.SetActive(hasSave);
+
+        if (newGameButton != null)
+            newGameButton.gameObject.SetActive(!hasSave);
+
+        if (deleteButton != null)
+            deleteButton.gameObject.SetActive(hasSave);
+    }
+
+    /// <summary>
+    /// KayÄ±t verilerini gÃ¶ster
+    /// </summary>
+    private void DisplaySaveData(SaveData saveData)
+    {
+        if (slotNumberText != null)
+            slotNumberText.text = $"Slot {slotIndex + 1}";
+
+        if (playerNameText != null)
+            playerNameText.text = saveData.playerProfile != null ? saveData.playerProfile.playerName : "Unknown Player";
+
+        if (clubNameText != null)
+            clubNameText.text = saveData.clubData != null ? saveData.clubData.clubName : "No Club";
+
+        if (seasonText != null)
+            seasonText.text = saveData.seasonData != null ? $"Sezon {saveData.seasonData.seasonNumber}" : "Season 1";
+
+        if (dateText != null)
+        {
+            DateTime saveDate = SaveSystem.GetSaveDate(slotIndex);
+            if (saveDate != DateTime.MinValue)
+            {
+                dateText.text = saveDate.ToString("dd.MM.yyyy HH:mm");
+            }
+            else
+            {
+                dateText.text = "Date Unknown";
+            }
         }
     }
 
-    public void OnContinue()
+    /// <summary>
+    /// BoÅŸ slot gÃ¶ster
+    /// </summary>
+    private void DisplayEmpty()
     {
-        Debug.Log($"[SaveSlotUI] Continue týklandý. Slot: {slotIndex}, loadedData null mu? {loadedData == null}, menu null mu? {menu == null}");
-        if (loadedData == null || menu == null) return;
+        if (slotNumberText != null)
+            slotNumberText.text = $"Slot {slotIndex + 1}";
 
-        menu.OnSlotContinue(loadedData, slotIndex);
+        if (playerNameText != null)
+            playerNameText.text = "Empty Slot";
+
+        if (clubNameText != null)
+            clubNameText.text = "";
+
+        if (seasonText != null)
+            seasonText.text = "";
+
+        if (dateText != null)
+            dateText.text = "";
     }
 
-    public void OnDelete()
+    private void OnContinueButton()
     {
-        Debug.Log($"[SaveSlotUI] Delete týklandý. Slot: {slotIndex}");
-        SaveSystem.DeleteSave(slotIndex);
-        Refresh();
+        if (hasSave && parentMenu != null)
+        {
+            SaveData saveData = SaveSystem.LoadGame(slotIndex);
+            if (saveData != null)
+            {
+                parentMenu.OnSlotContinue(saveData, slotIndex);
+            }
+        }
     }
 
-    public void OnNewGame()
+    private void OnNewGameButton()
     {
-        Debug.Log($"[SaveSlotUI] NewGame týklandý. Slot: {slotIndex}");
-        if (menu == null) return;
+        if (!hasSave && parentMenu != null)
+        {
+            parentMenu.OnSlotNewGame(slotIndex);
+        }
+    }
 
-        menu.OnSlotNewGame(slotIndex);
+    private void OnDeleteButton()
+    {
+        if (hasSave)
+        {
+            SaveSystem.DeleteSave(slotIndex);
+            Refresh();
+            
+            if (parentMenu != null)
+            {
+                parentMenu.RefreshAllSlots();
+            }
+        }
     }
 }
+

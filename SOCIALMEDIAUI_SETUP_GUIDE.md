@@ -317,3 +317,4 @@ PostDetailPanel (Panel)
 - Yeni post paylaşıldığında SocialMediaSystem'e kaydedilir
 - Post beğenme ve yorum yapma işlevleri çalışır durumda
 
+

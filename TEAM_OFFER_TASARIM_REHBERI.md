@@ -138,3 +138,4 @@ textComponent.font = yourCustomFontAsset;
 
 
 
+

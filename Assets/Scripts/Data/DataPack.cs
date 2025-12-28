@@ -9,9 +9,14 @@ public class DataPack : ScriptableObject
 {
     [Header("Data Pack Bilgileri")]
     public string packName = "Default Pack";
+    public string packId; // Unique ID (paket adından otomatik oluşturulabilir)
     public string packVersion = "1.0.0";
     public string packAuthor = "Unknown";
+    [TextArea(3, 5)]
     public string packDescription = "";
+    
+    [Header("Logo")]
+    public Sprite packLogo; // Data Pack logosu
     
     [Header("Ligler")]
     public List<LeagueData> leagues = new List<LeagueData>();
@@ -27,11 +32,14 @@ public class DataPack : ScriptableObject
         List<TeamData> allTeams = new List<TeamData>();
         
         // Liglerden takımları ekle
-        foreach (var league in leagues)
+        if (leagues != null)
         {
-            if (league.teams != null)
+            foreach (var league in leagues)
             {
-                allTeams.AddRange(league.teams);
+                if (league != null && league.teams != null)
+                {
+                    allTeams.AddRange(league.teams);
+                }
             }
         }
         
@@ -50,18 +58,27 @@ public class DataPack : ScriptableObject
     public TeamData GetTeamByName(string teamName)
     {
         // Önce liglerde ara
-        foreach (var league in leagues)
+        if (leagues != null)
         {
-            TeamData team = league.GetTeamByName(teamName);
-            if (team != null)
-                return team;
+            foreach (var league in leagues)
+            {
+                if (league != null)
+                {
+                    TeamData team = league.GetTeamByName(teamName);
+                    if (team != null)
+                        return team;
+                }
+            }
         }
         
         // Sonra standalone takımlarda ara
-        foreach (var team in standaloneTeams)
+        if (standaloneTeams != null)
         {
-            if (team.teamName == teamName)
-                return team;
+            foreach (var team in standaloneTeams)
+            {
+                if (team != null && team.teamName == teamName)
+                    return team;
+            }
         }
         
         return null;
@@ -72,11 +89,15 @@ public class DataPack : ScriptableObject
     /// </summary>
     public LeagueData GetLeagueByName(string leagueName)
     {
+        if (leagues == null)
+            return null;
+        
         foreach (var league in leagues)
         {
-            if (league.leagueName == leagueName)
+            if (league != null && league.leagueName == leagueName)
                 return league;
         }
+        
         return null;
     }
     
@@ -85,18 +106,81 @@ public class DataPack : ScriptableObject
     /// </summary>
     public void CalculateAllTeamPowers()
     {
-        foreach (var league in leagues)
+        // Liglerdeki takımlar
+        if (leagues != null)
         {
-            foreach (var team in league.teams)
+            foreach (var league in leagues)
             {
-                team.CalculateTeamPower();
+                if (league != null && league.teams != null)
+                {
+                    foreach (var team in league.teams)
+                    {
+                        if (team != null)
+                        {
+                            team.CalculateTeamPower();
+                        }
+                    }
+                }
             }
         }
         
-        foreach (var team in standaloneTeams)
+        // Standalone takımlar
+        if (standaloneTeams != null)
         {
-            team.CalculateTeamPower();
+            foreach (var team in standaloneTeams)
+            {
+                if (team != null)
+                {
+                    team.CalculateTeamPower();
+                }
+            }
         }
+    }
+    
+    /// <summary>
+    /// Toplam takım sayısını getir
+    /// </summary>
+    public int GetTotalTeamCount()
+    {
+        int count = 0;
+        
+        if (leagues != null)
+        {
+            foreach (var league in leagues)
+            {
+                if (league != null)
+                {
+                    count += league.GetTeamCount();
+                }
+            }
+        }
+        
+        if (standaloneTeams != null)
+        {
+            count += standaloneTeams.Count;
+        }
+        
+        return count;
+    }
+    
+    /// <summary>
+    /// Toplam oyuncu sayısını getir
+    /// </summary>
+    public int GetTotalPlayerCount()
+    {
+        int count = 0;
+        
+        List<TeamData> allTeams = GetAllTeams();
+        
+        foreach (var team in allTeams)
+        {
+            if (team != null && team.players != null)
+            {
+                count += team.players.Count;
+            }
+        }
+        
+        return count;
     }
 }
 
