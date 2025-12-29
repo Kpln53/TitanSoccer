@@ -61,3 +61,4 @@ Bu sayede DataPackManager, oyun başladığında otomatik olarak yüklenecek ve 
 - DataPackManager script'i GameObject'e eklenmiş mi kontrol edin
 - Boot sahnesi oyunda ilk yüklenen sahne mi kontrol edin
 
+

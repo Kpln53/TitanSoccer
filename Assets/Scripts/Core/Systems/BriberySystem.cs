@@ -136,3 +136,4 @@ public class BriberyResult
     public BriberyType briberyType; // Rüşvet türü
 }
 
+

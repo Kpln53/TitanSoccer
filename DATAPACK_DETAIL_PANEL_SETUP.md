@@ -156,3 +156,4 @@ DetailPanel (Image + RectTransform)
 - ApplyButton aktif olmayan pack'ler için gösterilir
 - RemoveButton sadece aktif pack için gösterilir
 
+

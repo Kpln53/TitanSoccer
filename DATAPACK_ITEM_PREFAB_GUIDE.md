@@ -153,3 +153,4 @@ DataPackItem (Button + Image + DataPackItemUI)
 - Prefab kullanmak daha profesyonel ve tutarlı bir görünüm sağlar
 - Prefab'ı düzenledikten sonra tüm item'lar otomatik güncellenir
 
+

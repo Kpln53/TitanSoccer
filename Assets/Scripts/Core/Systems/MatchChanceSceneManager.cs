@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// Maç pozisyonu/şans 2D sahne yöneticisi - Zaman kırılması ve pas zinciri sistemi
+/// Maç pozisyonu/şans 2D sahne yöneticisi - Sadece oynanış (UI yok)
 /// </summary>
 public class MatchChanceSceneManager : MonoBehaviour
 {
@@ -11,23 +11,16 @@ public class MatchChanceSceneManager : MonoBehaviour
     [Header("Zaman Kırılması")]
     [Range(0.05f, 0.3f)]
     public float slowMotionSpeed = 0.2f; // Oyunun yavaşlama hızı (%20)
-    public float maxTimeAmount = 10f; // Maksimum zaman barı süresi (saniye)
-    private float currentTimeAmount; // Mevcut zaman barı
-    private bool isTimeActive = true; // Zaman barı aktif mi?
-
-    [Header("Pas Zinciri")]
-    private int passChainCount = 0; // Mevcut pas zinciri sayısı
-    private float lastPassTime = 0f; // Son pas zamanı
-    private float chainTimeout = 3f; // Zincir timeout (3 saniye içinde pas yoksa zincir kırılır)
 
     [Header("Pozisyon Durumu")]
     private MatchChanceData currentChance;
     private bool isPositionActive = false;
     private MatchChanceResult positionResult = MatchChanceResult.Pending;
 
+    [Header("Ball Control")]
+    private BallControlSystem ballControlSystem;
+
     [Header("Event Callbacks")]
-    public System.Action<float> OnTimeAmountChanged; // (timeAmount)
-    public System.Action<int> OnPassChainChanged; // (chainCount)
     public System.Action<MatchChanceResult> OnPositionFinished; // (result)
 
     private void Awake()
@@ -62,17 +55,90 @@ public class MatchChanceSceneManager : MonoBehaviour
 
         // Zaman kırılmasını başlat
         StartSlowMotion();
-        
-        // Zaman barını doldur
-        currentTimeAmount = maxTimeAmount;
-        OnTimeAmountChanged?.Invoke(currentTimeAmount / maxTimeAmount);
 
         // Pozisyonu aktif et
         isPositionActive = true;
         positionResult = MatchChanceResult.Pending;
-        passChainCount = 0;
+
+        // Ball Control System'i ayarla
+        SetupBallControlSystem();
 
         Debug.Log($"[MatchChanceSceneManager] Position started: {currentChance.chanceType} at minute {currentChance.minute}");
+    }
+
+    /// <summary>
+    /// Ball Control System'i ayarla
+    /// </summary>
+    private void SetupBallControlSystem()
+    {
+        // BallControlSystem'i bul veya oluştur
+        if (ballControlSystem == null)
+        {
+            ballControlSystem = FindObjectOfType<BallControlSystem>();
+            if (ballControlSystem == null)
+            {
+                GameObject bcObj = new GameObject("BallControlSystem");
+                ballControlSystem = bcObj.AddComponent<BallControlSystem>();
+            }
+        }
+
+        // Oyuncu ve topu bul
+        Transform playerTransform = FindPlayerTransform();
+        Transform ballTransform = FindBallTransform();
+
+        if (playerTransform != null && ballTransform != null)
+        {
+            ballControlSystem.EnterChanceMode(playerTransform, ballTransform);
+            Debug.Log("[MatchChanceSceneManager] Ball Control System aktif!");
+        }
+        else
+        {
+            Debug.LogWarning("[MatchChanceSceneManager] Oyuncu veya top bulunamadı!");
+        }
+    }
+
+    /// <summary>
+    /// Oyuncu Transform'unu bul
+    /// </summary>
+    private Transform FindPlayerTransform()
+    {
+        // FieldManager'dan al
+        FieldManager fieldManager = FindObjectOfType<FieldManager>();
+        if (fieldManager != null && fieldManager.PlayerCharacter != null)
+        {
+            return fieldManager.PlayerCharacter.transform;
+        }
+
+        // Fallback: PlayerController'ı bul
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        if (playerController != null)
+        {
+            return playerController.transform;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Top Transform'unu bul
+    /// </summary>
+    private Transform FindBallTransform()
+    {
+        // FieldManager'dan al
+        FieldManager fieldManager = FindObjectOfType<FieldManager>();
+        if (fieldManager != null && fieldManager.Ball != null)
+        {
+            return fieldManager.Ball.transform;
+        }
+
+        // Fallback: Tag ile bul
+        GameObject ballObj = GameObject.FindGameObjectWithTag("Ball");
+        if (ballObj != null)
+        {
+            return ballObj.transform;
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -80,7 +146,15 @@ public class MatchChanceSceneManager : MonoBehaviour
     /// </summary>
     private void StartSlowMotion()
     {
-        Time.timeScale = slowMotionSpeed;
+        // TimeFlowManager varsa onu kullan
+        if (TimeFlowManager.Instance != null)
+        {
+            TimeFlowManager.Instance.SetTimeScaleInstant(slowMotionSpeed);
+        }
+        else
+        {
+            Time.timeScale = slowMotionSpeed;
+        }
         Debug.Log($"[MatchChanceSceneManager] Slow motion started: {slowMotionSpeed}x");
     }
 
@@ -89,102 +163,16 @@ public class MatchChanceSceneManager : MonoBehaviour
     /// </summary>
     private void StopSlowMotion()
     {
-        Time.timeScale = 1f;
-        Debug.Log("[MatchChanceSceneManager] Slow motion stopped");
-    }
-
-    private void Update()
-    {
-        if (!isPositionActive)
-            return;
-
-        // Zaman barını tüket
-        if (isTimeActive && currentTimeAmount > 0f)
+        // TimeFlowManager varsa onu kullan
+        if (TimeFlowManager.Instance != null)
         {
-            currentTimeAmount -= Time.unscaledDeltaTime; // unscaledDeltaTime kullan (zaman kırılmasından etkilenmez)
-            currentTimeAmount = Mathf.Max(0f, currentTimeAmount);
-            
-            float normalizedTime = currentTimeAmount / maxTimeAmount;
-            OnTimeAmountChanged?.Invoke(normalizedTime);
-
-            // Zaman bitti
-            if (currentTimeAmount <= 0f)
-            {
-                OnTimeOut();
-            }
-        }
-
-        // Pas zinciri timeout kontrolü
-        if (passChainCount > 0 && Time.unscaledTime - lastPassTime > chainTimeout)
-        {
-            BreakPassChain();
-        }
-    }
-
-    /// <summary>
-    /// Zaman barı tükendiğinde
-    /// </summary>
-    private void OnTimeOut()
-    {
-        Debug.Log("[MatchChanceSceneManager] Time out! Control passed to AI.");
-        isTimeActive = false;
-        
-        // AI kontrolüne geç - panik şut/hatalı pas ihtimali
-        // Pozisyon sonucunu belirle (genellikle başarısız)
-        positionResult = DetermineAIPositionResult();
-        FinishPosition();
-    }
-
-    /// <summary>
-    /// Zaman harcayan bir hamle yapıldı
-    /// </summary>
-    public bool ConsumeTime(float amount)
-    {
-        if (!isTimeActive || currentTimeAmount <= 0f)
-            return false;
-
-        currentTimeAmount -= amount;
-        currentTimeAmount = Mathf.Max(0f, currentTimeAmount);
-        
-        OnTimeAmountChanged?.Invoke(currentTimeAmount / maxTimeAmount);
-
-        if (currentTimeAmount <= 0f)
-        {
-            OnTimeOut();
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Pas yapıldı
-    /// </summary>
-    public void OnPassMade(bool isSuccessful)
-    {
-        if (!isTimeActive)
-            return;
-
-        // Pas için zaman harca
-        ConsumeTime(1f); // 1 saniye zaman harcar
-
-        if (isSuccessful)
-        {
-            // Pas zincirini artır
-            passChainCount++;
-            lastPassTime = Time.unscaledTime;
-            
-            OnPassChainChanged?.Invoke(passChainCount);
-            
-            Debug.Log($"[MatchChanceSceneManager] Pass chain: {passChainCount}");
-            
-            // Pas zinciri bonuslarını uygula
-            ApplyPassChainBonus();
+            TimeFlowManager.Instance.NormalizeTime();
         }
         else
         {
-            // Başarısız pas - zincir kırılır
-            BreakPassChain();
+            Time.timeScale = 1f;
         }
+        Debug.Log("[MatchChanceSceneManager] Slow motion stopped");
     }
 
     /// <summary>
@@ -192,81 +180,8 @@ public class MatchChanceSceneManager : MonoBehaviour
     /// </summary>
     public void OnShotTaken()
     {
-        if (!isTimeActive)
-            return;
-
-        // Şut için zaman harca
-        ConsumeTime(2f); // 2 saniye zaman harcar
-
-        // Şut atıldığında pozisyon biter
-        // Şut sonucu başka sistem tarafından belirlenecek
-    }
-
-    /// <summary>
-    /// Koşu emri verildi
-    /// </summary>
-    public void OnRunCommand()
-    {
-        if (!isTimeActive)
-            return;
-
-        // Koşu için zaman harca
-        ConsumeTime(0.5f); // 0.5 saniye zaman harcar
-    }
-
-    /// <summary>
-    /// Pas zinciri bonuslarını uygula
-    /// </summary>
-    private void ApplyPassChainBonus()
-    {
-        switch (passChainCount)
-        {
-            case 2:
-                // Savunma reaksiyonu yavaşlar
-                Debug.Log("[MatchChanceSceneManager] Pass chain 2: Defense reaction slowed");
-                break;
-            case 3:
-                // Şut isabeti artar
-                Debug.Log("[MatchChanceSceneManager] Pass chain 3: Shot accuracy increased");
-                break;
-            case 4:
-                // Kaleci hata yapabilir
-                Debug.Log("[MatchChanceSceneManager] Pass chain 4: Goalkeeper may make mistake");
-                break;
-            case 5:
-                // Altın pozisyon
-                Debug.Log("[MatchChanceSceneManager] Pass chain 5: GOLDEN POSITION!");
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Pas zincirini kır
-    /// </summary>
-    private void BreakPassChain()
-    {
-        if (passChainCount > 0)
-        {
-            Debug.Log($"[MatchChanceSceneManager] Pass chain broken at {passChainCount}");
-            passChainCount = 0;
-            OnPassChainChanged?.Invoke(0);
-        }
-    }
-
-    /// <summary>
-    /// Pozisyon sonucunu belirle (AI kontrolünde)
-    /// </summary>
-    private MatchChanceResult DetermineAIPositionResult()
-    {
-        // Zaman bitti, AI kontrolünde genellikle başarısız sonuç
-        float random = Random.Range(0f, 1f);
-        
-        if (random < 0.7f) // %70 ihtimal
-            return MatchChanceResult.Miss;
-        else if (random < 0.9f) // %20 ihtimal
-            return MatchChanceResult.Save;
-        else // %10 ihtimal
-            return MatchChanceResult.Goal; // Şanslı gol
+        // Sadece log - zaman barı yok
+        Debug.Log("[MatchChanceSceneManager] Şut atıldı");
     }
 
     /// <summary>
@@ -291,10 +206,6 @@ public class MatchChanceSceneManager : MonoBehaviour
         PlayerProfile profile = saveData?.playerProfile;
         
         float successChance = currentChance.successChance;
-        
-        // Pas zinciri bonusu
-        float chainBonus = GetPassChainBonus();
-        successChance += chainBonus;
         
         // Oyuncu yetenekleri bonusu
         if (profile != null)
@@ -334,29 +245,6 @@ public class MatchChanceSceneManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Pas zinciri bonusunu al
-    /// </summary>
-    private float GetPassChainBonus()
-    {
-        switch (passChainCount)
-        {
-            case 0:
-            case 1:
-                return 0f;
-            case 2:
-                return 0.1f; // %10 bonus
-            case 3:
-                return 0.2f; // %20 bonus
-            case 4:
-                return 0.3f; // %30 bonus
-            case 5:
-                return 0.5f; // %50 bonus (altın pozisyon)
-            default:
-                return 0.4f;
-        }
-    }
-
-    /// <summary>
     /// Pozisyonu bitir
     /// </summary>
     private void FinishPosition()
@@ -367,8 +255,11 @@ public class MatchChanceSceneManager : MonoBehaviour
         isPositionActive = false;
         StopSlowMotion();
 
-        // Pas zincirini sıfırla
-        BreakPassChain();
+        // Ball Control System'den çık
+        if (ballControlSystem != null)
+        {
+            ballControlSystem.ExitChanceMode();
+        }
 
         // Sonucu MatchSimulationSystem'e bildir
         if (currentChance != null)

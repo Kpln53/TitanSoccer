@@ -109,3 +109,4 @@ public class CriticalEvent
     public bool isHandled;             // İşlendi mi?
 }
 
+
