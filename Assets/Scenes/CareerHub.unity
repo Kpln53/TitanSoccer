@@ -2788,7 +2788,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510f65c6b9cf61741afee72cd0ad3926, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CareerHubUI
-  topPanel: {fileID: 0}
+  topPanel: {fileID: 1692893904}
   homePanel: {fileID: 1330810004}
   newsPanel: {fileID: 1858803686}
   socialMediaPanel: {fileID: 1507942370}
@@ -2805,9 +2805,7 @@ MonoBehaviour:
   lifeButton: {fileID: 444246882}
   playerStatsButton: {fileID: 0}
   standingsButton: {fileID: 322128216}
-  saveButton: {fileID: 0}
-  settingsButton: {fileID: 0}
-  mainMenuButton: {fileID: 0}
+  goToMatchButton: {fileID: 1748111444}
 --- !u!114 &649391742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8027,11 +8025,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a78a033f6cd73243ace70d635ce77ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HomePanelUI
-  matchTeamsText: {fileID: 520537769}
-  matchTypeText: {fileID: 1555700762}
-  goToMatchButton: {fileID: 1748111444}
-  trainingButton: {fileID: 0}
-  marketButton: {fileID: 0}
+  welcomeText: {fileID: 0}
+  nextMatchText: {fileID: 0}
+  playMatchButton: {fileID: 0}
 --- !u!1 &1338055907
 GameObject:
   m_ObjectHideFlags: 0

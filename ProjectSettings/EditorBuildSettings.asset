@@ -26,7 +26,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MatchScene.unity
     guid: 87f0b0dbc46b4a9438b890a4cdec4b74
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MatchChanceScene.unity
     guid: 59a2c0a400c8fda4280247648e978227
   - enabled: 1
@@ -38,12 +38,24 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TeamOffer.unity
     guid: a02ddffc1734fcf478d08391e33d25cc
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MatchPre.unity
     guid: 59724ca1884d9fe4a8ddfda56d42a78f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Match.unity
     guid: 2e3fc995f6ad45546bd5742c3ba42b6a
+  - enabled: 1
+    path: Assets/Scenes/PreMatch.unity
+    guid: fcbb3dd9117f8c141ae545cb58fdd1dc
+  - enabled: 1
+    path: Assets/Scenes/MatchSim.unity
+    guid: b01b547798bb7e743be59d509f6c5e72
+  - enabled: 1
+    path: Assets/Scenes/PostMatch.unity
+    guid: de374fae9bdc65a46a4da99ceb17d084
+  - enabled: 1
+    path: Assets/Scenes/MatchChanceGameplay.unity
+    guid: 2cbfb1fc0dbbca74d97c8644b8e40447
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

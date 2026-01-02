@@ -44,6 +44,7 @@ public class SeasonData
         seasonNumber = 1;
         seasonName = "2025-2026";
         matchRatings = new List<float>();
+        fixtures = new List<MatchData>();
         seasonStartDate = DateTime.Now;
         seasonStartDateString = seasonStartDate.ToString("yyyy-MM-dd");
         seasonEndDate = seasonStartDate.AddMonths(9); // ~9 ay sezon

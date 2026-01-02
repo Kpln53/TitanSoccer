@@ -1,20 +1,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
 
 /// <summary>
-/// Oyun durumu yönetimi - Scene geçişlerini ve oyun durumlarını kontrol eder
+/// Oyun durumu yöneticisi - Scene geçişlerini ve oyun durumlarını yönetir (Singleton)
 /// </summary>
 public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager Instance { get; private set; }
 
-    [Header("Oyun Durumları")]
-    public GameState currentState { get; private set; }
-    public GameState previousState { get; private set; }
-
-    // State değişiklik event'i
-    public event Action<GameState, GameState> OnStateChanged;
+    [Header("Oyun Durumu")]
+    public GameState currentState = GameState.MainMenu;
 
     private void Awake()
     {
@@ -27,29 +22,24 @@ public class GameStateManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        // İlk durumu ayarla
-        currentState = GameState.Boot;
-        
-        Debug.Log("[GameStateManager] GameStateManager initialized.");
     }
 
     private void Start()
     {
-        // Boot'tan MainMenu'ye geç (eğer Boot sahnesindeyse)
-        if (SceneManager.GetActiveScene().name == "Boot")
+        // İlk state'i ayarla
+        if (currentState == GameState.MainMenu)
         {
-            ChangeState(GameState.MainMenu);
-        }
-        else
-        {
-            // Mevcut sahneye göre durumu ayarla
-            SetStateFromScene(SceneManager.GetActiveScene().name);
+            // Eğer MainMenu scene'indeysek, state'i ayarla
+            string currentScene = SceneManager.GetActiveScene().name;
+            if (currentScene == "MainMenu")
+            {
+                currentState = GameState.MainMenu;
+            }
         }
     }
 
     /// <summary>
-    /// Oyun durumunu değiştir ve sahneyi yükle
+    /// Oyun durumunu değiştir
     /// </summary>
     public void ChangeState(GameState newState)
     {
@@ -59,100 +49,63 @@ public class GameStateManager : MonoBehaviour
             return;
         }
 
-        previousState = currentState;
+        Debug.Log($"[GameStateManager] Changing state from {currentState} to {newState}");
+
+        GameState previousState = currentState;
         currentState = newState;
 
-        Debug.Log($"[GameStateManager] State changed: {previousState} -> {currentState}");
-
-        // Event'i tetikle
-        OnStateChanged?.Invoke(previousState, currentState);
-
-        // Sahneyi yükle
+        // State'e göre scene yükle
         LoadSceneForState(newState);
     }
 
     /// <summary>
-    /// Duruma göre sahneyi yükle
+    /// State'e göre scene yükle
     /// </summary>
     private void LoadSceneForState(GameState state)
     {
         string sceneName = GetSceneNameForState(state);
-
-        if (string.IsNullOrEmpty(sceneName))
+        
+        if (!string.IsNullOrEmpty(sceneName))
         {
-            Debug.LogWarning($"[GameStateManager] No scene name for state: {state}");
-            return;
-        }
-
-        Debug.Log($"[GameStateManager] Loading scene: {sceneName} for state: {state}");
-        SceneManager.LoadScene(sceneName);
-    }
-
-    /// <summary>
-    /// Durum için sahne adını getir
-    /// </summary>
-    private string GetSceneNameForState(GameState state)
-    {
-        return state switch
-        {
-            GameState.Boot => "Boot",
-            GameState.MainMenu => "MainMenu",
-            GameState.DataPackMenu => "DataPackMenu",
-            GameState.SaveSlots => "SaveSlots",
-            GameState.CharacterCreation => "CharacterCreation",
-            GameState.TeamOffer => "TeamOffer",
-            GameState.CareerHub => "CareerHub",
-            GameState.MatchPre => "MatchPre",
-            GameState.Match => "Match",
-            GameState.MatchChance => "MatchChanceScene",
-            GameState.PostMatch => "PostMatch",
-            GameState.PlayerStats => "PlayerStats",
-            GameState.Standings => "Standings",
-            GameState.Settings => "Settings",
-            _ => ""
-        };
-    }
-
-    /// <summary>
-    /// Sahne adına göre durumu ayarla
-    /// </summary>
-    private void SetStateFromScene(string sceneName)
-    {
-        GameState state = sceneName switch
-        {
-            "Boot" => GameState.Boot,
-            "MainMenu" => GameState.MainMenu,
-            "DataPackMenu" => GameState.DataPackMenu,
-            "SaveSlots" => GameState.SaveSlots,
-            "CharacterCreation" => GameState.CharacterCreation,
-            "TeamOffer" => GameState.TeamOffer,
-            "CareerHub" => GameState.CareerHub,
-            "MatchPre" => GameState.MatchPre,
-            "Match" => GameState.Match,
-            "MatchChanceScene" => GameState.MatchChance,
-            "PostMatch" => GameState.PostMatch,
-            "PlayerStats" => GameState.PlayerStats,
-            "Standings" => GameState.Standings,
-            "Settings" => GameState.Settings,
-            _ => GameState.MainMenu
-        };
-
-        currentState = state;
-        Debug.Log($"[GameStateManager] State set from scene: {sceneName} -> {state}");
-    }
-
-    /// <summary>
-    /// Önceki duruma geri dön
-    /// </summary>
-    public void ReturnToPreviousState()
-    {
-        if (previousState != GameState.Boot)
-        {
-            ChangeState(previousState);
+            SceneManager.LoadScene(sceneName);
         }
         else
         {
-            ChangeState(GameState.MainMenu);
+            Debug.LogWarning($"[GameStateManager] No scene defined for state: {state}");
+        }
+    }
+
+    /// <summary>
+    /// State için scene adını getir
+    /// </summary>
+    private string GetSceneNameForState(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.MainMenu:
+                return "MainMenu";
+            case GameState.SaveSlots:
+                return "SaveSlots";
+            case GameState.CharacterCreation:
+                return "CharacterCreation";
+            case GameState.CareerHub:
+                return "CareerHub";
+            case GameState.DataPackMenu:
+                return "DataPackMenu";
+            case GameState.Settings:
+                return "Settings";
+            case GameState.TeamOffer:
+                return "TeamOffer";
+            case GameState.PreMatch:
+                return "PreMatch";
+            case GameState.MatchSim:
+                return "MatchSim";
+            case GameState.MatchChanceGameplay:
+                return "MatchChanceGameplay";
+            case GameState.PostMatch:
+                return "PostMatch";
+            default:
+                return null;
         }
     }
 
@@ -164,12 +117,30 @@ public class GameStateManager : MonoBehaviour
         ChangeState(GameState.MainMenu);
     }
 
-    private void OnDestroy()
+    /// <summary>
+    /// Career Hub'a git
+    /// </summary>
+    public void GoToCareerHub()
     {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
+        ChangeState(GameState.CareerHub);
+    }
+
+    /// <summary>
+    /// Mevcut state'i getir
+    /// </summary>
+    public GameState GetCurrentState()
+    {
+        return currentState;
+    }
+
+    /// <summary>
+    /// Önceki state'e dön (basit implementasyon - CharacterCreation'a döner)
+    /// </summary>
+    public void ReturnToPreviousState()
+    {
+        // Basit implementasyon: CharacterCreation'a dön
+        // İleride state history stack'i eklenebilir
+        ChangeState(GameState.CharacterCreation);
     }
 }
 
@@ -178,19 +149,15 @@ public class GameStateManager : MonoBehaviour
 /// </summary>
 public enum GameState
 {
-    Boot,               // Başlangıç sahnesi
-    MainMenu,           // Ana menü
-    DataPackMenu,       // Data Pack menüsü
-    SaveSlots,          // Kayıt slotları
-    CharacterCreation,  // Karakter oluşturma
-    TeamOffer,          // Takım teklifleri
-    CareerHub,          // Kariyer hub
-    MatchPre,           // Maç öncesi
-    Match,              // Maç
-    MatchChance,        // Maç pozisyonu (oyuncu kararı)
-    PostMatch,          // Maç sonrası
-    PlayerStats,        // Oyuncu istatistikleri
-    Standings,          // Puan durumu
-    Settings            // Ayarlar
+    MainMenu,              // Ana menü
+    SaveSlots,             // Kayıt slotları menüsü
+    CharacterCreation,     // Karakter oluşturma
+    CareerHub,             // Kariyer merkezi
+    DataPackMenu,          // Data Pack menüsü
+    Settings,               // Ayarlar
+    TeamOffer,              // Takım teklifi
+    PreMatch,               // Maç öncesi
+    MatchSim,               // Maç simülasyonu
+    MatchChanceGameplay,    // Maç pozisyon oynanışı
+    PostMatch               // Maç sonrası
 }
-

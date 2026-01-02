@@ -30,9 +30,7 @@ public class CareerHubUI : MonoBehaviour
     public Button standingsButton;
 
     [Header("Diğer Butonlar")]
-    public Button saveButton;
-    public Button settingsButton;
-    public Button mainMenuButton;
+    public Button goToMatchButton;
 
     private GameObject currentActivePanel;
 
@@ -82,14 +80,8 @@ public class CareerHubUI : MonoBehaviour
             standingsButton.onClick.AddListener(() => ShowPanel(standingsPanel));
 
         // Diğer butonlar
-        if (saveButton != null)
-            saveButton.onClick.AddListener(OnSaveButton);
-
-        if (settingsButton != null)
-            settingsButton.onClick.AddListener(OnSettingsButton);
-
-        if (mainMenuButton != null)
-            mainMenuButton.onClick.AddListener(OnMainMenuButton);
+        if (goToMatchButton != null)
+            goToMatchButton.onClick.AddListener(OnGoToMatchButton);
     }
 
     /// <summary>
@@ -119,49 +111,10 @@ public class CareerHubUI : MonoBehaviour
         Debug.Log($"[CareerHubUI] Panel shown: {panel.name}");
     }
 
-    private void OnSaveButton()
+    private void OnGoToMatchButton()
     {
-        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
-        {
-            SaveSystem.SaveGame(GameManager.Instance.CurrentSave, GameManager.Instance.CurrentSaveSlotIndex);
-            Debug.Log("[CareerHubUI] Game saved!");
-            // TODO: Save başarı mesajı göster
-        }
-        else
-        {
-            Debug.LogWarning("[CareerHubUI] No current save to save!");
-        }
-    }
-
-    private void OnSettingsButton()
-    {
-        if (GameStateManager.Instance != null)
-        {
-            GameStateManager.Instance.ChangeState(GameState.Settings);
-        }
-        else
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Settings");
-        }
-    }
-
-    private void OnMainMenuButton()
-    {
-        // Kayıt et
-        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
-        {
-            SaveSystem.SaveGame(GameManager.Instance.CurrentSave, GameManager.Instance.CurrentSaveSlotIndex);
-        }
-
-        // Ana menüye dön
-        if (GameStateManager.Instance != null)
-        {
-            GameStateManager.Instance.ReturnToMainMenu();
-        }
-        else
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
-        }
+        Debug.Log("[CareerHubUI] Going to match...");
+        SceneFlow.LoadPreMatch();
     }
 }
 
