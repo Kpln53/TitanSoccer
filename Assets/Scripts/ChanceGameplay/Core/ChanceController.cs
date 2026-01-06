@@ -223,13 +223,33 @@ namespace TitanSoccer.ChanceGameplay
                 Vector2 ballPos = (Vector2)opponents[0].transform.position + Vector2.up * 0.3f;
                 SpawnBall(ballPos);
                 ballController.AttachToPlayer(opponents[0]);
+                
+                // İlk rakibi topla başlat
+                var firstOpponent = opponents[0].GetComponent<OpponentController>();
+                if (firstOpponent != null)
+                {
+                    firstOpponent.StartWithBall();
+                }
+                
+                // Diğer rakipleri aktifleştir
+                for (int i = 1; i < opponents.Count; i++)
+                {
+                    var ai = opponents[i].GetComponent<OpponentController>();
+                    if (ai != null)
+                    {
+                        ai.Activate();
+                    }
+                }
             }
 
-            // Kaleci (bizim kalemiz)
+            // Kaleci (bizim kalemiz - altta)
             SpawnGoalkeeper(new Vector2(0f, -goalPosition.y));
 
-            // Kamera oyuncuya
-            chanceCamera?.SetTarget(playerController.transform, ChanceCamera.CameraMode.FollowPlayer);
+            // Kamera rakibe (toplu olan)
+            if (opponents.Count > 0)
+            {
+                chanceCamera?.SetTarget(opponents[0].transform, ChanceCamera.CameraMode.FollowBall);
+            }
         }
 
         /// <summary>

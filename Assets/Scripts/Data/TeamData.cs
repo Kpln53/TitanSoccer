@@ -19,11 +19,20 @@ public class TeamData
     [Header("Logo")]
     public Sprite teamLogo; // Takım logosu
     
+    [Header("Stadyum")]
+    public string stadiumName = "Stadyum";
+    public int stadiumCapacity = 25000;
+    
+    [Header("Finans")]
+    public long transferBudget = 5000000;    // Transfer bütçesi (€)
+    public long wageBudget = 500000;         // Maaş bütçesi (haftalık €)
+    
     [Header("Oyuncular")]
     public List<PlayerData> players = new List<PlayerData>();
     
     [Header("Hesaplanan Değerler")]
     [SerializeField] private int cachedTeamPower = 0; // Hesaplanan takım gücü (cache)
+    [SerializeField] private long cachedSquadValue = 0; // Kadro piyasa değeri (cache)
     
     /// <summary>
     /// Takım gücünü hesapla (oyuncuların ortalama overall'ı)
@@ -131,6 +140,124 @@ public class TeamData
         }
         
         return null;
+    }
+    
+    /// <summary>
+    /// Kadro piyasa değerini hesapla
+    /// </summary>
+    public long CalculateSquadValue()
+    {
+        if (players == null || players.Count == 0)
+        {
+            cachedSquadValue = 0;
+            return 0;
+        }
+        
+        long totalValue = 0;
+        foreach (var player in players)
+        {
+            if (player != null)
+            {
+                player.CalculateMarketValue();
+                totalValue += player.marketValue;
+            }
+        }
+        
+        cachedSquadValue = totalValue;
+        return totalValue;
+    }
+    
+    /// <summary>
+    /// Kadro değerini getir (cache kullan)
+    /// </summary>
+    public long GetSquadValue()
+    {
+        if (cachedSquadValue == 0 && players != null && players.Count > 0)
+        {
+            CalculateSquadValue();
+        }
+        return cachedSquadValue;
+    }
+    
+    /// <summary>
+    /// Formatlı kadro değeri
+    /// </summary>
+    public string GetFormattedSquadValue()
+    {
+        long value = GetSquadValue();
+        
+        if (value >= 1000000000)
+        {
+            return $"€{value / 1000000000f:F2}B";
+        }
+        else if (value >= 1000000)
+        {
+            return $"€{value / 1000000f:F1}M";
+        }
+        else if (value >= 1000)
+        {
+            return $"€{value / 1000f:F0}K";
+        }
+        return $"€{value}";
+    }
+    
+    /// <summary>
+    /// Formatlı transfer bütçesi
+    /// </summary>
+    public string GetFormattedTransferBudget()
+    {
+        if (transferBudget >= 1000000000)
+        {
+            return $"€{transferBudget / 1000000000f:F2}B";
+        }
+        else if (transferBudget >= 1000000)
+        {
+            return $"€{transferBudget / 1000000f:F1}M";
+        }
+        else if (transferBudget >= 1000)
+        {
+            return $"€{transferBudget / 1000f:F0}K";
+        }
+        return $"€{transferBudget}";
+    }
+    
+    /// <summary>
+    /// Ortalama oyuncu yaşını getir
+    /// </summary>
+    public float GetAverageAge()
+    {
+        if (players == null || players.Count == 0) return 0f;
+        
+        int totalAge = 0;
+        int count = 0;
+        
+        foreach (var player in players)
+        {
+            if (player != null)
+            {
+                totalAge += player.age;
+                count++;
+            }
+        }
+        
+        return count > 0 ? (float)totalAge / count : 0f;
+    }
+    
+    /// <summary>
+    /// Tüm oyuncuları yaşlandır (sezon sonu)
+    /// </summary>
+    public void AgeAllPlayers()
+    {
+        if (players == null) return;
+        
+        foreach (var player in players)
+        {
+            player?.AgePlayer();
+        }
+        
+        // Takım gücünü yeniden hesapla
+        CalculateTeamPower();
+        CalculateSquadValue();
     }
 }
 

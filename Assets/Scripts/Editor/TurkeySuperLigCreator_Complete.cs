@@ -139,6 +139,10 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.teamCountry = "Türkiye";
         team.primaryColor = new Color(1f, 0.85f, 0f); // Sarı
         team.secondaryColor = new Color(0.8f, 0f, 0f); // Kırmızı
+        team.stadiumName = "RAMS Park";
+        team.stadiumCapacity = 52280;
+        team.transferBudget = 50000000; // 50M €
+        team.wageBudget = 2500000;      // 2.5M € / hafta
         
         // Kaleci
         team.players.Add(CreatePlayerWithPosition("Fernando Muslera", PlayerPosition.KL, 78));
@@ -178,6 +182,7 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.players.Add(CreatePlayerWithPosition("Cédric Bakambu", PlayerPosition.SF, 71));
         team.players.Add(CreatePlayerWithPosition("Halil Dervişoğlu", PlayerPosition.SF, 70));
         
+        team.CalculateSquadValue();
         return team;
     }
     
@@ -190,6 +195,10 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.teamCountry = "Türkiye";
         team.primaryColor = new Color(1f, 1f, 0f); // Sarı
         team.secondaryColor = new Color(0f, 0.4f, 0.8f); // Mavi
+        team.stadiumName = "Şükrü Saracoğlu Stadyumu";
+        team.stadiumCapacity = 50530;
+        team.transferBudget = 45000000; // 45M €
+        team.wageBudget = 2200000;      // 2.2M € / hafta
         
         // Kaleci
         team.players.Add(CreatePlayerWithPosition("Dominik Livakovic", PlayerPosition.KL, 75));
@@ -227,6 +236,7 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.players.Add(CreatePlayerWithPosition("Sebastian Osigwe", PlayerPosition.SF, 68));
         team.players.Add(CreatePlayerWithPosition("Serdar Dursun", PlayerPosition.SF, 70));
         
+        team.CalculateSquadValue();
         return team;
     }
     
@@ -239,6 +249,10 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.teamCountry = "Türkiye";
         team.primaryColor = new Color(0f, 0f, 0f); // Siyah
         team.secondaryColor = new Color(1f, 1f, 1f); // Beyaz
+        team.stadiumName = "Tüpraş Stadyumu";
+        team.stadiumCapacity = 41903;
+        team.transferBudget = 35000000; // 35M €
+        team.wageBudget = 1800000;      // 1.8M € / hafta
         
         // Kaleci
         team.players.Add(CreatePlayerWithPosition("Mert Günok", PlayerPosition.KL, 73));
@@ -275,6 +289,7 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.players.Add(CreatePlayerWithPosition("Semih Kılıçsoy", PlayerPosition.SF, 70));
         team.players.Add(CreatePlayerWithPosition("Milutin Osmajić", PlayerPosition.SF, 70));
         
+        team.CalculateSquadValue();
         return team;
     }
     
@@ -287,6 +302,10 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.teamCountry = "Türkiye";
         team.primaryColor = new Color(0.8f, 0f, 0f); // Bordo
         team.secondaryColor = new Color(0f, 0.2f, 0.6f); // Mavi
+        team.stadiumName = "Papara Park";
+        team.stadiumCapacity = 40782;
+        team.transferBudget = 25000000; // 25M €
+        team.wageBudget = 1200000;      // 1.2M € / hafta
         
         // Kaleci
         team.players.Add(CreatePlayerWithPosition("Uğurcan Çakır", PlayerPosition.KL, 74));
@@ -317,27 +336,29 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.players.Add(CreatePlayerWithPosition("Edin Džeko", PlayerPosition.SF, 74));
         team.players.Add(CreatePlayerWithPosition("Nicolás Peña", PlayerPosition.SF, 71));
         
+        team.CalculateSquadValue();
         return team;
     }
     
     // Diğer takımlar için placeholder metodlar (gerçek oyuncu listeleri eklenecek)
-    TeamData CreateBasaksehir2025_2026() { return CreateTeamWithRealPlayers("Başakşehir", "BAŞ", new Color(0.2f, 0.4f, 0.8f), 72, GetBasaksehirPlayers()); }
-    TeamData CreateAlanyaspor2025_2026() { return CreateTeamWithRealPlayers("Alanyaspor", "ALA", new Color(0f, 0.6f, 0.8f), 70, GetAlanyasporPlayers()); }
-    TeamData CreateKonyaspor2025_2026() { return CreateTeamWithRealPlayers("Konyaspor", "KON", new Color(0.9f, 0.1f, 0.1f), 69, GetKonyasporPlayers()); }
-    TeamData CreateKayserispor2025_2026() { return CreateTeamWithRealPlayers("Kayserispor", "KAY", new Color(0f, 0.4f, 0.8f), 68, GetKayserisporPlayers()); }
-    TeamData CreateAntalyaspor2025_2026() { return CreateTeamWithRealPlayers("Antalyaspor", "ANT", new Color(1f, 0.8f, 0f), 68, GetAntalyasporPlayers()); }
-    TeamData CreateGaziantep2025_2026() { return CreateTeamWithRealPlayers("Gaziantep FK", "GAZ", new Color(0.8f, 0f, 0f), 67, GetGaziantepPlayers()); }
-    TeamData CreateKasimpasa2025_2026() { return CreateTeamWithRealPlayers("Kasımpaşa", "KAS", new Color(1f, 0f, 0f), 66, GetKasimpasaPlayers()); }
-    TeamData CreateFatihKaragumruk2025_2026() { return CreateTeamWithRealPlayers("Fatih Karagümrük", "FKG", new Color(0f, 0f, 0.8f), 65, GetFatihKaragumrukPlayers()); }
-    TeamData CreateGoztepe2025_2026() { return CreateTeamWithRealPlayers("Göztepe", "GÖZ", new Color(0f, 0.6f, 0f), 64, GetGoztepePlayers()); }
-    TeamData CreateRizespor2025_2026() { return CreateTeamWithRealPlayers("Çaykur Rizespor", "RİZ", new Color(0f, 0.4f, 0.8f), 63, GetRizesporPlayers()); }
-    TeamData CreateSamsunspor2025_2026() { return CreateTeamWithRealPlayers("Samsunspor", "SAM", new Color(1f, 1f, 1f), 62, GetSamsunsporPlayers()); }
-    TeamData CreateEyupspor2025_2026() { return CreateTeamWithRealPlayers("Eyüpspor", "EYÜ", new Color(0.8f, 0f, 0f), 61, GetEyupsporPlayers()); }
-    TeamData CreatePendikspor2025_2026() { return CreateTeamWithRealPlayers("Pendikspor", "PEN", new Color(0f, 0.6f, 0.2f), 60, GetPendiksporPlayers()); }
-    TeamData CreateHatayspor2025_2026() { return CreateTeamWithRealPlayers("Hatayspor", "HAT", new Color(1f, 0.8f, 0f), 59, GetHataysporPlayers()); }
+    TeamData CreateBasaksehir2025_2026() { return CreateTeamWithRealPlayers("Başakşehir", "BAŞ", new Color(0.2f, 0.4f, 0.8f), 72, GetBasaksehirPlayers(), "Başakşehir Fatih Terim Stadyumu", 17319, 15000000, 600000); }
+    TeamData CreateAlanyaspor2025_2026() { return CreateTeamWithRealPlayers("Alanyaspor", "ALA", new Color(0f, 0.6f, 0.8f), 70, GetAlanyasporPlayers(), "Bahçeşehir Okulları Stadyumu", 10128, 8000000, 350000); }
+    TeamData CreateKonyaspor2025_2026() { return CreateTeamWithRealPlayers("Konyaspor", "KON", new Color(0.9f, 0.1f, 0.1f), 69, GetKonyasporPlayers(), "Medaş Konya Büyükşehir Stadyumu", 42000, 10000000, 400000); }
+    TeamData CreateKayserispor2025_2026() { return CreateTeamWithRealPlayers("Kayserispor", "KAY", new Color(0f, 0.4f, 0.8f), 68, GetKayserisporPlayers(), "Kadir Has Stadyumu", 32864, 7000000, 300000); }
+    TeamData CreateAntalyaspor2025_2026() { return CreateTeamWithRealPlayers("Antalyaspor", "ANT", new Color(1f, 0.8f, 0f), 68, GetAntalyasporPlayers(), "Corendon Airlines Park", 32539, 9000000, 380000); }
+    TeamData CreateGaziantep2025_2026() { return CreateTeamWithRealPlayers("Gaziantep FK", "GAZ", new Color(0.8f, 0f, 0f), 67, GetGaziantepPlayers(), "Kalyon Stadyumu", 35574, 6000000, 280000); }
+    TeamData CreateKasimpasa2025_2026() { return CreateTeamWithRealPlayers("Kasımpaşa", "KAS", new Color(1f, 0f, 0f), 66, GetKasimpasaPlayers(), "Recep Tayyip Erdoğan Stadyumu", 14400, 5000000, 250000); }
+    TeamData CreateFatihKaragumruk2025_2026() { return CreateTeamWithRealPlayers("Fatih Karagümrük", "FKG", new Color(0f, 0f, 0.8f), 65, GetFatihKaragumrukPlayers(), "Atatürk Olimpiyat Stadyumu", 75145, 4000000, 220000); }
+    TeamData CreateGoztepe2025_2026() { return CreateTeamWithRealPlayers("Göztepe", "GÖZ", new Color(0f, 0.6f, 0f), 64, GetGoztepePlayers(), "Gürsel Aksel Stadyumu", 20109, 5000000, 230000); }
+    TeamData CreateRizespor2025_2026() { return CreateTeamWithRealPlayers("Çaykur Rizespor", "RİZ", new Color(0f, 0.4f, 0.8f), 63, GetRizesporPlayers(), "Yeni Rize Şehir Stadyumu", 15332, 3500000, 180000); }
+    TeamData CreateSamsunspor2025_2026() { return CreateTeamWithRealPlayers("Samsunspor", "SAM", new Color(1f, 1f, 1f), 62, GetSamsunsporPlayers(), "Samsun 19 Mayıs Stadyumu", 33919, 4000000, 200000); }
+    TeamData CreateEyupspor2025_2026() { return CreateTeamWithRealPlayers("Eyüpspor", "EYÜ", new Color(0.8f, 0f, 0f), 61, GetEyupsporPlayers(), "Recep Tayyip Erdoğan Stadyumu", 14400, 3000000, 150000); }
+    TeamData CreatePendikspor2025_2026() { return CreateTeamWithRealPlayers("Pendikspor", "PEN", new Color(0f, 0.6f, 0.2f), 60, GetPendiksporPlayers(), "Pendik Stadyumu", 7500, 2500000, 120000); }
+    TeamData CreateHatayspor2025_2026() { return CreateTeamWithRealPlayers("Hatayspor", "HAT", new Color(1f, 0.8f, 0f), 59, GetHataysporPlayers(), "Mersin Stadyumu", 25534, 2000000, 100000); }
     
     // Takım oluşturma helper metodları
-    TeamData CreateTeamWithRealPlayers(string teamName, string shortName, Color primaryColor, int avgOverall, List<PlayerInfo> playerInfos)
+    TeamData CreateTeamWithRealPlayers(string teamName, string shortName, Color primaryColor, int avgOverall, List<PlayerInfo> playerInfos,
+        string stadiumName = null, int stadiumCapacity = 0, long transferBudget = 0, long wageBudget = 0)
     {
         TeamData team = new TeamData();
         team.teamName = teamName;
@@ -346,10 +367,19 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         team.primaryColor = primaryColor;
         team.secondaryColor = Color.white;
         
+        // Stadyum ve bütçe (varsayılan değerler avgOverall'a göre)
+        team.stadiumName = stadiumName ?? $"{teamName} Stadyumu";
+        team.stadiumCapacity = stadiumCapacity > 0 ? stadiumCapacity : (15000 + avgOverall * 200);
+        team.transferBudget = transferBudget > 0 ? transferBudget : (avgOverall * 200000L); // ~12-15M orta takımlar için
+        team.wageBudget = wageBudget > 0 ? wageBudget : (avgOverall * 10000L);             // ~600-700K haftalık
+        
         foreach (var playerInfo in playerInfos)
         {
             team.players.Add(CreatePlayerWithPosition(playerInfo.name, playerInfo.position, playerInfo.overall));
         }
+        
+        // Kadro değerini hesapla
+        team.CalculateSquadValue();
         
         return team;
     }
@@ -362,6 +392,32 @@ public class TurkeySuperLigCreator_Complete : EditorWindow
         player.SetOverall(overall);
         player.age = Random.Range(18, 35);
         player.nationality = "Türkiye";
+        
+        // Potansiyel hesapla (yaşa ve overall'a göre)
+        if (player.age <= 21)
+        {
+            // Genç oyuncu - yüksek potansiyel
+            player.potential = Mathf.Clamp(overall + Random.Range(5, 15), overall, 95);
+        }
+        else if (player.age <= 25)
+        {
+            // Orta yaş - orta potansiyel
+            player.potential = Mathf.Clamp(overall + Random.Range(0, 8), overall, 92);
+        }
+        else if (player.age <= 29)
+        {
+            // Olgun oyuncu - düşük potansiyel
+            player.potential = Mathf.Clamp(overall + Random.Range(0, 3), overall, 88);
+        }
+        else
+        {
+            // Yaşlı oyuncu - potansiyel = overall
+            player.potential = overall;
+        }
+        
+        // Piyasa değerini hesapla
+        player.CalculateMarketValue();
+        
         return player;
     }
     

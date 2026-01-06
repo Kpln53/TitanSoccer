@@ -30,6 +30,9 @@ public class MatchSimUIController : MonoBehaviour
     [Header("Kadrolar")]
     public TextMeshProUGUI homeSquadText;
     public TextMeshProUGUI awaySquadText;
+    public GameObject squadPanel;           // Kadro paneli
+    public Button squadButton;              // Kadro butonu
+    public Button closeSquadButton;         // Kadro panelini kapat butonu
 
     [Header("Kontroller")]
     public Button speed1xButton;
@@ -69,6 +72,56 @@ public class MatchSimUIController : MonoBehaviour
             speed3xButton.onClick.AddListener(() => SetSpeed(3f));
         if (simulateMatchButton != null)
             simulateMatchButton.onClick.AddListener(OnSimulateMatchButton);
+        
+        // Kadro butonu
+        if (squadButton != null)
+            squadButton.onClick.AddListener(OpenSquadPanel);
+        if (closeSquadButton != null)
+            closeSquadButton.onClick.AddListener(CloseSquadPanel);
+        
+        // Başlangıçta kadro paneli kapalı
+        if (squadPanel != null)
+            squadPanel.SetActive(false);
+    }
+
+    /// <summary>
+    /// Kadro panelini aç
+    /// </summary>
+    public void OpenSquadPanel()
+    {
+        if (squadPanel != null)
+        {
+            squadPanel.SetActive(true);
+            RefreshSquads(MatchContext.Instance);
+        }
+    }
+
+    /// <summary>
+    /// Kadro panelini kapat
+    /// </summary>
+    public void CloseSquadPanel()
+    {
+        if (squadPanel != null)
+        {
+            squadPanel.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Kadro paneli toggle
+    /// </summary>
+    public void ToggleSquadPanel()
+    {
+        if (squadPanel != null)
+        {
+            bool isActive = squadPanel.activeSelf;
+            squadPanel.SetActive(!isActive);
+            
+            if (!isActive)
+            {
+                RefreshSquads(MatchContext.Instance);
+            }
+        }
     }
 
     private void SetSpeed(float speed)

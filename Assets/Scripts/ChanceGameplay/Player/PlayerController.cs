@@ -384,11 +384,33 @@ namespace TitanSoccer.ChanceGameplay
 
             BallController ball = ChanceController.Instance.Ball;
             float distToBall = Vector2.Distance(transform.position, ball.transform.position);
+            
+            // Rakip oyuncu mesafesi
+            float distToOpponent = GetDistanceToNearestOpponent();
+
+            // Önce rakibe mi çarpıyoruz kontrolü (faul riski)
+            if (distToOpponent < slideTackleRadius * 0.8f && distToBall > slideTackleRadius * 0.5f)
+            {
+                // Rakibe çarptık ama top uzak - FAUL!
+                CheckFoul();
+                return;
+            }
 
             if (distToBall <= slideTackleRadius)
             {
                 // Top yakın - kapma şansı hesapla
                 float tackleChance = CalculateTackleSuccess();
+                
+                // Rakip de yakınsa faul riski
+                if (distToOpponent < slideTackleRadius * 1.2f)
+                {
+                    // Hem topa hem rakibe yakın - %30 faul riski
+                    if (UnityEngine.Random.value < 0.3f)
+                    {
+                        CheckFoul();
+                        return;
+                    }
+                }
 
                 if (UnityEngine.Random.value < tackleChance)
                 {
@@ -399,6 +421,9 @@ namespace TitanSoccer.ChanceGameplay
                     OnBallGained?.Invoke();
                     OnSlideTackleResult?.Invoke(true);
 
+                    // Rakip topu kaybetti
+                    NotifyOpponentBallLost();
+
                     // Pozisyon bitti - clear
                     ChanceController.Instance?.EndChance(ChanceOutcome.Tackled);
                 }
@@ -408,6 +433,83 @@ namespace TitanSoccer.ChanceGameplay
                     OnSlideTackleResult?.Invoke(false);
                 }
             }
+        }
+        
+        /// <summary>
+        /// En yakın rakibe mesafe
+        /// </summary>
+        private float GetDistanceToNearestOpponent()
+        {
+            if (ChanceController.Instance == null) return float.MaxValue;
+            
+            float minDist = float.MaxValue;
+            foreach (var opponent in ChanceController.Instance.Opponents)
+            {
+                if (opponent == null) continue;
+                float dist = Vector2.Distance(transform.position, opponent.transform.position);
+                if (dist < minDist) minDist = dist;
+            }
+            return minDist;
+        }
+        
+        /// <summary>
+        /// Rakibe topu kaybettiğini bildir
+        /// </summary>
+        private void NotifyOpponentBallLost()
+        {
+            foreach (var opponent in ChanceController.Instance.Opponents)
+            {
+                if (opponent == null) continue;
+                var ai = opponent.GetComponent<OpponentController>();
+                if (ai != null && ai.HasBall)
+                {
+                    ai.LoseBall();
+                    break;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Faul kontrolü
+        /// </summary>
+        private void CheckFoul()
+        {
+            Debug.Log("[Player] FOUL! Bad tackle timing!");
+            
+            // Faul sonucu
+            bool isYellowCard = UnityEngine.Random.value < 0.25f;  // %25 sarı kart
+            bool isRedCard = UnityEngine.Random.value < 0.05f;     // %5 kırmızı kart
+            
+            if (isRedCard)
+            {
+                Debug.Log("[Player] RED CARD!");
+                MatchContext.Instance?.AddCommentary("🟥 KIRMIZI KART! Tehlikeli müdahale!");
+                // Kırmızı kart - oyuncu atıldı, maç bitti gibi davran
+                ChanceController.Instance?.EndChance(ChanceOutcome.Cleared);
+            }
+            else if (isYellowCard)
+            {
+                Debug.Log("[Player] YELLOW CARD!");
+                MatchContext.Instance?.AddCommentary("🟨 SARI KART! Sert müdahale.");
+                // Sarı kart - pozisyon devam (serbest vuruş rakipte)
+                ChanceController.Instance?.EndChance(ChanceOutcome.Cleared);
+            }
+            else
+            {
+                Debug.Log("[Player] Foul - Free kick for opponent");
+                MatchContext.Instance?.AddCommentary("Faul! Serbest vuruş.");
+                // Basit faul - pozisyon biter
+                ChanceController.Instance?.EndChance(ChanceOutcome.Cleared);
+            }
+            
+            // Rating düşür
+            if (MatchContext.Instance != null)
+            {
+                MatchContext.Instance.playerMatchRating = Mathf.Max(0f, 
+                    MatchContext.Instance.playerMatchRating - (isYellowCard ? 0.5f : 0.2f));
+            }
+            
+            OnSlideTackleResult?.Invoke(false);
         }
 
         /// <summary>

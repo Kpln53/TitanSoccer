@@ -1,36 +1,58 @@
 using UnityEngine;
+using System.Collections;
 
 namespace TitanSoccer.ChanceGameplay
 {
     /// <summary>
     /// Rakip Kontrolcüsü
-    /// Savunma veya atak yapan rakip AI
+    /// Savunma pozisyonlarında atak yapan rakip AI
     /// </summary>
     public class OpponentController : MonoBehaviour
     {
         [Header("AI Ayarları")]
-        [SerializeField] private float moveSpeed = 4f;
-        [SerializeField] private float decisionInterval = 0.4f;
-        [SerializeField] private float shootRange = 14f;
-        [SerializeField] private float passRange = 10f;
+        [SerializeField] private float moveSpeed = 5f;
+        [SerializeField] private float decisionInterval = 1.2f;  // Daha uzun - oyuncuya müdahale şansı
+        [SerializeField] private float shootRange = 10f;
+        [SerializeField] private float passRange = 8f;
+        [SerializeField] private float dribblingSpeed = 4f;
 
         [Header("Stats")]
         [SerializeField] private int teamPower = 65;
         [SerializeField] private int overall = 65;
+        [SerializeField] private int shootingStat = 65;
+        [SerializeField] private int passingStat = 65;
 
         [Header("Durum")]
         [SerializeField] private bool hasBall = false;
         [SerializeField] private bool isActive = false;
         [SerializeField] private bool isAttacking = false;
+        [SerializeField] private bool isPreparingAction = false;  // Şut/pas hazırlığında
 
         private Rigidbody2D rb;
         private float decisionTimer;
         private Vector2 targetPosition;
         private bool isMoving = false;
+        private bool firstDecisionMade = false;
+
+        public bool HasBall => hasBall;
+        public bool IsPreparingAction => isPreparingAction;
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
+            if (rb == null)
+            {
+                rb = gameObject.AddComponent<Rigidbody2D>();
+                rb.gravityScale = 0f;
+                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            }
+            
+            // Collider
+            if (GetComponent<CircleCollider2D>() == null)
+            {
+                var col = gameObject.AddComponent<CircleCollider2D>();
+                col.radius = 0.4f;
+            }
         }
 
         private void Start()
@@ -39,20 +61,36 @@ namespace TitanSoccer.ChanceGameplay
             if (ChanceController.Instance != null)
             {
                 isAttacking = ChanceController.Instance.CurrentChanceType == ChanceType.Defense;
+                
+                // Savunma pozisyonunda rakip aktif başlar
+                if (isAttacking)
+                {
+                    isActive = true;
+                }
             }
         }
 
         private void Update()
         {
             if (!isActive) return;
+            if (isPreparingAction) return;  // Şut/pas hazırlığındayken bekleme
 
             decisionTimer += Time.deltaTime;
 
-            if (decisionTimer >= decisionInterval)
+            // İlk karar biraz gecikmeli
+            float currentInterval = firstDecisionMade ? decisionInterval : 0.8f;
+
+            if (decisionTimer >= currentInterval)
             {
                 if (hasBall)
                 {
                     MakeAttackDecision();
+                    firstDecisionMade = true;
+                }
+                else if (isAttacking)
+                {
+                    // Toplu rakip değilsek destek pozisyonu al
+                    MakeSupportDecision();
                 }
                 else
                 {
@@ -64,10 +102,29 @@ namespace TitanSoccer.ChanceGameplay
 
         private void FixedUpdate()
         {
-            if (isMoving)
+            if (isMoving && !isPreparingAction)
             {
                 MoveToTarget();
             }
+        }
+        
+        /// <summary>
+        /// Destek pozisyonu kararı (toplu değilken)
+        /// </summary>
+        private void MakeSupportDecision()
+        {
+            if (ChanceController.Instance == null) return;
+            
+            // Kaleye doğru destek pozisyonu al
+            Vector2 ourGoal = new Vector2(0f, -ChanceController.Instance.GoalPosition.y);
+            Vector2 myPos = transform.position;
+            
+            // Kaleye yaklaş ama çok girme
+            float targetY = Mathf.Lerp(myPos.y, ourGoal.y, 0.3f);
+            targetY = Mathf.Max(targetY, ourGoal.y + 3f);
+            
+            targetPosition = new Vector2(myPos.x + Random.Range(-2f, 2f), targetY);
+            isMoving = true;
         }
 
         /// <summary>
@@ -88,8 +145,27 @@ namespace TitanSoccer.ChanceGameplay
             isActive = true;
             isAttacking = true;
             decisionTimer = 0f;
+            firstDecisionMade = false;  // Yeni karar döngüsü başlat
+            isPreparingAction = false;
+
+            // Slow-motion'dan çık
+            SlowMotionManager.Instance?.DisableSlowMotion();
 
             Debug.Log($"[Opponent] {gameObject.name} received ball");
+        }
+        
+        /// <summary>
+        /// Top ile başlat (ilk rakip)
+        /// </summary>
+        public void StartWithBall()
+        {
+            hasBall = true;
+            isActive = true;
+            isAttacking = true;
+            decisionTimer = 0f;
+            firstDecisionMade = false;
+
+            Debug.Log($"[Opponent] {gameObject.name} started with ball");
         }
 
         /// <summary>
@@ -102,33 +178,65 @@ namespace TitanSoccer.ChanceGameplay
             // Kaleye uzaklık (bizim kalemiz - y negatif tarafta)
             Vector2 ourGoal = new Vector2(0f, -ChanceController.Instance.GoalPosition.y);
             float distToGoal = Vector2.Distance(transform.position, ourGoal);
+            
+            // Oyuncuya uzaklık (tehdit seviyesi)
+            float distToPlayer = GetDistanceToPlayer();
+            bool playerClose = distToPlayer < 3f;
+            bool playerVeryClose = distToPlayer < 1.5f;
 
-            float random = Random.value;
             float skillFactor = overall / 100f;
 
-            // Şut mesafesindeyse
-            if (distToGoal <= shootRange)
-            {
-                float shootChance = skillFactor * 0.5f;
+            Debug.Log($"[Opponent] Decision - DistToGoal: {distToGoal:F1}, DistToPlayer: {distToPlayer:F1}");
 
-                if (random < shootChance)
+            // Oyuncu çok yakınsa hemen karar ver
+            if (playerVeryClose)
+            {
+                // Panik! Hızlı şut veya pas
+                if (distToGoal <= shootRange * 1.2f && Random.value < 0.6f)
                 {
-                    AttemptShoot(ourGoal);
+                    StartCoroutine(ShootSequence(ourGoal, true));  // Hızlı şut
+                }
+                else
+                {
+                    AttemptPass();
+                }
+                return;
+            }
+
+            // Şut mesafesindeyse ve oyuncu uzaksa
+            if (distToGoal <= shootRange && !playerClose)
+            {
+                float shootChance = 0.5f + skillFactor * 0.3f;
+
+                if (Random.value < shootChance)
+                {
+                    StartCoroutine(ShootSequence(ourGoal, false));
                     return;
                 }
             }
 
-            // Pas mı hareket mi?
-            float passChance = skillFactor * 0.3f;
+            // Oyuncu yakınsa pas düşün
+            if (playerClose)
+            {
+                float passChance = 0.4f + (passingStat / 100f) * 0.3f;
+                if (Random.value < passChance)
+                {
+                    AttemptPass();
+                    return;
+                }
+            }
 
-            if (random < passChance + 0.2f)
-            {
-                AttemptPass();
-            }
-            else
-            {
-                MoveTowardsGoal(ourGoal);
-            }
+            // Dribling yap - kaleye ilerle
+            MoveTowardsGoal(ourGoal);
+        }
+        
+        /// <summary>
+        /// Oyuncuya mesafe
+        /// </summary>
+        private float GetDistanceToPlayer()
+        {
+            if (ChanceController.Instance?.Player == null) return float.MaxValue;
+            return Vector2.Distance(transform.position, ChanceController.Instance.Player.transform.position);
         }
 
         /// <summary>
@@ -164,25 +272,56 @@ namespace TitanSoccer.ChanceGameplay
         }
 
         /// <summary>
-        /// Şut dene
+        /// Şut sekansı (coroutine)
         /// </summary>
-        private void AttemptShoot(Vector2 goalPos)
+        private IEnumerator ShootSequence(Vector2 goalPos, bool isQuickShot)
         {
-            if (ChanceController.Instance?.Ball == null) return;
+            isPreparingAction = true;
+            rb.linearVelocity = Vector2.zero;
+            isMoving = false;
 
-            Debug.Log($"[Opponent] {gameObject.name} shooting!");
+            Debug.Log($"[Opponent] {gameObject.name} preparing to shoot...");
+
+            // Hızlı değilse hazırlık süresi
+            if (!isQuickShot)
+            {
+                yield return new WaitForSeconds(0.4f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.15f);
+            }
+
+            // Top hala bizdeyse şut at
+            if (!hasBall || ChanceController.Instance?.Ball == null)
+            {
+                isPreparingAction = false;
+                yield break;
+            }
+
+            Debug.Log($"[Opponent] {gameObject.name} SHOOTING!");
 
             // Hedef: kale içinde rastgele nokta
-            Vector2 targetPos = goalPos + new Vector2(Random.Range(-2f, 2f), 0f);
+            Vector2 targetPos = goalPos + new Vector2(Random.Range(-2.5f, 2.5f), 0f);
 
-            float power = 8f + (overall / 100f) * 6f;
-            float accuracy = 0.35f + (overall / 100f) * 0.3f;
-            float curve = Random.Range(-0.3f, 0.3f);
+            float power = 20f + (shootingStat / 100f) * 15f;
+            float accuracy = 0.3f + (shootingStat / 100f) * 0.35f;
+            float curve = Random.Range(-0.4f, 0.4f);
 
-            ChanceController.Instance.Ball.Shoot(targetPos, power, curve, accuracy, isOpponent: true);
+            ChanceController.Instance.Ball.Shoot(
+                targetPos, 
+                power, 
+                curve, 
+                accuracy, 
+                isOpponent: true, 
+                isPlayer: false
+            );
 
             hasBall = false;
-            isActive = false;
+            isPreparingAction = false;
+            
+            // Kamera topu takip etsin
+            ChanceController.Instance.BallInFlight();
         }
 
         /// <summary>
@@ -190,25 +329,89 @@ namespace TitanSoccer.ChanceGameplay
         /// </summary>
         private void AttemptPass()
         {
-            // Basit pas - rastgele takım arkadaşına
-            // MVP'de basit tutuyoruz
-
-            Debug.Log($"[Opponent] {gameObject.name} passing...");
-
-            // Top kaybı simüle et (%30 şans)
-            if (Random.value < 0.3f)
+            if (ChanceController.Instance == null) return;
+            
+            // En iyi pas hedefini bul
+            GameObject target = FindBestPassTarget();
+            
+            if (target == null)
             {
-                Debug.Log("[Opponent] Pass intercepted! (simulated)");
-                
-                // Top kayboldu - uzaklaştır ve pozisyonu bitir
-                hasBall = false;
-                isActive = false;
-                ChanceController.Instance?.EndChance(ChanceOutcome.Cleared);
+                // Pas atılacak kimse yok - dribling yap
+                Debug.Log("[Opponent] No pass target, dribbling instead");
+                Vector2 ourGoal = new Vector2(0f, -ChanceController.Instance.GoalPosition.y);
+                MoveTowardsGoal(ourGoal);
                 return;
             }
 
-            // Başarılı pas - kaleye doğru ilerle
-            MoveTowardsGoal(new Vector2(0f, -ChanceController.Instance.GoalPosition.y));
+            Debug.Log($"[Opponent] {gameObject.name} passing to {target.name}");
+
+            // Pas at
+            if (ChanceController.Instance.Ball != null)
+            {
+                float passSpeed = 12f + (passingStat / 100f) * 8f;
+                float successChance = 0.5f + (passingStat / 100f) * 0.35f;
+
+                ChanceController.Instance.Ball.Pass(
+                    target,
+                    passSpeed,
+                    Random.Range(-0.2f, 0.2f),
+                    successChance
+                );
+
+                hasBall = false;
+                
+                // Kamera topu takip etsin
+                ChanceController.Instance.BallInFlight();
+            }
+        }
+        
+        /// <summary>
+        /// En iyi pas hedefini bul
+        /// </summary>
+        private GameObject FindBestPassTarget()
+        {
+            if (ChanceController.Instance == null) return null;
+
+            GameObject bestTarget = null;
+            float bestScore = float.MinValue;
+
+            foreach (var opponent in ChanceController.Instance.Opponents)
+            {
+                if (opponent == null || opponent == gameObject) continue;
+
+                var ai = opponent.GetComponent<OpponentController>();
+                if (ai == null || ai.HasBall) continue;
+
+                // Skor hesapla: kaleye yakınlık + oyuncudan uzaklık
+                Vector2 ourGoal = new Vector2(0f, -ChanceController.Instance.GoalPosition.y);
+                float distToGoal = Vector2.Distance(opponent.transform.position, ourGoal);
+                float distFromPlayer = 0f;
+                
+                if (ChanceController.Instance.Player != null)
+                {
+                    distFromPlayer = Vector2.Distance(opponent.transform.position, 
+                        ChanceController.Instance.Player.transform.position);
+                }
+
+                // Kaleye yakın + oyuncudan uzak = iyi hedef
+                float score = -distToGoal * 0.4f + distFromPlayer * 0.3f;
+                
+                // Önümde mi?
+                Vector2 toTarget = (Vector2)opponent.transform.position - (Vector2)transform.position;
+                Vector2 toGoal = ourGoal - (Vector2)transform.position;
+                if (Vector2.Dot(toTarget.normalized, toGoal.normalized) > 0)
+                {
+                    score += 2f;  // İleri pas bonus
+                }
+
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestTarget = opponent;
+                }
+            }
+
+            return bestTarget;
         }
 
         /// <summary>

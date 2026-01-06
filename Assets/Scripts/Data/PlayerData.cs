@@ -33,6 +33,10 @@ public class PlayerData
     public int age = 25;
     public string nationality = "Unknown";
     
+    [Header("Değer ve Potansiyel")]
+    public long marketValue = 500000;           // Piyasa değeri (€)
+    [Range(0, 100)] public int potential = 75;  // Potansiyel overall (max ulaşabileceği)
+    
     /// <summary>
     /// Overall'ı yeteneklerden otomatik hesapla
     /// </summary>
@@ -177,6 +181,189 @@ public class PlayerData
     public bool IsGoalkeeper()
     {
         return position == PlayerPosition.KL;
+    }
+    
+    /// <summary>
+    /// Piyasa değerini hesapla (overall, yaş ve potansiyele göre)
+    /// </summary>
+    public void CalculateMarketValue()
+    {
+        // Base değer: overall'a göre üstel artış
+        float baseValue = Mathf.Pow(overall, 2.5f) * 100f;
+        
+        // Yaş çarpanı (22-27 arası peak, sonra düşüş)
+        float ageMultiplier = 1f;
+        if (age < 22)
+        {
+            // Genç oyuncular potansiyele göre değerlenir
+            float potentialBonus = (potential - overall) / 100f;
+            ageMultiplier = 0.8f + potentialBonus * 1.5f;
+        }
+        else if (age <= 27)
+        {
+            // Peak yaş - tam değer
+            ageMultiplier = 1f + (27 - age) * 0.02f;
+        }
+        else if (age <= 32)
+        {
+            // Düşüş başlıyor
+            ageMultiplier = 1f - (age - 27) * 0.1f;
+        }
+        else
+        {
+            // 32+ ciddi düşüş
+            ageMultiplier = 0.5f - (age - 32) * 0.1f;
+        }
+        ageMultiplier = Mathf.Max(0.1f, ageMultiplier);
+        
+        // Potansiyel bonusu (genç oyuncular için)
+        float potentialMultiplier = 1f;
+        if (age < 25 && potential > overall)
+        {
+            potentialMultiplier = 1f + (potential - overall) / 100f * 0.5f;
+        }
+        
+        // Pozisyon çarpanı (santraforlar ve kanat oyuncuları daha değerli)
+        float positionMultiplier = 1f;
+        switch (position)
+        {
+            case PlayerPosition.SF:
+                positionMultiplier = 1.3f;
+                break;
+            case PlayerPosition.SĞK:
+            case PlayerPosition.SLK:
+            case PlayerPosition.MOO:
+                positionMultiplier = 1.2f;
+                break;
+            case PlayerPosition.KL:
+                positionMultiplier = 0.8f;
+                break;
+        }
+        
+        // Final hesaplama
+        marketValue = (long)(baseValue * ageMultiplier * potentialMultiplier * positionMultiplier);
+        
+        // Minimum değer: 50K €
+        marketValue = System.Math.Max(50000L, marketValue);
+    }
+    
+    /// <summary>
+    /// Oyuncu gelişimi (sezon sonu çağrılır)
+    /// </summary>
+    public void DevelopPlayer(float performanceRating)
+    {
+        // Sadece potansiyeline ulaşmamış oyuncular gelişir
+        if (overall >= potential) return;
+        
+        // Yaş kontrolü (30+ oyuncular pek gelişmez)
+        if (age >= 30) return;
+        
+        // Gelişim miktarı: performans + yaş bonusu
+        float developmentBase = 0f;
+        
+        // Performansa göre gelişim (6.0+ rating gerekli)
+        if (performanceRating >= 7.5f)
+        {
+            developmentBase = 3f;  // Mükemmel performans
+        }
+        else if (performanceRating >= 7.0f)
+        {
+            developmentBase = 2f;  // Çok iyi
+        }
+        else if (performanceRating >= 6.5f)
+        {
+            developmentBase = 1f;  // İyi
+        }
+        else if (performanceRating >= 6.0f)
+        {
+            developmentBase = 0.5f;  // Orta
+        }
+        
+        // Yaş bonusu (gençler daha hızlı gelişir)
+        float ageBonus = 0f;
+        if (age <= 21)
+        {
+            ageBonus = 1.5f;
+        }
+        else if (age <= 24)
+        {
+            ageBonus = 1f;
+        }
+        else if (age <= 27)
+        {
+            ageBonus = 0.5f;
+        }
+        
+        // Potansiyel farkı bonusu (potansiyele uzaksa daha hızlı gelişir)
+        float potentialGap = potential - overall;
+        float gapBonus = potentialGap > 10 ? 0.5f : 0f;
+        
+        // Toplam gelişim
+        int development = Mathf.RoundToInt(developmentBase + ageBonus + gapBonus);
+        
+        // Overall'ı artır (potansiyeli geçemez)
+        overall = Mathf.Min(potential, overall + development);
+        
+        // Yetenekleri de orantılı artır
+        if (development > 0)
+        {
+            int skillIncrease = development;
+            passingSkill = Mathf.Min(99, passingSkill + Random.Range(0, skillIncrease + 1));
+            shootingSkill = Mathf.Min(99, shootingSkill + Random.Range(0, skillIncrease + 1));
+            dribblingSkill = Mathf.Min(99, dribblingSkill + Random.Range(0, skillIncrease + 1));
+            speed = Mathf.Min(99, speed + Random.Range(0, skillIncrease + 1));
+        }
+        
+        // Piyasa değerini güncelle
+        CalculateMarketValue();
+    }
+    
+    /// <summary>
+    /// Oyuncu yaşlanması (her sezon çağrılır)
+    /// </summary>
+    public void AgePlayer()
+    {
+        age++;
+        
+        // 30+ yaşındaki oyuncular yavaşça düşer
+        if (age >= 32)
+        {
+            int decline = Random.Range(1, 3);
+            overall = Mathf.Max(40, overall - decline);
+            speed = Mathf.Max(30, speed - Random.Range(1, 4));  // Hız en çok düşer
+            stamina = Mathf.Max(30, stamina - Random.Range(1, 3));
+        }
+        else if (age >= 30)
+        {
+            if (Random.value < 0.3f)  // %30 şansla düşüş
+            {
+                overall = Mathf.Max(40, overall - 1);
+                speed = Mathf.Max(30, speed - Random.Range(0, 2));
+            }
+        }
+        
+        // Piyasa değerini güncelle
+        CalculateMarketValue();
+    }
+    
+    /// <summary>
+    /// Formatlı piyasa değeri string'i
+    /// </summary>
+    public string GetFormattedMarketValue()
+    {
+        if (marketValue >= 1000000000)
+        {
+            return $"€{marketValue / 1000000000f:F1}B";
+        }
+        else if (marketValue >= 1000000)
+        {
+            return $"€{marketValue / 1000000f:F1}M";
+        }
+        else if (marketValue >= 1000)
+        {
+            return $"€{marketValue / 1000f:F0}K";
+        }
+        return $"€{marketValue}";
     }
 }
 
