@@ -529,14 +529,22 @@ public class TeamOfferUI : MonoBehaviour
             GameManager.Instance.SetSaveSlotIndex(slotIndex);
         }
 
-        // Transfer teklifini kabul et
+        // TransferSystem yoksa oluştur
+        if (TransferSystem.Instance == null)
+        {
+            GameObject transferSystemObj = new GameObject("TransferSystem");
+            transferSystemObj.AddComponent<TransferSystem>();
+            Debug.Log("[TeamOfferUI] TransferSystem created automatically.");
+        }
+        
+        // Transfer teklifini kabul et (fikstür de burada oluşturulur)
         if (TransferSystem.Instance != null)
         {
             TransferSystem.Instance.AcceptOffer(saveData, selectedOffer);
         }
         else
         {
-            // TransferSystem yoksa manuel olarak ayarla
+            // Fallback: TransferSystem yoksa manuel olarak ayarla
             if (saveData.clubData == null)
                 saveData.clubData = new ClubData();
             
@@ -548,6 +556,27 @@ public class TeamOfferUI : MonoBehaviour
             saveData.clubData.contract.salary = selectedOffer.salary;
             saveData.clubData.contract.contractDuration = selectedOffer.contractDuration;
             saveData.clubData.contract.playingTime = selectedOffer.playingTime;
+            
+            // Fallback fikstür ve puan durumu oluşturma
+            if (DataPackManager.Instance != null && !string.IsNullOrEmpty(saveData.clubData.leagueName))
+            {
+                LeagueData league = DataPackManager.Instance.GetLeague(saveData.clubData.leagueName);
+                if (league != null && league.teams != null && league.teams.Count > 0)
+                {
+                    System.DateTime seasonStart = System.DateTime.Now;
+                    var fixtures = FixtureGenerator.GenerateSeasonFixtures(league.teams, seasonStart);
+                    
+                    if (saveData.seasonData == null) saveData.seasonData = new SeasonData();
+                    saveData.seasonData.fixtures = fixtures;
+                    saveData.seasonData.seasonStartDate = seasonStart;
+                    saveData.seasonData.seasonStartDateString = seasonStart.ToString("yyyy-MM-dd");
+                    
+                    // Puan durumunu başlat
+                    saveData.seasonData.InitializeStandings(league.teams);
+                    
+                    Debug.Log($"[TeamOfferUI] Fallback: Generated {fixtures.Count} fixtures, {league.teams.Count} teams in standings.");
+                }
+            }
         }
 
         // Kayıt tarihini güncelle

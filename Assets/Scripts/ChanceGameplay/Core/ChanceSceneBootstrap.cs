@@ -48,6 +48,9 @@ namespace TitanSoccer.ChanceGameplay
             // 5. Saha görselini oluştur
             CreateFieldVisuals();
 
+            // 6. HUD oluştur
+            CreateHUD();
+
             Debug.Log("[ChanceBootstrap] Scene setup complete!");
         }
 
@@ -127,6 +130,86 @@ namespace TitanSoccer.ChanceGameplay
                 GameObject ccObj = new GameObject("ChanceController");
                 ChanceController cc = ccObj.AddComponent<ChanceController>();
             }
+        }
+
+        /// <summary>
+        /// HUD oluştur
+        /// </summary>
+        private void CreateHUD()
+        {
+            // EventSystem kontrolü (UI için gerekli)
+            if (FindObjectOfType<UnityEngine.EventSystems.EventSystem>() == null)
+            {
+                GameObject eventSystem = new GameObject("EventSystem");
+                eventSystem.AddComponent<UnityEngine.EventSystems.EventSystem>();
+                eventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+                Debug.Log("[ChanceBootstrap] EventSystem created");
+            }
+
+            // Canvas
+            GameObject canvasObj = new GameObject("ChanceHUDCanvas");
+            Canvas canvas = canvasObj.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 100;
+            
+            UnityEngine.UI.CanvasScaler scaler = canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
+            scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            
+            canvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+            // Skip Button (Pozisyonu Atla)
+            GameObject skipBtnObj = new GameObject("SkipChanceButton");
+            skipBtnObj.transform.SetParent(canvasObj.transform, false);
+            
+            RectTransform skipRect = skipBtnObj.AddComponent<RectTransform>();
+            skipRect.anchorMin = new Vector2(1f, 0f);
+            skipRect.anchorMax = new Vector2(1f, 0f);
+            skipRect.pivot = new Vector2(1f, 0f);
+            skipRect.anchoredPosition = new Vector2(-20f, 20f);
+            skipRect.sizeDelta = new Vector2(160f, 60f);
+            
+            UnityEngine.UI.Image skipBg = skipBtnObj.AddComponent<UnityEngine.UI.Image>();
+            skipBg.color = new Color(0.7f, 0.15f, 0.15f, 0.95f);
+            skipBg.raycastTarget = true;
+            
+            UnityEngine.UI.Button skipBtn = skipBtnObj.AddComponent<UnityEngine.UI.Button>();
+            skipBtn.targetGraphic = skipBg;
+            skipBtn.interactable = true;
+            
+            // Buton direkt olarak SkipChance'i çağırsın
+            skipBtn.onClick.AddListener(() => {
+                Debug.Log("[ChanceHUD] Skip button clicked!");
+                if (ChanceController.Instance != null)
+                {
+                    ChanceController.Instance.SkipChance();
+                }
+            });
+            
+            // Skip Button Text
+            GameObject skipTextObj = new GameObject("Text");
+            skipTextObj.transform.SetParent(skipBtnObj.transform, false);
+            
+            RectTransform skipTextRect = skipTextObj.AddComponent<RectTransform>();
+            skipTextRect.anchorMin = Vector2.zero;
+            skipTextRect.anchorMax = Vector2.one;
+            skipTextRect.offsetMin = Vector2.zero;
+            skipTextRect.offsetMax = Vector2.zero;
+            
+            TMPro.TextMeshProUGUI skipText = skipTextObj.AddComponent<TMPro.TextMeshProUGUI>();
+            skipText.text = "⏩ ATLA";
+            skipText.fontSize = 22;
+            skipText.fontStyle = TMPro.FontStyles.Bold;
+            skipText.alignment = TMPro.TextAlignmentOptions.Center;
+            skipText.color = Color.white;
+            skipText.raycastTarget = false; // Text'in raycast'ı engellememesi için
+            
+            // ChanceHUD component ekle (opsiyonel - diğer UI elementleri için)
+            ChanceHUD hud = canvasObj.AddComponent<ChanceHUD>();
+            hud.skipChanceButton = skipBtn;
+            hud.skipButtonText = skipText;
+            
+            Debug.Log("[ChanceBootstrap] HUD with Skip button created and event listener attached");
         }
 
         /// <summary>

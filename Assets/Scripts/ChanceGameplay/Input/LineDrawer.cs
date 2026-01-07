@@ -281,7 +281,7 @@ namespace TitanSoccer.ChanceGameplay
             {
                 startPoint = currentPoints[0],
                 endPoint = currentPoints[currentPoints.Count - 1],
-                points = currentPoints.ToArray(),
+                points = new System.Collections.Generic.List<UnityEngine.Vector2>(currentPoints),
                 length = GetTotalLength(),
                 targetPlayer = targetPlayer,
                 targetPosition = currentPoints[currentPoints.Count - 1]

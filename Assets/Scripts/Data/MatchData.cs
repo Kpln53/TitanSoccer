@@ -32,7 +32,8 @@ public class MatchData
         League,      // Lig maçı
         Cup,         // Kupa maçı
         Friendly,    // Hazırlık maçı
-        Tournament   // Turnuva maçı
+        Tournament,  // Turnuva maçı
+        Derby        // Derbi maçı
     }
     
     public MatchData()

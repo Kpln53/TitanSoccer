@@ -793,6 +793,24 @@ namespace TitanSoccer.ChanceGameplay
         }
 
         /// <summary>
+        /// Pozisyonu atla (bug/takılma durumunda)
+        /// </summary>
+        public void SkipChance()
+        {
+            if (flowState == GameFlowState.Ended) return;
+            
+            Debug.Log("[ChanceController] Chance skipped by user");
+            
+            // Pozisyonu "Missed" olarak bitir (ceza yok)
+            if (MatchContext.Instance != null)
+            {
+                MatchContext.Instance.AddCommentary("Pozisyon sonuçsuz kaldı.");
+            }
+            
+            EndChance(ChanceOutcome.Missed);
+        }
+
+        /// <summary>
         /// Hedef kale bölgesinde mi kontrol et
         /// </summary>
         public bool IsInGoalArea(Vector2 position)

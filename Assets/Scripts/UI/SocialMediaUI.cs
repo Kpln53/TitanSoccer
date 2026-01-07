@@ -13,12 +13,18 @@ public class SocialMediaUI : MonoBehaviour
     public Transform postListParent;
     public GameObject postItemPrefab;
 
-    [Header("Yeni Post Oluştur")]
+    [Header("Yeni Post Oluştur (Seçenekli)")]
     public Button newPostButton; // Yeni post panelini açan buton
     public GameObject createPostPanel;
-    public TMP_InputField postContentInput;
-    public Button createPostButton;
+    
+    // 3 Seçenek için butonlar ve textler
+    public Button[] optionButtons;       // 0: Övgü, 1: Eleştiri, 2: Motivasyon
+    public TextMeshProUGUI[] optionTexts; 
+    public TextMeshProUGUI lastMatchInfoText; // "Son Maç: 2-1, Rating: 7.5"
+    
     public Button cancelCreatePostButton;
+
+    private List<SocialMediaPost> currentPostOptions; // O anki seçenekler
 
     [Header("Post Detay Paneli")]
     public GameObject detailPanel;
@@ -62,11 +68,18 @@ public class SocialMediaUI : MonoBehaviour
             newPostButton.onClick.AddListener(OnNewPostButton);
         }
 
-        // Create Post Button - Post'u oluşturur
-        if (createPostButton != null)
+        // Option Buttons (0, 1, 2)
+        if (optionButtons != null)
         {
-            createPostButton.onClick.RemoveAllListeners();
-            createPostButton.onClick.AddListener(OnCreatePostButton);
+            for (int i = 0; i < optionButtons.Length; i++)
+            {
+                int index = i; // Closure capture fix
+                if (optionButtons[i] != null)
+                {
+                    optionButtons[i].onClick.RemoveAllListeners();
+                    optionButtons[i].onClick.AddListener(() => OnOptionSelected(index));
+                }
+            }
         }
 
         // Cancel Create Post Button - Panel'i kapatır
@@ -78,25 +91,106 @@ public class SocialMediaUI : MonoBehaviour
     }
 
     /// <summary>
-    /// New Post Button'a tıklandığında - Yeni post panelini aç
+    /// New Post Button'a tıklandığında - Seçenekleri yükle ve paneli aç
     /// </summary>
     private void OnNewPostButton()
     {
         if (createPostPanel != null)
         {
             createPostPanel.SetActive(true);
-            
-            // Input field'ı temizle ve focus et
-            if (postContentInput != null)
-            {
-                postContentInput.text = "";
-                postContentInput.ActivateInputField();
-            }
+            LoadPostOptions();
         }
         else
         {
             Debug.LogWarning("[SocialMediaUI] Create Post Panel not assigned!");
         }
+    }
+
+    /// <summary>
+    /// Post seçeneklerini sistemden çeker ve butonlara yazar
+    /// </summary>
+    private void LoadPostOptions()
+    {
+        if (SocialMediaSystem.Instance == null) return;
+
+        // Son maçı bul
+        MatchData lastMatch = null;
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
+        {
+            var fixtures = GameManager.Instance.CurrentSave.seasonData.fixtures;
+            // Oynanmış son maçı bul
+            lastMatch = fixtures.FindLast(m => m.isPlayed);
+        }
+
+        if (lastMatch == null)
+        {
+            // Eğer hiç maç oynanmamışsa veya veri yoksa dummy/boş veri yerine UI'ı gizle veya uyarı ver
+            // Şimdilik test için dummy bırakmıyoruz, null kontrolü yapıyoruz.
+            Debug.LogWarning("[SocialMediaUI] Oynanmış maç bulunamadı!");
+            if (createPostPanel != null) createPostPanel.SetActive(false);
+            return;
+        }
+
+        // Son maç bilgisini yaz
+        if (lastMatchInfoText != null)
+        {
+            lastMatchInfoText.text = $"SON MAÇ: {lastMatch.homeTeamName} {lastMatch.homeScore}-{lastMatch.awayScore} {lastMatch.awayTeamName}\n" +
+                                     $"Puan: {lastMatch.playerRating:F1} | Gol: {lastMatch.playerGoals}";
+        }
+
+        // Seçenekleri oluştur
+        currentPostOptions = SocialMediaSystem.Instance.GetPlayerPostOptions(lastMatch);
+
+        // Butonlara ata
+        for (int i = 0; i < optionButtons.Length; i++)
+        {
+            if (i < currentPostOptions.Count && optionButtons[i] != null)
+            {
+                optionButtons[i].gameObject.SetActive(true);
+                
+                // Butondaki Text'i güncelle
+                if (optionTexts != null && i < optionTexts.Length && optionTexts[i] != null)
+                {
+                    // Şöyle bir format: "ÖVGÜ PAYLAŞ: Harika goldü..."
+                    string prefix = "";
+                    switch(currentPostOptions[i].tone)
+                    {
+                        case SocialMediaPostTone.Positive: prefix = "ÖVGÜ PAYLAŞ:"; break;
+                        case SocialMediaPostTone.Negative: prefix = "ELEŞTİRİ PAYLAŞ:"; break;
+                        case SocialMediaPostTone.Motivational: prefix = "MOTİVASYON PAYLAŞ:"; break;
+                    }
+                    
+                    optionTexts[i].text = $"<b>{prefix}</b> {currentPostOptions[i].content}";
+                }
+            }
+            else if (optionButtons[i] != null)
+            {
+                optionButtons[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Bir seçenek seçildiğinde
+    /// </summary>
+    private void OnOptionSelected(int index)
+    {
+        if (currentPostOptions == null || index < 0 || index >= currentPostOptions.Count) return;
+
+        SocialMediaPost selected = currentPostOptions[index];
+        
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
+        {
+            MediaData mediaData = GameManager.Instance.CurrentSave.mediaData;
+            SocialMediaSystem.Instance.PublishPost(mediaData, selected);
+        }
+
+        // Paneli kapat ve yenile
+        if (createPostPanel != null)
+            createPostPanel.SetActive(false);
+
+        LoadPosts();
+        RefreshFollowers();
     }
 
     /// <summary>
@@ -153,6 +247,12 @@ public class SocialMediaUI : MonoBehaviour
         }
     }
 
+    [Header("Design Settings")]
+    public Color postBackgroundColor = new Color(0.1f, 0.1f, 0.15f, 0.9f); // Koyu Cam
+    public Color normalTextColor = Color.white;
+    public Color goldTextColor = new Color(1f, 0.84f, 0f, 1f); // Gold
+    public Color dateTextColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+
     /// <summary>
     /// Post item'ı oluştur
     /// </summary>
@@ -166,15 +266,16 @@ public class SocialMediaUI : MonoBehaviour
         }
         else
         {
-            // Prefab yoksa runtime'da oluştur
+            // Prefab yoksa runtime'da oluştur (Gold/Glass Aesthetic fallback)
             itemObj = new GameObject($"PostItem_{post.author}");
             itemObj.transform.SetParent(postListParent);
 
             RectTransform rect = itemObj.AddComponent<RectTransform>();
-            rect.sizeDelta = new Vector2(800, 150);
+            // Genişlik ebeveyne göre ayarlansın
+            rect.sizeDelta = new Vector2(0, 120); 
 
             Image bg = itemObj.AddComponent<Image>();
-            bg.color = new Color(0.1f, 0.1f, 0.15f, 0.8f);
+            bg.color = postBackgroundColor;
 
             Button button = itemObj.AddComponent<Button>();
             button.onClick.AddListener(() => OnPostItemClicked(post));
@@ -183,30 +284,31 @@ public class SocialMediaUI : MonoBehaviour
             GameObject contentObj = new GameObject("PostContent");
             contentObj.transform.SetParent(itemObj.transform);
             RectTransform contentRect = contentObj.AddComponent<RectTransform>();
-            contentRect.anchorMin = new Vector2(0, 0.3f);
+            contentRect.anchorMin = new Vector2(0, 0.4f);
             contentRect.anchorMax = new Vector2(1, 1);
-            contentRect.offsetMin = new Vector2(10, 5);
-            contentRect.offsetMax = new Vector2(-10, -5);
+            contentRect.offsetMin = new Vector2(20, 5);
+            contentRect.offsetMax = new Vector2(-20, -5);
 
             TextMeshProUGUI contentText = contentObj.AddComponent<TextMeshProUGUI>();
             contentText.text = post.content;
-            contentText.fontSize = 16;
-            contentText.color = Color.white;
+            contentText.fontSize = 18;
+            contentText.color = normalTextColor;
             contentText.alignment = TextAlignmentOptions.TopLeft;
+            contentText.overflowMode = TextOverflowModes.Ellipsis;
 
             // Post yazarı ve tarihi
             GameObject infoObj = new GameObject("PostInfo");
             infoObj.transform.SetParent(itemObj.transform);
             RectTransform infoRect = infoObj.AddComponent<RectTransform>();
             infoRect.anchorMin = new Vector2(0, 0);
-            infoRect.anchorMax = new Vector2(1, 0.3f);
-            infoRect.offsetMin = new Vector2(10, 5);
-            infoRect.offsetMax = new Vector2(-10, -5);
+            infoRect.anchorMax = new Vector2(1, 0.4f);
+            infoRect.offsetMin = new Vector2(20, 5);
+            infoRect.offsetMax = new Vector2(-20, -5);
 
             TextMeshProUGUI infoText = infoObj.AddComponent<TextMeshProUGUI>();
-            infoText.text = $"{post.author} - {post.dateString} - ❤️ {post.likes}";
-            infoText.fontSize = 14;
-            infoText.color = Color.gray;
+            // Zengin metin kullanımı
+            infoText.text = $"<color=#{ColorUtility.ToHtmlStringRGB(goldTextColor)}><b>{post.author}</b></color> <size=14><color=#{ColorUtility.ToHtmlStringRGB(dateTextColor)}>{post.dateString}</color></size> \n<color=red>❤️</color> {post.likes}";
+            infoText.fontSize = 16;
             infoText.alignment = TextAlignmentOptions.BottomLeft;
         }
 
@@ -217,7 +319,17 @@ public class SocialMediaUI : MonoBehaviour
             itemButton.onClick.RemoveAllListeners();
             itemButton.onClick.AddListener(() => OnPostItemClicked(post));
         }
+
+        // Prefab içindeki componentleri güncelle (Eğer prefab kullanılıyorsa)
+        if (postItemPrefab != null)
+        {
+            // Bu kısım prefab yapısına göre değişir, ancak temel mantık:
+            // TextMeshProUGUI[] texts = itemObj.GetComponentsInChildren<TextMeshProUGUI>();
+            // if (texts.Length > 0) texts[0].text = post.content; ...
+        }
     }
+
+
 
 
     /// <summary>
@@ -348,50 +460,13 @@ public class SocialMediaUI : MonoBehaviour
         }
     }
 
-    private void OnCreatePostButton()
-    {
-        if (postContentInput == null || string.IsNullOrEmpty(postContentInput.text)) return;
-
-        if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave()) return;
-
-        MediaData mediaData = GameManager.Instance.CurrentSave.mediaData;
-        if (mediaData == null) return;
-
-        string playerName = GameManager.Instance.CurrentSave.playerProfile != null 
-            ? GameManager.Instance.CurrentSave.playerProfile.playerName 
-            : "Player";
-
-        if (SocialMediaSystem.Instance != null)
-        {
-            SocialMediaSystem.Instance.CreatePost(mediaData, postContentInput.text, SocialMediaPostType.Normal);
-        }
-        else
-        {
-            // Manuel olarak post oluştur
-            SocialMediaPost newPost = new SocialMediaPost
-            {
-                content = postContentInput.text,
-                author = playerName,
-                type = SocialMediaPostType.Normal
-            };
-            mediaData.AddPost(newPost);
-        }
-
-        postContentInput.text = "";
-        if (createPostPanel != null)
-            createPostPanel.SetActive(false);
-
-        LoadPosts();
-        RefreshFollowers();
-    }
-
+    /// <summary>
+    /// Cancel Create Post Button - Panel'i kapatır
+    /// </summary>
     private void OnCancelCreatePostButton()
     {
         if (createPostPanel != null)
             createPostPanel.SetActive(false);
-
-        if (postContentInput != null)
-            postContentInput.text = "";
     }
 
     private void OnCloseDetailButton()

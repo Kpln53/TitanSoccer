@@ -24,34 +24,61 @@ public class SocialMediaSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Yeni post oluştur
+    /// Maç bittikten sonra çağrılır. Feed'i günceller ve oyuncu post seçeneklerini hazırlar.
     /// </summary>
-    public SocialMediaPost CreatePost(MediaData mediaData, string content, SocialMediaPostType type = SocialMediaPostType.Normal)
+    public void CreatePostMatchContent(MatchData matchData)
     {
-        if (mediaData == null)
+        if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave()) return;
+        
+        MediaData mediaData = GameManager.Instance.CurrentSave.mediaData;
+        if (mediaData == null) return;
+
+        // 1. Feed'e diğer kişilerin yorumlarını ekle
+        if (SocialMediaContentGenerator.Instance != null)
         {
-            Debug.LogWarning("[SocialMediaSystem] MediaData is null! Cannot create post.");
-            return null;
+            var feedPosts = SocialMediaContentGenerator.Instance.GenerateFeedPosts(matchData);
+            foreach (var post in feedPosts)
+            {
+                mediaData.AddPost(post);
+            }
         }
+        
+        Debug.Log($"[SocialMediaSystem] Match content generated. Added {mediaData.socialMediaPosts.Count} posts to feed.");
+    }
 
-        if (string.IsNullOrEmpty(content))
+    /// <summary>
+    /// UI için oyuncu post seçeneklerini getirir
+    /// </summary>
+    public List<SocialMediaPost> GetPlayerPostOptions(MatchData matchData)
+    {
+        if (SocialMediaContentGenerator.Instance != null)
         {
-            Debug.LogWarning("[SocialMediaSystem] Post content is empty! Cannot create post.");
-            return null;
+            return SocialMediaContentGenerator.Instance.GeneratePlayerPostOptions(matchData);
         }
+        return new List<SocialMediaPost>(); // Boş liste dön
+    }
 
-        SocialMediaPost post = new SocialMediaPost
-        {
-            content = content,
-            author = GetPlayerSocialMediaHandle(),
-            type = type,
-            date = System.DateTime.Now,
-            dateString = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-        };
+    /// <summary>
+    /// Yeni post oluştur (Manuel veya Seçenekten)
+    /// </summary>
+    public SocialMediaPost PublishPost(MediaData mediaData, SocialMediaPost post)
+    {
+        if (mediaData == null || post == null) return null;
 
+        post.date = System.DateTime.Now;
+        post.dateString = post.date.ToString("yyyy-MM-dd HH:mm:ss");
+        post.author = GetPlayerSocialMediaHandle();
+
+        // Potansiyel etkileşimi uygula (Rastgelelik katarak)
+        float performanceMultiplier = 1.0f; 
+        // Burada son maç performansına göre çarpan eklenebilir.
+        
+        post.likes = Mathf.RoundToInt(post.potentialFeedbackScore * Random.Range(0.8f, 1.2f) * performanceMultiplier);
+        
         mediaData.AddPost(post);
-        Debug.Log($"[SocialMediaSystem] Post created: {content.Substring(0, Mathf.Min(30, content.Length))}...");
+        IncreaseFollowers(mediaData, Mathf.RoundToInt(post.likes * 0.1f)); // Beğeniye göre takipçi artışı
 
+        Debug.Log($"[SocialMediaSystem] Post published: {post.content}");
         return post;
     }
 
@@ -151,6 +178,7 @@ public class SocialMediaSystem : MonoBehaviour
         }
     }
 }
+
 
 
 

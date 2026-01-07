@@ -124,13 +124,12 @@ public class MatchSimController : MonoBehaviour
                 // Moral güncelle
                 UpdateMoral(context);
 
-                // Genel commentary (rastgele)
+                // Genel commentary (rastgele) - DataPack'ten gerçek oyuncu isimleri
                 if (Random.Range(0f, 1f) < 0.3f && commentarySystem != null)
                 {
-                    string randomPlayer = context.homeSquad.Count > 0 
-                        ? context.homeSquad[Random.Range(0, context.homeSquad.Count)].playerName 
-                        : "Oyuncu";
-                    commentarySystem.AddGeneralCommentary(randomPlayer, "top sürüyor");
+                    string randomPlayer = GetRandomPlayerName(context, context.homePossessionPercent > 50f);
+                    string[] actions = { "top sürüyor", "pasa çıkıyor", "dribling yapıyor", "oyunu yönlendiriyor", "pozisyon arıyor" };
+                    commentarySystem.AddGeneralCommentary(randomPlayer, actions[Random.Range(0, actions.Length)]);
                 }
 
                 // Pozisyon üret kontrolü
@@ -298,19 +297,15 @@ public class MatchSimController : MonoBehaviour
         context.homeScore += additionalGoalsHome;
         context.awayScore += additionalGoalsAway;
 
-        // Gol commentary
+        // Gol commentary - DataPack'ten gerçek oyuncu isimleri
         for (int i = 0; i < additionalGoalsHome; i++)
         {
-            string scorer = context.homeSquad.Count > 0 
-                ? context.homeSquad[Random.Range(0, context.homeSquad.Count)].playerName 
-                : "Oyuncu";
+            string scorer = GetRandomPlayerName(context, true); // Home takımdan
             commentarySystem?.AddGoalCommentary(scorer);
         }
         for (int i = 0; i < additionalGoalsAway; i++)
         {
-            string scorer = context.awaySquad.Count > 0 
-                ? context.awaySquad[Random.Range(0, context.awaySquad.Count)].playerName 
-                : "Rakip";
+            string scorer = GetRandomPlayerName(context, false); // Away takımdan
             commentarySystem?.AddGoalCommentary(scorer);
         }
 
@@ -357,5 +352,41 @@ public class MatchSimController : MonoBehaviour
         } while (p > L);
 
         return k - 1;
+    }
+
+    /// <summary>
+    /// DataPack'ten veya MatchContext'ten rastgele oyuncu ismi al
+    /// </summary>
+    private string GetRandomPlayerName(MatchContext context, bool isHomeTeam)
+    {
+        string teamName = isHomeTeam ? context.homeTeamName : context.awayTeamName;
+        
+        // Önce MatchContext'teki kadroya bak
+        var squad = isHomeTeam ? context.homeSquad : context.awaySquad;
+        if (squad != null && squad.Count > 0)
+        {
+            // İlk 11'den öncelikli seç
+            var starters = squad.FindAll(p => p.isStartingXI);
+            if (starters.Count > 0)
+            {
+                return starters[Random.Range(0, starters.Count)].playerName;
+            }
+            return squad[Random.Range(0, squad.Count)].playerName;
+        }
+        
+        // MatchContext'te yoksa DataPack'e bak
+        if (DataPackManager.Instance != null && DataPackManager.Instance.activeDataPack != null)
+        {
+            TeamData team = DataPackManager.Instance.GetTeam(teamName);
+            if (team != null && team.players != null && team.players.Count > 0)
+            {
+                // Rastgele oyuncu seç (ilk 11'den öncelikli)
+                int playerIndex = Random.Range(0, Mathf.Min(11, team.players.Count));
+                return team.players[playerIndex].playerName;
+            }
+        }
+        
+        // Hiç bulunamazsa varsayılan
+        return isHomeTeam ? "Ev Sahibi Oyuncu" : "Deplasman Oyuncusu";
     }
 }

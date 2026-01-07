@@ -213,3 +213,193 @@ public enum CommentTrigger
     ChanceMissed,       // Kaçan fırsat
     MatchEnd            // Maç sonu
 }
+
+/// <summary>
+/// Pozisyon (Chance) türleri - Atak veya Savunma
+/// </summary>
+public enum ChanceType
+{
+    Attack,     // Atak pozisyonu
+    Defense     // Savunma pozisyonu
+}
+
+/// <summary>
+/// Oyun akış durumları
+/// </summary>
+public enum GameFlowState
+{
+    Idle,               // Beklemede
+    WaitingForInput,    // Kullanıcı girişi bekleniyor
+    Executing,          // Eylem gerçekleştiriliyor
+    BallInFlight,       // Top havada
+    BallLoose,          // Top boşta
+    Transitioning,      // Geçiş yapılıyor
+    Ending,             // Sonlanıyor
+    AIPlaying,          // AI oynuyor
+    Ended               // Sona erdi
+}
+
+/// <summary>
+/// Pozisyon sonuçları
+/// </summary>
+public enum ChanceOutcome
+{
+    None,           // Henüz sonuç yok
+    Goal,           // Gol
+    Saved,          // Kurtarıldı
+    Missed,         // Kaçırıldı
+    Blocked,        // Bloke edildi
+    Assist,         // Asist (pas sonucu gol)
+    Tackled,        // Top alındı (savunma)
+    Cleared,        // Top uzaklaştırıldı
+    Intercepted,    // Pas kesildi
+    OutOfBounds     // Top dışarı çıktı
+}
+
+/// <summary>
+/// Çizgi verisi - Pas/Şut/Dribling için
+/// </summary>
+[System.Serializable]
+public class LineData
+{
+    public UnityEngine.Vector2 startPoint;
+    public UnityEngine.Vector2 endPoint;
+    public float length;
+    public float angle;
+    public float drawTime;
+    public float curvature;
+    public ActionType detectedAction;  // Algılanan aksiyon türü
+    public float drawSpeed;            // Çizim hızı
+    public UnityEngine.GameObject targetPlayer;  // Hedef oyuncu (pas için)
+    public UnityEngine.Vector3 targetPosition;   // Hedef pozisyon
+    public System.Collections.Generic.List<UnityEngine.Vector2> points;  // Çizgi noktaları
+    
+    public LineData()
+    {
+        startPoint = UnityEngine.Vector2.zero;
+        endPoint = UnityEngine.Vector2.zero;
+        length = 0f;
+        angle = 0f;
+        drawTime = 0f;
+        curvature = 0f;
+        detectedAction = ActionType.None;
+        drawSpeed = 0f;
+        targetPlayer = null;
+        targetPosition = UnityEngine.Vector3.zero;
+        points = new System.Collections.Generic.List<UnityEngine.Vector2>();
+    }
+    
+    public LineData(UnityEngine.Vector2 start, UnityEngine.Vector2 end, float time, float curve = 0f)
+    {
+        startPoint = start;
+        endPoint = end;
+        length = UnityEngine.Vector2.Distance(start, end);
+        angle = UnityEngine.Mathf.Atan2(end.y - start.y, end.x - start.x) * UnityEngine.Mathf.Rad2Deg;
+        drawTime = time;
+        curvature = curve;
+        detectedAction = ActionType.None;
+        drawSpeed = time > 0 ? length / time : 0f;
+        targetPlayer = null;
+        targetPosition = UnityEngine.Vector3.zero;
+        points = new System.Collections.Generic.List<UnityEngine.Vector2> { start, end };
+    }
+    
+    /// <summary>
+    /// Çizginin yönünü 3D world space'e çevir
+    /// </summary>
+    public UnityEngine.Vector3 GetWorldDirection()
+    {
+        UnityEngine.Vector2 dir2D = (endPoint - startPoint).normalized;
+        return new UnityEngine.Vector3(dir2D.x, 0f, dir2D.y);
+    }
+    
+    /// <summary>
+    /// Güç hesapla (0-1 arası)
+    /// </summary>
+    public float GetPower(float maxLength = 500f)
+    {
+        return UnityEngine.Mathf.Clamp01(length / maxLength);
+    }
+}
+
+/// <summary>
+/// Oyuncu aksiyon türleri
+/// </summary>
+public enum ActionType
+{
+    None,       // Aksiyon yok
+    Move,       // Hareket
+    Pass,       // Pas
+    Shoot,      // Şut
+    Dribble,    // Dribling
+    Tackle,     // Top kapma
+    Clear       // Topu uzaklaştırma
+}
+
+/// <summary>
+/// Pozisyon (Chance) başlangıç verileri
+/// </summary>
+[System.Serializable]
+public class ChanceSetupData
+{
+    public ChanceType chanceType = ChanceType.Attack;
+    public UnityEngine.Vector3 playerStartPosition;
+    public UnityEngine.Vector3 ballStartPosition;
+    public UnityEngine.Vector3 goalPosition;
+    public int minute;
+    public float successChance;
+    public string templateName;
+    
+    // Oyuncu istatistikleri
+    public PlayerPosition playerPosition;
+    public int playerOverall;
+    public float playerEnergy;
+    public float playerForm;
+    public int speedStat;
+    public int shootingStat;
+    public int passingStat;
+    public int dribblingStat;      // dribbilingStat yerine
+    public int dribbilingStat;     // Eski uyumluluk için
+    public int defenseStat;
+    public int physicalStat;
+    public int physicsStat;        // Eski uyumluluk için
+    public int falsoStat;          // Falso yeteneği
+    
+    // Takım güçleri
+    public int homeTeamPower;
+    public int awayTeamPower;
+    
+    // Takım arkadaşları pozisyonları
+    public System.Collections.Generic.List<UnityEngine.Vector3> teammatePositions;
+    
+    // Rakip pozisyonları
+    public System.Collections.Generic.List<UnityEngine.Vector3> opponentPositions;
+    
+    public ChanceSetupData()
+    {
+        chanceType = ChanceType.Attack;
+        playerStartPosition = UnityEngine.Vector3.zero;
+        ballStartPosition = UnityEngine.Vector3.zero;
+        goalPosition = new UnityEngine.Vector3(0, 0, 30f);
+        minute = 0;
+        successChance = 0.5f;
+        templateName = "Default";
+        playerPosition = PlayerPosition.SF;
+        playerOverall = 70;
+        playerEnergy = 100f;
+        playerForm = 70f;
+        speedStat = 70;
+        shootingStat = 70;
+        passingStat = 70;
+        dribblingStat = 70;
+        dribbilingStat = 70;
+        defenseStat = 70;
+        physicalStat = 70;
+        physicsStat = 70;
+        falsoStat = 70;
+        homeTeamPower = 70;
+        awayTeamPower = 70;
+        teammatePositions = new System.Collections.Generic.List<UnityEngine.Vector3>();
+        opponentPositions = new System.Collections.Generic.List<UnityEngine.Vector3>();
+    }
+}

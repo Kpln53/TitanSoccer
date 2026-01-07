@@ -22,6 +22,10 @@ namespace TitanSoccer.ChanceGameplay
         [SerializeField] private Button cameraSwitchButton;
         [SerializeField] private TextMeshProUGUI cameraButtonText;
 
+        [Header("Atla Butonu")]
+        public Button skipChanceButton;  // Public yapıldı - runtime erişim için
+        public TextMeshProUGUI skipButtonText;
+
         [Header("Renkler")]
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color slowMotionColor = Color.cyan;
@@ -64,6 +68,23 @@ namespace TitanSoccer.ChanceGameplay
             if (cameraSwitchButton != null)
             {
                 cameraSwitchButton.onClick.AddListener(OnCameraSwitchClicked);
+            }
+            
+            if (skipChanceButton != null)
+            {
+                skipChanceButton.onClick.AddListener(OnSkipChanceClicked);
+            }
+        }
+
+        /// <summary>
+        /// Pozisyonu atla butonu
+        /// </summary>
+        private void OnSkipChanceClicked()
+        {
+            if (ChanceController.Instance != null && ChanceController.Instance.FlowState != GameFlowState.Ended)
+            {
+                Debug.Log("[ChanceHUD] Skip button clicked - skipping chance");
+                ChanceController.Instance.SkipChance();
             }
         }
 
@@ -196,4 +217,5 @@ namespace TitanSoccer.ChanceGameplay
         }
     }
 }
+
 

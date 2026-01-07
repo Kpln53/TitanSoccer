@@ -11,6 +11,8 @@ public class MatchContext : MonoBehaviour
     [Header("Takım Bilgileri")]
     public string homeTeamName = "";
     public string awayTeamName = "";
+    public bool isPlayerHome = true;  // Oyuncu ev sahibi mi?
+    public MatchData.MatchType matchType = MatchData.MatchType.League;
     public List<SquadPlayer> homeSquad = new List<SquadPlayer>();
     public List<SquadPlayer> awaySquad = new List<SquadPlayer>();
 
@@ -100,6 +102,8 @@ public class MatchContext : MonoBehaviour
     {
         homeTeamName = "";
         awayTeamName = "";
+        isPlayerHome = true;
+        matchType = MatchData.MatchType.League;
         homeSquad.Clear();
         awaySquad.Clear();
         homeScore = 0;

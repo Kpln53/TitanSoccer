@@ -1,4 +1,6 @@
 using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Transfer sistemi - Transfer teklifi kabul/red ve transfer işlemleri (Singleton)
@@ -69,6 +71,44 @@ public class TransferSystem : MonoBehaviour
         saveData.clubData.contract.signingBonus = offer.signingBonus;
         saveData.clubData.contract.clubName = offer.clubName;
 
+        // Fikstür ve Puan Durumu Oluşturma
+        if (DataPackManager.Instance != null && !string.IsNullOrEmpty(saveData.clubData.leagueName))
+        {
+            LeagueData league = DataPackManager.Instance.GetLeague(saveData.clubData.leagueName);
+            if (league != null && league.teams != null && league.teams.Count > 0)
+            {
+                // Sezon başlangıç tarihi (Sözleşme başlangıcı veya şimdiki zaman)
+                DateTime seasonStart = saveData.clubData.contract.startDate;
+                
+                // Fikstürü oluştur
+                List<MatchData> fixtures = FixtureGenerator.GenerateSeasonFixtures(league.teams, seasonStart);
+                
+                // Sezon verilerine kaydet
+                if (saveData.seasonData == null) saveData.seasonData = new SeasonData();
+                
+                saveData.seasonData.fixtures = fixtures;
+                saveData.seasonData.seasonStartDate = seasonStart;
+                saveData.seasonData.seasonStartDateString = seasonStart.ToString("yyyy-MM-dd");
+                
+                // Puan durumunu başlat
+                saveData.seasonData.InitializeStandings(league.teams);
+                
+                // Sezon bitişini son maç tarihine göre güncelle
+                if (fixtures.Count > 0)
+                {
+                    DateTime lastMatchDate = fixtures[fixtures.Count - 1].matchDate;
+                    saveData.seasonData.seasonEndDate = lastMatchDate;
+                    saveData.seasonData.seasonEndDateString = lastMatchDate.ToString("yyyy-MM-dd");
+                }
+                
+                Debug.Log($"[TransferSystem] Season fixtures generated: {fixtures.Count} matches, {league.teams.Count} teams in standings.");
+            }
+            else
+            {
+                Debug.LogWarning($"[TransferSystem] Could not find league '{saveData.clubData.leagueName}' or teams to generate fixtures!");
+            }
+        }
+
         // Teklifi işaretle
         offer.isAccepted = true;
 
@@ -116,6 +156,7 @@ public class TransferSystem : MonoBehaviour
         }
     }
 }
+
 
 
 
