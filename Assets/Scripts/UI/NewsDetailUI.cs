@@ -150,8 +150,8 @@ public class NewsDetailUI : MonoBehaviour
         if (contentPanel != null)
         {
             contentPanel.transform.localScale = Vector3.zero;
-            LeanTween.scale(contentPanel, Vector3.one, animationDuration)
-                .setEaseOutBack();
+            // Simple scale animation without LeanTween
+            StartCoroutine(ScaleAnimation(contentPanel.transform, Vector3.zero, Vector3.one, animationDuration));
         }
     }
     
@@ -162,14 +162,36 @@ public class NewsDetailUI : MonoBehaviour
     {
         if (contentPanel != null)
         {
-            LeanTween.scale(contentPanel, Vector3.zero, animationDuration)
-                .setEaseInBack()
-                .setOnComplete(onComplete);
+            // Simple scale animation without LeanTween
+            StartCoroutine(ScaleAnimation(contentPanel.transform, Vector3.one, Vector3.zero, animationDuration, onComplete));
         }
         else
         {
             onComplete?.Invoke();
         }
+    }
+    
+    /// <summary>
+    /// Simple scale animation coroutine
+    /// </summary>
+    private System.Collections.IEnumerator ScaleAnimation(Transform target, Vector3 from, Vector3 to, float duration, Action onComplete = null)
+    {
+        float elapsed = 0f;
+        
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            
+            // Ease out back effect (simplified)
+            t = 1f - Mathf.Pow(1f - t, 3f);
+            
+            target.localScale = Vector3.Lerp(from, to, t);
+            yield return null;
+        }
+        
+        target.localScale = to;
+        onComplete?.Invoke();
     }
     
     /// <summary>

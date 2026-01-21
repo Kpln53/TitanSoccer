@@ -92,6 +92,10 @@ public class SeasonData
     public string seasonStartDateString;
     public DateTime seasonEndDate;     // Sezon bitiş tarihi
     public string seasonEndDateString;
+
+    [Header("Oyuncu Durumu")]
+    public float energy = 100f;        // Oyuncu enerjisi (0-100)
+    public float moral = 100f;         // Oyuncu morali (0-100)
     
     public SeasonData()
     {

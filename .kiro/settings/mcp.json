@@ -31,7 +31,9 @@
         "manage_prefabs",
         "execute_custom_tool",
         "find_gameobjects",
-        "execute_menu_item"
+        "execute_menu_item",
+        "validate_script",
+        "refresh_unity"
       ]
     }
   }

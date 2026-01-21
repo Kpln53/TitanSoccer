@@ -1,157 +1,166 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
-/// <summary>
-/// Antrenman UI - Yetenek antrenmanı paneli
-/// </summary>
 public class TrainingUI : MonoBehaviour
 {
-    [Header("Enerji Göstergesi")]
-    public TextMeshProUGUI energyText;
+    [Header("UI References")]
+    public Transform cardsContainer;
+    public GameObject resultPanel; // Popup
+    
+    [Header("Result Popup References")]
+    public TextMeshProUGUI resultTitle;
+    public TextMeshProUGUI resultStatChange;
+    public TextMeshProUGUI resultEnergyChange;
+    public TextMeshProUGUI resultNewEnergy;
+    public TextMeshProUGUI resultNewMoral;
+    public Button resultCloseButton;
 
-    [Header("Yetenek Butonları")]
-    public Button trainPassingButton;
-    public Button trainShootingButton;
-    public Button trainDribblingButton;
-    public Button trainFalsoButton;
-    public Button trainSpeedButton;
-    public Button trainStaminaButton;
-    public Button trainDefendingButton;
-    public Button trainPhysicalButton;
+    [Header("Limit Info")]
+    public TextMeshProUGUI limitText;
 
-    [Header("Yetenek Değerleri")]
-    public TextMeshProUGUI passingText;
-    public TextMeshProUGUI shootingText;
-    public TextMeshProUGUI dribblingText;
-    public TextMeshProUGUI falsoText;
-    public TextMeshProUGUI speedText;
-    public TextMeshProUGUI staminaText;
-    public TextMeshProUGUI defendingText;
-    public TextMeshProUGUI physicalText;
+    // Tanımlı Antrenmanlar
+    private List<TrainingSession> availableSessions = new List<TrainingSession>();
 
-    [Header("Kaleci Yetenekleri (Opsiyonel)")]
-    public Button trainSaveReflexButton;
-    public Button trainGoalkeeperPositioningButton;
-    public Button trainAerialAbilityButton;
-    public Button trainOneOnOneButton;
-    public Button trainHandlingButton;
-
-    private void OnEnable()
+    private void Start()
     {
-        RefreshData();
-        SetupButtons();
+        InitializeSessions();
+        SetupUI();
+        UpdateLimitText();
+        
+        if (resultPanel) resultPanel.SetActive(false);
+        if (resultCloseButton) resultCloseButton.onClick.AddListener(CloseResultPanel);
     }
 
-    private void SetupButtons()
+    private void InitializeSessions()
     {
-        if (trainPassingButton != null)
-            trainPassingButton.onClick.AddListener(() => TrainSkill("passing"));
+        availableSessions.Clear();
 
-        if (trainShootingButton != null)
-            trainShootingButton.onClick.AddListener(() => TrainSkill("shooting"));
-
-        if (trainDribblingButton != null)
-            trainDribblingButton.onClick.AddListener(() => TrainSkill("dribbling"));
-
-        if (trainFalsoButton != null)
-            trainFalsoButton.onClick.AddListener(() => TrainSkill("falso"));
-
-        if (trainSpeedButton != null)
-            trainSpeedButton.onClick.AddListener(() => TrainSkill("speed"));
-
-        if (trainStaminaButton != null)
-            trainStaminaButton.onClick.AddListener(() => TrainSkill("stamina"));
-
-        if (trainDefendingButton != null)
-            trainDefendingButton.onClick.AddListener(() => TrainSkill("defending"));
-
-        if (trainPhysicalButton != null)
-            trainPhysicalButton.onClick.AddListener(() => TrainSkill("physicalstrength"));
-
-        // Kaleci yetenekleri
-        if (trainSaveReflexButton != null)
-            trainSaveReflexButton.onClick.AddListener(() => TrainSkill("saverelex"));
-
-        if (trainGoalkeeperPositioningButton != null)
-            trainGoalkeeperPositioningButton.onClick.AddListener(() => TrainSkill("goalkeeperpositioning"));
-
-        if (trainAerialAbilityButton != null)
-            trainAerialAbilityButton.onClick.AddListener(() => TrainSkill("aerialability"));
-
-        if (trainOneOnOneButton != null)
-            trainOneOnOneButton.onClick.AddListener(() => TrainSkill("oneonone"));
-
-        if (trainHandlingButton != null)
-            trainHandlingButton.onClick.AddListener(() => TrainSkill("handling"));
-    }
-
-    /// <summary>
-    /// Verileri yenile
-    /// </summary>
-    private void RefreshData()
-    {
-        if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave())
+        // 1. Hücum
+        availableSessions.Add(new TrainingSession
         {
-            Debug.LogWarning("[TrainingUI] No current save!");
-            return;
+            id = "attack_1",
+            title = "HÜCUM & BİTİRİCİLİK",
+            type = TrainingType.Attack,
+            energyCost = 15,
+            statName = "Şut",
+            statIncrease = 2,
+            description = "Enerji: -15 | Şut: +2"
+        });
+
+        // 2. Fiziksel
+        availableSessions.Add(new TrainingSession
+        {
+            id = "phys_1",
+            title = "FİZİKSEL KONDİSYON",
+            type = TrainingType.Physical,
+            energyCost = 20,
+            statName = "Güç",
+            statIncrease = 3,
+            description = "Enerji: -20 | Güç: +3"
+        });
+
+        // 3. Teknik
+        availableSessions.Add(new TrainingSession
+        {
+            id = "tech_1",
+            title = "TEKNİK & PAS",
+            type = TrainingType.Technique,
+            energyCost = 10,
+            statName = "Pas",
+            statIncrease = 1,
+            description = "Enerji: -10 | Pas: +1"
+        });
+    }
+
+    private void SetupUI()
+    {
+        // Kartları bul ve butonlarını bağla (Builder ile oluşturulan yapıyı kullanacağız)
+        // Kartların isimleri: Card_0, Card_1, Card_2
+        
+        for (int i = 0; i < availableSessions.Count; i++)
+        {
+            if (i >= cardsContainer.childCount) break;
+
+            Transform card = cardsContainer.GetChild(i);
+            TrainingSession session = availableSessions[i];
+
+            // Başlık
+            var titleObj = card.Find("Content/Title");
+            if (titleObj) titleObj.GetComponent<TextMeshProUGUI>().text = session.title;
+
+            // Açıklama (Cost/Reward)
+            var descObj = card.Find("Content/Description");
+            if (descObj) descObj.GetComponent<TextMeshProUGUI>().text = session.description;
+
+            // Buton
+            var btnObj = card.Find("StartButton");
+            if (btnObj)
+            {
+                Button btn = btnObj.GetComponent<Button>();
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() => OnStartTraining(session));
+            }
+        }
+    }
+
+    private void OnStartTraining(TrainingSession session)
+    {
+        // Sistem yoksa oluştur (Test için)
+        if (TrainingSystem.Instance == null)
+        {
+            GameObject sys = new GameObject("TrainingSystem");
+            sys.AddComponent<TrainingSystem>();
         }
 
-        PlayerProfile player = GameManager.Instance.CurrentSave.playerProfile;
-        if (player == null) return;
+        string msg;
+        bool success = TrainingSystem.Instance.ExecuteTraining(session, out msg);
 
-        // Enerji göster
-        if (energyText != null)
-            energyText.text = $"Enerji: {(int)player.energy}/100";
-
-        // Yetenekleri göster
-        if (passingText != null)
-            passingText.text = $"Pas: {player.passingSkill}";
-
-        if (shootingText != null)
-            shootingText.text = $"Şut: {player.shootingSkill}";
-
-        if (dribblingText != null)
-            dribblingText.text = $"Dribling: {player.dribblingSkill}";
-
-        if (falsoText != null)
-            falsoText.text = $"Falso: {player.falsoSkill}";
-
-        if (speedText != null)
-            speedText.text = $"Hız: {player.speed}";
-
-        if (staminaText != null)
-            staminaText.text = $"Dayanıklılık: {player.stamina}";
-
-        if (defendingText != null)
-            defendingText.text = $"Savunma: {player.defendingSkill}";
-
-        if (physicalText != null)
-            physicalText.text = $"Fizik: {player.physicalStrength}";
-    }
-
-    /// <summary>
-    /// Yetenek antrenmanı yap
-    /// </summary>
-    private void TrainSkill(string skillName)
-    {
-        if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave()) return;
-
-        PlayerProfile player = GameManager.Instance.CurrentSave.playerProfile;
-        EconomyData economy = GameManager.Instance.CurrentSave.economyData;
-
-        if (player == null || economy == null) return;
-
-        if (TrainingSystem.Instance != null)
+        if (success)
         {
-            TrainingSystem.Instance.TrainSkill(player, skillName);
+            ShowResult(session);
+            UpdateLimitText();
+            
+            // Top paneli güncelle
+            FindObjectOfType<TopPanelUI>()?.RefreshData();
         }
         else
         {
-            Debug.LogWarning("[TrainingUI] TrainingSystem not found!");
+            Debug.LogWarning(msg);
+            // Hata mesajı popup'ı eklenebilir
+        }
+    }
+
+    private void ShowResult(TrainingSession session)
+    {
+        if (!resultPanel) return;
+
+        resultTitle.text = $"ANTRENMAN SONUCU: {session.title}";
+        resultStatChange.text = $"{session.statName}: +{session.statIncrease}";
+        resultEnergyChange.text = $"Enerji: -{session.energyCost}";
+
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
+        {
+            var data = GameManager.Instance.CurrentSave.seasonData;
+            resultNewEnergy.text = $"Yeni Enerji: %{Mathf.RoundToInt(data.energy)}";
+            resultNewMoral.text = $"Yeni Moral: %{Mathf.RoundToInt(data.moral)}";
         }
 
-        RefreshData();
+        resultPanel.SetActive(true);
+    }
+
+    private void CloseResultPanel()
+    {
+        if (resultPanel) resultPanel.SetActive(false);
+    }
+
+    private void UpdateLimitText()
+    {
+        if (limitText && TrainingSystem.Instance != null)
+        {
+            int left = TrainingSystem.MAX_DAILY_TRAINING - TrainingSystem.Instance.currentTrainingCount;
+            limitText.text = $"Kalan Hak: {left}";
+        }
     }
 }
-

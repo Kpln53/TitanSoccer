@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// Career Hub ana UI - Ana kariyer ekranı ve panel yönetimi
@@ -32,6 +33,10 @@ public class CareerHubUI : MonoBehaviour
     [Header("Diğer Butonlar")]
     public Button goToMatchButton;
 
+    [Header("Bildirimler")]
+    public GameObject newsBadge;
+    public TextMeshProUGUI newsBadgeText;
+
     private GameObject currentActivePanel;
 
     private void Start()
@@ -47,6 +52,7 @@ public class CareerHubUI : MonoBehaviour
 
         SetupButtons();
         RefreshTopPanel();
+        UpdateNewsBadge();
         ShowPanel(homePanel); // Başlangıçta Home panelini göster
     }
 
@@ -58,6 +64,38 @@ public class CareerHubUI : MonoBehaviour
         if (topPanel != null)
         {
             topPanel.RefreshData();
+        }
+        UpdateNewsBadge();
+    }
+
+    /// <summary>
+    /// Haber bildirimini güncelle
+    /// </summary>
+    public void UpdateNewsBadge()
+    {
+        if (newsBadge == null) return;
+
+        int unreadCount = 0;
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
+        {
+            var mediaData = GameManager.Instance.CurrentSave.mediaData;
+            if (mediaData != null && mediaData.recentNews != null)
+            {
+                unreadCount = System.Linq.Enumerable.Count(mediaData.recentNews, n => !n.isRead);
+            }
+        }
+
+        if (unreadCount > 0)
+        {
+            newsBadge.SetActive(true);
+            if (newsBadgeText != null)
+            {
+                newsBadgeText.text = unreadCount > 9 ? "9+" : unreadCount.ToString();
+            }
+        }
+        else
+        {
+            newsBadge.SetActive(false);
         }
     }
 

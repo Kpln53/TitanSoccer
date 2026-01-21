@@ -113,9 +113,9 @@ public class PostMatchUIController : MonoBehaviour
                 Debug.Log($"[PostMatchUI] Match result saved: {match.homeTeamName} {match.homeScore}-{match.awayScore} {match.awayTeamName}");
 
                 // SOSYAL MEDYA ENTEGRASYONU
-                if (SocialMediaManager.Instance != null)
+                if (TitanSoccer.Social.SocialMediaSystem.Instance != null)
                 {
-                    SocialMediaManager.Instance.SetPendingMatchContext(match);
+                    TitanSoccer.Social.SocialMediaSystem.Instance.SetLastMatch(match);
                 }
             }
         }

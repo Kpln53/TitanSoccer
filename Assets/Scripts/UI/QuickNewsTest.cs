@@ -4,7 +4,7 @@ using TMPro;
 using System;
 
 /// <summary>
-/// Hızlı haber testi - Prefab hazırlığı ile
+/// Hızlı haber testi - Düzeltilmiş versiyon
 /// </summary>
 public class QuickNewsTest : MonoBehaviour
 {
@@ -62,7 +62,7 @@ public class QuickNewsTest : MonoBehaviour
         titleRect.offsetMax = Vector2.zero;
         
         TextMeshProUGUI titleText = titleObj.AddComponent<TextMeshProUGUI>();
-        titleText.text = "📰 HABER SİSTEMİ TEST";
+        titleText.text = "📰 HABER SİSTEMİ TEST (Prefab Hazır)";
         titleText.fontSize = 24;
         titleText.color = Color.white;
         titleText.alignment = TextAlignmentOptions.Center;
@@ -373,9 +373,6 @@ public class QuickNewsTest : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// Prefab kullanarak haber item oluştur
-    /// </summary>
     private void CreateNewsItemFromPrefab(NewsItem news)
     {
         GameObject itemObj = Instantiate(newsItemPrefab, newsListParent);
@@ -394,9 +391,6 @@ public class QuickNewsTest : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// Prefab'ı manuel olarak setup et
-    /// </summary>
     private void SetupPrefabManually(GameObject itemObj, NewsItem news)
     {
         // Button setup
@@ -418,16 +412,6 @@ public class QuickNewsTest : MonoBehaviour
         Debug.Log($"📰 Prefab manuel setup: {news.title}");
     }
     
-    /// <summary>
-    /// Runtime'da haber item oluştur (eski yöntem)
-    /// </summary>
-    private void CreateNewsItemRuntime(NewsItem news)
-    {
-        if (newsListParent == null) return;
-        
-    /// <summary>
-    /// Runtime'da haber item oluştur (eski yöntem)
-    /// </summary>
     private void CreateNewsItemRuntime(NewsItem news)
     {
         // Haber item container
@@ -479,7 +463,6 @@ public class QuickNewsTest : MonoBehaviour
         dateText.alignment = TextAlignmentOptions.BottomLeft;
         
         Debug.Log($"📰 Runtime haber oluşturuldu: {news.title}");
-    }
     }
     
     private void OnNewsClicked(NewsItem news)

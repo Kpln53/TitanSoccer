@@ -1,134 +1,128 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using System.Collections.Generic;
+using System.Linq;
 
-/// <summary>
-/// Market UI - Krampon ve eşya satın alma paneli
-/// </summary>
 public class MarketUI : MonoBehaviour
 {
-    [Header("Para Göstergesi")]
-    public TextMeshProUGUI moneyText;
+    [Header("References")]
+    public Transform contentParent;
+    public GameObject itemPrefab;
+    public ScrollRect scrollRect;
 
-    [Header("Kramponlar")]
-    public Transform bootsListParent;
-    public GameObject bootsItemPrefab;
+    [Header("Tabs")]
+    public Button featuredTab;
+    public Button currencyTab;
+    public Button packsTab;
+    public Button equipmentTab;
 
-    [Header("Lüks Eşyalar")]
-    public Transform luxuryListParent;
-    public GameObject luxuryItemPrefab;
+    // Dummy Data List
+    private List<MarketItemData> allItems = new List<MarketItemData>();
 
-    [Header("Tüketilebilirler")]
-    public Button buyEnergyDrinkButton;
-    public Button buyRehabItemButton;
-    public TextMeshProUGUI energyDrinkPriceText;
-    public TextMeshProUGUI rehabItemPriceText;
-
-    private void OnEnable()
+    private void Start()
     {
-        RefreshData();
-        SetupButtons();
+        SetupTabs();
+        GenerateDummyData(); // Gerçek veriler gelene kadar test verisi
+        ShowTab(MarketItemType.Featured);
     }
 
-    private void SetupButtons()
+    private void SetupTabs()
     {
-        if (buyEnergyDrinkButton != null)
-            buyEnergyDrinkButton.onClick.AddListener(OnBuyEnergyDrinkButton);
-
-        if (buyRehabItemButton != null)
-            buyRehabItemButton.onClick.AddListener(OnBuyRehabItemButton);
+        if (featuredTab) featuredTab.onClick.AddListener(() => ShowTab(MarketItemType.Featured));
+        if (currencyTab) currencyTab.onClick.AddListener(() => ShowTab(MarketItemType.Currency));
+        if (packsTab) packsTab.onClick.AddListener(() => ShowTab(MarketItemType.Packs));
+        if (equipmentTab) equipmentTab.onClick.AddListener(() => ShowTab(MarketItemType.Equipment));
     }
 
-    /// <summary>
-    /// Verileri yenile
-    /// </summary>
-    private void RefreshData()
+    public void ShowTab(MarketItemType type)
     {
-        if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave())
+        // Clear existing
+        foreach (Transform child in contentParent)
         {
-            Debug.LogWarning("[MarketUI] No current save!");
-            return;
+            Destroy(child.gameObject);
         }
 
-        EconomyData economy = GameManager.Instance.CurrentSave.economyData;
-        if (economy == null) return;
+        // Filter and Create
+        var itemsToShow = allItems.Where(x => x.type == type).ToList();
 
-        // Para göster
-        if (moneyText != null)
-            moneyText.text = $"Para: {economy.money:N0}€";
-
-        // Fiyatları göster
-        if (energyDrinkPriceText != null)
-            energyDrinkPriceText.text = "50€";
-
-        if (rehabItemPriceText != null)
-            rehabItemPriceText.text = "100€";
-
-        // Kramponları göster (TODO: MarketSystem'den krampon listesi alınacak)
-        // DisplayBoots();
-
-        // Lüks eşyaları göster (TODO: MarketSystem'den lüks eşya listesi alınacak)
-        // DisplayLuxuryItems();
+        foreach (var itemData in itemsToShow)
+        {
+            GameObject obj = Instantiate(itemPrefab, contentParent);
+            MarketItemUI ui = obj.GetComponent<MarketItemUI>();
+            if (ui)
+            {
+                ui.Setup(itemData, OnBuyItem);
+            }
+        }
+        
+        // Reset Scroll
+        if (scrollRect) scrollRect.verticalNormalizedPosition = 1f;
     }
 
-    private void OnBuyEnergyDrinkButton()
+    private void OnBuyItem(MarketItemData item)
     {
-        if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave()) return;
-
-        EconomyData economy = GameManager.Instance.CurrentSave.economyData;
-        if (economy == null) return;
-
-        int price = 50;
-
-        if (MarketSystem.Instance != null)
-        {
-            MarketSystem.Instance.BuyEnergyDrink(economy, price);
-        }
-        else
-        {
-            if (economy.money >= price)
-            {
-                economy.SpendMoney(price);
-                economy.energyDrinkCount++;
-                Debug.Log("[MarketUI] Energy drink purchased!");
-            }
-            else
-            {
-                Debug.LogWarning("[MarketUI] Not enough money!");
-            }
-        }
-
-        RefreshData();
+        Debug.Log($"Satın alma işlemi başlatıldı: {item.title} - {item.priceText}");
+        // Buraya satın alma mantığı gelecek (IAP veya oyun içi para)
     }
 
-    private void OnBuyRehabItemButton()
+    private void GenerateDummyData()
     {
-        if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave()) return;
+        allItems.Clear();
 
-        EconomyData economy = GameManager.Instance.CurrentSave.economyData;
-        if (economy == null) return;
+        // --- ÖNE ÇIKANLAR ---
+        allItems.Add(new MarketItemData {
+            title = "BAŞLANGIÇ PAKETİ",
+            description = "50.000 Para + 10 Enerji",
+            priceText = "₺29.99 SATIN AL",
+            type = MarketItemType.Featured,
+            isPopular = true
+        });
 
-        int price = 100;
+        allItems.Add(new MarketItemData {
+            title = "YILDIZ YATIRIMI",
+            description = "250.000 Para + 25 Enerji + 1 YP",
+            priceText = "₺99.99 SATIN AL",
+            type = MarketItemType.Featured,
+            isBestValue = true
+        });
 
-        if (MarketSystem.Instance != null)
-        {
-            MarketSystem.Instance.BuyRehabItem(economy, price);
-        }
-        else
-        {
-            if (economy.money >= price)
-            {
-                economy.SpendMoney(price);
-                economy.rehabItemCount++;
-                Debug.Log("[MarketUI] Rehab item purchased!");
-            }
-            else
-            {
-                Debug.LogWarning("[MarketUI] Not enough money!");
-            }
-        }
+        allItems.Add(new MarketItemData {
+            title = "VIP ELİT PAKET",
+            description = "1 Milyon Para + 50 Enerji + Özel VIP Forma",
+            priceText = "₺249.99 SATIN AL",
+            type = MarketItemType.Featured
+        });
 
-        RefreshData();
+        // --- PARA & ALTIN ---
+        allItems.Add(new MarketItemData {
+            title = "Avuç Dolusu Altın",
+            description = "100 Altın",
+            priceText = "₺19.99",
+            type = MarketItemType.Currency
+        });
+        
+        allItems.Add(new MarketItemData {
+            title = "Kasa Dolusu Para",
+            description = "500.000 Para",
+            priceText = "50 Altın",
+            type = MarketItemType.Currency
+        });
+
+        // --- DİĞERLERİ ---
+        allItems.Add(new MarketItemData {
+            title = "Enerji İçeceği x5",
+            description = "Enerjini %100 doldurur.",
+            priceText = "10 Altın",
+            type = MarketItemType.Packs
+        });
+
+        // --- YENİ EKLENEN ÜRÜN ---
+        allItems.Add(new MarketItemData {
+            title = "Süper Krampon",
+            description = "Şut gücünü %10 artırır.",
+            priceText = "500 Altın",
+            type = MarketItemType.Equipment,
+            isBestValue = true
+        });
     }
 }
-

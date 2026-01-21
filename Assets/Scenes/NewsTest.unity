@@ -671,6 +671,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281f4216a8fb60148be8cfbeb06c2376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuickNewsTest
+  newsItemPrefab: {fileID: 0}
+  newsDetailPrefab: {fileID: 0}
 --- !u!1 &1764171180
 GameObject:
   m_ObjectHideFlags: 0
