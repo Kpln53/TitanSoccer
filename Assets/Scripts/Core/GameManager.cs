@@ -41,7 +41,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Initialize()
     {
+        // Temel sistemleri başlat
+        InitializeBasicSystems();
+        
         // Gerekirse başlangıç kontrolleri yapılabilir
+    }
+    
+    /// <summary>
+    /// Temel sistemleri başlat
+    /// </summary>
+    private void InitializeBasicSystems()
+    {
+        Debug.Log("[GameManager] Temel sistemler başlatıldı.");
     }
 
     /// <summary>

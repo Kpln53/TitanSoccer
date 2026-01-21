@@ -110,8 +110,8 @@ public class HomePanelUI : MonoBehaviour
             if (matchTeamsText != null)
             {
                 matchTeamsText.text = $"{nextMatch.homeTeamName}  vs  {nextMatch.awayTeamName}";
-            }
-            
+        }
+
             // Maç tipi ve tarih
             if (matchTypeText != null)
             {

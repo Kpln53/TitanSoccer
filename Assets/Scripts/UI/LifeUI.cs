@@ -69,10 +69,15 @@ public class LifeUI : MonoBehaviour
     {
         if (teammatesListParent == null || relations.teammateRelations == null) return;
 
-        // Mevcut item'ları temizle
-        foreach (Transform child in teammatesListParent)
+        // Mevcut item'ları temizle - DestroyImmediate yerine Destroy kullan
+        for (int i = teammatesListParent.childCount - 1; i >= 0; i--)
         {
-            Destroy(child.gameObject);
+            Transform child = teammatesListParent.GetChild(i);
+            if (child != null)
+            {
+                child.gameObject.SetActive(false);
+                Destroy(child.gameObject);
+            }
         }
 
         // Her takım arkadaşı için item oluştur

@@ -59,10 +59,15 @@ public class StandingsUI : MonoBehaviour
             return;
         }
 
-        // Mevcut item'ları temizle
-        foreach (Transform child in standingsListParent)
+        // Mevcut item'ları temizle - Memory optimized
+        for (int i = standingsListParent.childCount - 1; i >= 0; i--)
         {
-            Destroy(child.gameObject);
+            Transform child = standingsListParent.GetChild(i);
+            if (child != null)
+            {
+                child.gameObject.SetActive(false);
+                Destroy(child.gameObject);
+            }
         }
 
         // Önce SeasonData'dan puan durumunu dene

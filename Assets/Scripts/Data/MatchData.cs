@@ -23,6 +23,7 @@ public class MatchData
     public int playerGoals = 0;        // Oyuncunun attığı gol sayısı
     public int playerAssists = 0;      // Oyuncunun yaptığı asist sayısı
     public int playerShots = 0;        // Oyuncunun şut sayısı
+    public bool isHomeTeam = false;    // Oyuncu ev sahibi takımda mı?
     
     [Header("Maç Tipi")]
     public MatchType matchType = MatchType.League; // Maç tipi
@@ -49,6 +50,7 @@ public class MatchData
         playerGoals = 0;
         playerAssists = 0;
         playerShots = 0;
+        isHomeTeam = false;
         matchType = MatchType.League;
     }
     
@@ -65,6 +67,7 @@ public class MatchData
         playerGoals = 0;
         playerAssists = 0;
         playerShots = 0;
+        isHomeTeam = false;
         matchType = type;
     }
     

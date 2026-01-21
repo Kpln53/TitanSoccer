@@ -12,22 +12,22 @@ public class CareerHubUI : MonoBehaviour
     [Header("Ana Paneller")]
     public GameObject homePanel;
     public GameObject newsPanel;
-    public GameObject socialMediaPanel;
     public GameObject marketPanel;
     public GameObject trainingPanel;
     public GameObject lifePanel;
     public GameObject playerStatsPanel;
     public GameObject standingsPanel;
+    public GameObject socialMediaPanel;
 
     [Header("Panel Butonları")]
     public Button homeButton;
     public Button newsButton;
-    public Button socialMediaButton;
     public Button marketButton;
     public Button trainingButton;
     public Button lifeButton;
     public Button playerStatsButton;
     public Button standingsButton;
+    public Button socialMediaButton;
 
     [Header("Diğer Butonlar")]
     public Button goToMatchButton;
@@ -36,6 +36,15 @@ public class CareerHubUI : MonoBehaviour
 
     private void Start()
     {
+        if (socialMediaPanel == null)
+        {
+            var found = GameObject.Find("SocialMediaPanel");
+            if (found != null && found.transform.parent.name == "Content") // Content içinde olduğundan emin ol (Builder yapısını hatırla)
+                socialMediaPanel = found;
+             else if (found != null) // Direkt root'ta veya başka yerdeyse
+                 socialMediaPanel = found;
+        }
+
         SetupButtons();
         RefreshTopPanel();
         ShowPanel(homePanel); // Başlangıçta Home panelini göster
@@ -61,9 +70,6 @@ public class CareerHubUI : MonoBehaviour
         if (newsButton != null)
             newsButton.onClick.AddListener(() => ShowPanel(newsPanel));
 
-        if (socialMediaButton != null)
-            socialMediaButton.onClick.AddListener(() => ShowPanel(socialMediaPanel));
-
         if (marketButton != null)
             marketButton.onClick.AddListener(() => ShowPanel(marketPanel));
 
@@ -78,6 +84,9 @@ public class CareerHubUI : MonoBehaviour
 
         if (standingsButton != null)
             standingsButton.onClick.AddListener(() => ShowPanel(standingsPanel));
+
+        if (socialMediaButton != null)
+            socialMediaButton.onClick.AddListener(() => ShowPanel(socialMediaPanel));
 
         // Diğer butonlar
         if (goToMatchButton != null)
@@ -94,12 +103,12 @@ public class CareerHubUI : MonoBehaviour
         // Tüm panelleri gizle
         if (homePanel != null) homePanel.SetActive(false);
         if (newsPanel != null) newsPanel.SetActive(false);
-        if (socialMediaPanel != null) socialMediaPanel.SetActive(false);
         if (marketPanel != null) marketPanel.SetActive(false);
         if (trainingPanel != null) trainingPanel.SetActive(false);
         if (lifePanel != null) lifePanel.SetActive(false);
         if (playerStatsPanel != null) playerStatsPanel.SetActive(false);
         if (standingsPanel != null) standingsPanel.SetActive(false);
+        if (socialMediaPanel != null) socialMediaPanel.SetActive(false);
 
         // İstenen paneli göster
         panel.SetActive(true);

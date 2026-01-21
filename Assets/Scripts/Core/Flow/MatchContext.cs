@@ -104,8 +104,12 @@ public class MatchContext : MonoBehaviour
         awayTeamName = "";
         isPlayerHome = true;
         matchType = MatchData.MatchType.League;
-        homeSquad.Clear();
-        awaySquad.Clear();
+        
+        // Listleri temizle ve null check yap
+        homeSquad?.Clear();
+        awaySquad?.Clear();
+        commentaryLines?.Clear();
+        
         homeScore = 0;
         awayScore = 0;
         currentMinute = 0;
@@ -123,7 +127,6 @@ public class MatchContext : MonoBehaviour
         homeTeamPower = 50;
         awayTeamPower = 50;
         currentChance = new ChanceData();
-        commentaryLines.Clear();
     }
 
     /// <summary>

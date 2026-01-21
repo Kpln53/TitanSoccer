@@ -112,7 +112,7 @@ public class CreateDataPackItemPrefabWindow : EditorWindow
         nameText.fontStyle = FontStyles.Bold;
         nameText.color = Color.white;
         nameText.alignment = TextAlignmentOptions.MidlineLeft;
-        nameText.enableWordWrapping = false;
+        nameText.textWrappingMode = TextWrappingModes.NoWrap;
         
         // PackMeta Container
         GameObject packMetaObj = new GameObject("PackMeta");
@@ -196,6 +196,7 @@ public class CreateDataPackItemPrefabWindow : EditorWindow
         }
     }
 }
+
 
 
 

@@ -258,7 +258,6 @@ namespace TitanSoccer.ChanceGameplay
         private Vector2 GetPlayerStartPosition(PlayerPosition position, bool isAttack)
         {
             float yBase = isAttack ? 0f : -5f;
-            float xOffset = 0f;
 
             // Defans mevkileri
             bool isDefensePosition = position == PlayerPosition.STP || 

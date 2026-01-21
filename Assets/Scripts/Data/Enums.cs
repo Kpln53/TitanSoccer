@@ -96,18 +96,6 @@ public enum NewsReaction
 }
 
 /// <summary>
-/// Sosyal medya post türleri
-/// </summary>
-public enum SocialMediaPostType
-{
-    Normal,         // Normal post
-    Match,          // Maç ile ilgili post
-    Transfer,       // Transfer ile ilgili post
-    Achievement,    // Başarı ile ilgili post
-    Personal        // Kişisel post
-}
-
-/// <summary>
 /// Item türleri
 /// </summary>
 public enum ItemType

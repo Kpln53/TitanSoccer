@@ -1,0 +1,38 @@
+{
+  "mcpServers": {
+    "unityMCP": {
+      "command": "C:\\Users\\Eymen Kaplan\\.local\\bin\\uvx.exe",
+      "args": [
+        "--from",
+        "mcpforunityserver==9.0.7",
+        "mcp-for-unity",
+        "--transport",
+        "stdio"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": [
+        "create_script",
+        "delete_file",
+        "create_gameobject",
+        "create_prefab",
+        "modify_scene",
+        "read_file",
+        "write_file",
+        "list_files",
+        "debug_request_context",
+        "read_console",
+        "manage_editor",
+        "manage_scene",
+        "delete_script",
+        "manage_gameobject",
+        "manage_components",
+        "batch_execute",
+        "manage_prefabs",
+        "execute_custom_tool",
+        "find_gameobjects",
+        "execute_menu_item"
+      ]
+    }
+  }
+}

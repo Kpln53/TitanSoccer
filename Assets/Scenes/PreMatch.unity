@@ -762,6 +762,51 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &1046826806
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1046826808}
+  - component: {fileID: 1046826807}
+  m_Layer: 0
+  m_Name: SocialMediaManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1046826807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046826806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ec9ab8dbc72f141bb62cfca0d82ee0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TitanSoccer.SocialMedia.SocialMediaManager
+  config: {fileID: 0}
+--- !u!4 &1046826808
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046826806}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1099857158
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,14 +1220,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 647f9a5e78555bb4eb7799938e57edb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PreMatchUIController
-  homeTeamNameText: {fileID: 1130381812}
-  awayTeamNameText: {fileID: 1834599835}
+  titleText: {fileID: 0}
+  fixtureText: {fileID: 0}
   homeSquadText: {fileID: 476531932}
   awaySquadText: {fileID: 1553595627}
   playerEnergyText: {fileID: 1099857161}
   playerMoralText: {fileID: 28036708}
-  startMatchButton: {fileID: 275671377}
+  lineupStatusText: {fileID: 0}
   backButton: {fileID: 1876289048}
+  startMatchButton: {fileID: 275671377}
 --- !u!4 &1465175056
 Transform:
   m_ObjectHideFlags: 0
@@ -2183,3 +2229,4 @@ SceneRoots:
   - {fileID: 1149122466}
   - {fileID: 1658433194}
   - {fileID: 1465175056}
+  - {fileID: 1046826808}

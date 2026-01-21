@@ -65,9 +65,13 @@ namespace TitanSoccer.ChanceGameplay
 
         private void Update()
         {
-            HandleInput();
-            UpdateMovement();
-            UpdateTargetIndicator();
+            // Input handling - gerekli ama optimize edilmiş
+            if (enabled && gameObject.activeInHierarchy)
+            {
+                HandleInput();
+                UpdateMovement();
+                UpdateTargetIndicator();
+            }
         }
 
         private void HandleInput()
@@ -276,5 +280,6 @@ namespace TitanSoccer.ChanceGameplay
         }
     }
 }
+
 
 

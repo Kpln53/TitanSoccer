@@ -79,20 +79,24 @@ namespace TitanSoccer.ChanceGameplay
 
         private void Update()
         {
-            switch (currentState)
+            // Ball physics - optimize edilmiş
+            if (enabled && gameObject.activeInHierarchy)
             {
-                case BallState.Attached:
-                    UpdateAttached();
-                    break;
-                case BallState.Free:
-                    UpdateFree();
-                    break;
-                case BallState.PassFlight:
-                    UpdatePassFlight();
-                    break;
-                case BallState.ShotFlight:
-                    UpdateShotFlight();
-                    break;
+                switch (currentState)
+                {
+                    case BallState.Attached:
+                        UpdateAttached();
+                        break;
+                    case BallState.Free:
+                        UpdateFree();
+                        break;
+                    case BallState.PassFlight:
+                        UpdatePassFlight();
+                        break;
+                    case BallState.ShotFlight:
+                        UpdateShotFlight();
+                        break;
+                }
             }
         }
 
@@ -234,7 +238,7 @@ namespace TitanSoccer.ChanceGameplay
             // Kaleci kontrolü
             if (ChanceController.Instance != null)
             {
-                var keeper = FindObjectOfType<GoalkeeperAI>();
+                var keeper = FindFirstObjectByType<GoalkeeperAI>();
                 if (keeper != null)
                 {
                     float distToKeeper = Vector2.Distance(newPos, keeper.transform.position);

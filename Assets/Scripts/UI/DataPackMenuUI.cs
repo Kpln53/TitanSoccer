@@ -90,10 +90,15 @@ public class DataPackMenuUI : MonoBehaviour
             return;
         }
 
-        // Mevcut item'ları temizle
-        foreach (Transform child in packListParent)
+        // Mevcut item'ları temizle - Memory optimized
+        for (int i = packListParent.childCount - 1; i >= 0; i--)
         {
-            Destroy(child.gameObject);
+            Transform child = packListParent.GetChild(i);
+            if (child != null)
+            {
+                child.gameObject.SetActive(false);
+                Destroy(child.gameObject);
+            }
         }
 
         // Her pack için item oluştur

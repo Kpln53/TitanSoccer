@@ -138,7 +138,7 @@ namespace TitanSoccer.ChanceGameplay
         private void CreateHUD()
         {
             // EventSystem kontrolü (UI için gerekli)
-            if (FindObjectOfType<UnityEngine.EventSystems.EventSystem>() == null)
+            if (FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
             {
                 GameObject eventSystem = new GameObject("EventSystem");
                 eventSystem.AddComponent<UnityEngine.EventSystems.EventSystem>();

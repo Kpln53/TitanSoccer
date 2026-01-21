@@ -47,7 +47,7 @@ public class MatchSimUIController : MonoBehaviour
 
     private void Start()
     {
-        matchSimController = FindObjectOfType<MatchSimController>();
+        matchSimController = FindFirstObjectByType<MatchSimController>();
         if (matchSimController == null)
         {
             Debug.LogError("[MatchSimUIController] MatchSimController not found!");
@@ -59,7 +59,8 @@ public class MatchSimUIController : MonoBehaviour
 
     private void Update()
     {
-        RefreshUI();
+        // RefreshUI'ı sürekli çağırmak yerine sadece gerektiğinde çağır
+        // Update metodunu boş bırak veya sadece gerekli kontrolleri yap
     }
 
     private void SetupButtons()

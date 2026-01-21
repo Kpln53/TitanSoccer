@@ -123,14 +123,17 @@ namespace TitanSoccer.ChanceGameplay
                 return false;
             }
 
-            // Kurtarış olasılığı
+            // Kurtarış olasılığı - reflexSpeed'i dahil et
             float baseSaveChance = saveSkill / 100f;
             float distancePenalty = (distToShot / diveRange) * 0.3f;
             float accuracyPenalty = shotAccuracy * 0.4f; // İyi şut = düşük kurtarış şansı
+            
+            // Reflex speed bonus - hızlı refleks = daha iyi kurtarış
+            float reflexBonus = (reflexSpeed / 10f) * 0.15f; // Max %15 bonus
+            
+            float saveChance = Mathf.Clamp01(baseSaveChance - distancePenalty - accuracyPenalty + reflexBonus);
 
-            float saveChance = Mathf.Clamp01(baseSaveChance - distancePenalty - accuracyPenalty + 0.1f);
-
-            Debug.Log($"[Goalkeeper] Save chance: {saveChance:F2} (dist: {distToShot:F1}, accuracy: {shotAccuracy:F2})");
+            Debug.Log($"[Goalkeeper] Save chance: {saveChance:F2} (dist: {distToShot:F1}, accuracy: {shotAccuracy:F2}, reflex: +{reflexBonus:F2})");
 
             // Dalış başlat
             StartDive(shotPosition);

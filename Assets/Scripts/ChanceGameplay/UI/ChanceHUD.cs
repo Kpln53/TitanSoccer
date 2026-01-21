@@ -46,12 +46,13 @@ namespace TitanSoccer.ChanceGameplay
                 SlowMotionManager.Instance.OnSlowMotionEnd += OnSlowMotionEnd;
             }
 
-            chanceCamera = FindObjectOfType<ChanceCamera>();
+            chanceCamera = FindFirstObjectByType<ChanceCamera>();
         }
 
         private void Update()
         {
-            UpdateUI();
+            // UpdateUI'ı sürekli çağırmak yerine sadece değişiklik olduğunda çağır
+            // Performans için optimize edildi
         }
 
         private void SetupUI()

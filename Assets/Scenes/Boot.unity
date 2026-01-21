@@ -607,6 +607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BootManager
   delayBeforeMainMenu: 0.5
+  skipOnAnyKey: 1
   mainMenuSceneName: MainMenu
 --- !u!4 &1953939919
 Transform:

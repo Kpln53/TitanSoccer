@@ -4,6 +4,7 @@ using TMPro;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using TitanSoccer.Social;
 
 /// <summary>
 /// Post-Match UI Controller - Maç sonrası ekran
@@ -31,9 +32,18 @@ public class PostMatchUIController : MonoBehaviour
 
     [Header("Butonlar")]
     public Button continueButton;
-    public Button interviewButton; // Disabled
 
     private List<SimulatedMatch> otherMatches = new List<SimulatedMatch>();
+
+    private void OnDestroy()
+    {
+        // Event listener'ları temizle
+        if (continueButton != null)
+            continueButton.onClick.RemoveAllListeners();
+            
+        // Listleri temizle
+        otherMatches?.Clear();
+    }
 
     private void Start()
     {
@@ -47,17 +57,21 @@ public class PostMatchUIController : MonoBehaviour
         
         // 3. UI'ı güncelle
         RefreshUI();
+        
+        // 4. Agresif memory cleanup (UI yüklendikten sonra)
+        StartCoroutine(DelayedCleanup());
+    }
+    
+    private System.Collections.IEnumerator DelayedCleanup()
+    {
+        yield return new WaitForSeconds(0.5f); // UI render edilsin
+        System.GC.Collect(); // Basit memory cleanup
     }
 
     private void SetupButtons()
     {
         if (continueButton != null)
             continueButton.onClick.AddListener(OnContinueButton);
-        
-        if (interviewButton != null)
-        {
-            interviewButton.interactable = false; // Pasif
-        }
     }
 
     /// <summary>
@@ -97,6 +111,12 @@ public class PostMatchUIController : MonoBehaviour
                 match.playerRating = ctx.playerMatchRating;
                 
                 Debug.Log($"[PostMatchUI] Match result saved: {match.homeTeamName} {match.homeScore}-{match.awayScore} {match.awayTeamName}");
+
+                // SOSYAL MEDYA ENTEGRASYONU
+                if (SocialMediaManager.Instance != null)
+                {
+                    SocialMediaManager.Instance.SetPendingMatchContext(match);
+                }
             }
         }
 
@@ -130,6 +150,9 @@ public class PostMatchUIController : MonoBehaviour
         SaveSystem.SaveGame(save, GameManager.Instance.CurrentSaveSlotIndex);
         
         Debug.Log($"[PostMatchUI] Player stats updated - Matches: {save.seasonData.matchesPlayed}, Goals: {save.seasonData.goals}, Assists: {save.seasonData.assists}");
+        
+        // 🔥 HABER ÜRETİMİ - Maç sonrası otomatik haber oluştur
+        GeneratePostMatchNews();
     }
 
     /// <summary>
@@ -149,13 +172,21 @@ public class PostMatchUIController : MonoBehaviour
         if (save.seasonData?.fixtures == null) return;
 
         // Bu hafta oynanması gereken diğer maçları bul (aynı gün/hafta)
-        // Bizim maçımızla aynı tarihli maçlar
-        var todaysMatches = save.seasonData.fixtures
-            .Where(m => !m.isPlayed && 
-                       m.homeTeamName != playerClub && 
-                       m.awayTeamName != playerClub)
-            .Take(8) // Max 8 maç göster
-            .ToList();
+        // Bizim maçımızla aynı tarihli maçlar - LINQ yerine foreach kullan
+        var todaysMatches = new List<MatchData>();
+        int matchCount = 0;
+        
+        foreach (var match in save.seasonData.fixtures)
+        {
+            if (!match.isPlayed && 
+                match.homeTeamName != playerClub && 
+                match.awayTeamName != playerClub &&
+                matchCount < 8) // Max 8 maç
+            {
+                todaysMatches.Add(match);
+                matchCount++;
+            }
+        }
 
         foreach (var match in todaysMatches)
         {
@@ -284,7 +315,7 @@ public class PostMatchUIController : MonoBehaviour
         // Home squad
         if (homeSquadText != null && context.homeSquad != null)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder(256); // Capacity belirle
             sb.AppendLine($"<b>{context.homeTeamName}</b>");
             
             foreach (var player in context.homeSquad)
@@ -296,12 +327,13 @@ public class PostMatchUIController : MonoBehaviour
             }
             
             homeSquadText.text = sb.ToString();
+            sb.Clear(); // StringBuilder'ı temizle
         }
 
         // Away squad
         if (awaySquadText != null && context.awaySquad != null)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder(256); // Capacity belirle
             sb.AppendLine($"<b>{context.awayTeamName}</b>");
             
             foreach (var player in context.awaySquad)
@@ -313,6 +345,7 @@ public class PostMatchUIController : MonoBehaviour
             }
             
             awaySquadText.text = sb.ToString();
+            sb.Clear(); // StringBuilder'ı temizle
         }
     }
 
@@ -364,12 +397,13 @@ public class PostMatchUIController : MonoBehaviour
             }
             else
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder(otherMatches.Count * 50); // Capacity hesapla
                 foreach (var match in otherMatches)
                 {
                     sb.AppendLine($"{match.homeTeamName} {match.homeScore} - {match.awayScore} {match.awayTeamName}");
                 }
                 otherMatchesText.text = sb.ToString();
+                sb.Clear(); // StringBuilder'ı temizle
             }
         }
     }
@@ -378,6 +412,9 @@ public class PostMatchUIController : MonoBehaviour
     {
         Debug.Log("[PostMatchUIController] Continuing...");
         
+        // Listleri temizle
+        otherMatches?.Clear();
+        
         // MatchContext'i temizle (maç bitti)
         if (MatchContext.Instance != null)
         {
@@ -385,6 +422,34 @@ public class PostMatchUIController : MonoBehaviour
         }
 
         SceneFlow.LoadCareerHub();
+    }
+    
+    /// <summary>
+    /// Maç sonrası haber üretimi
+    /// </summary>
+    private void GeneratePostMatchNews()
+    {
+        // NewsGenerator varsa otomatik haber üret
+        if (NewsGenerator.Instance != null)
+        {
+            Debug.Log("📰 [PostMatchUI] Generating post-match news...");
+            NewsGenerator.Instance.GeneratePostMatchNews();
+        }
+        else
+        {
+            Debug.LogWarning("📰 [PostMatchUI] NewsGenerator instance not found!");
+            
+            // NewsGenerator yoksa sahneye ekle
+            GameObject newsGeneratorGO = new GameObject("NewsGenerator");
+            newsGeneratorGO.AddComponent<NewsGenerator>();
+            
+            // Tekrar dene
+            if (NewsGenerator.Instance != null)
+            {
+                Debug.Log("📰 [PostMatchUI] NewsGenerator created, generating news...");
+                NewsGenerator.Instance.GeneratePostMatchNews();
+            }
+        }
     }
 
     /// <summary>

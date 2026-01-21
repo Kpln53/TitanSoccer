@@ -382,6 +382,10 @@ namespace TitanSoccer.ChanceGameplay
                 var ai = opponent.GetComponent<OpponentController>();
                 if (ai == null || ai.HasBall) continue;
 
+                // Pas menzili kontrolü
+                float distanceToTarget = Vector2.Distance(transform.position, opponent.transform.position);
+                if (distanceToTarget > passRange) continue; // Pas menzili dışında
+
                 // Skor hesapla: kaleye yakınlık + oyuncudan uzaklık
                 Vector2 ourGoal = new Vector2(0f, -ChanceController.Instance.GoalPosition.y);
                 float distToGoal = Vector2.Distance(opponent.transform.position, ourGoal);
@@ -422,7 +426,9 @@ namespace TitanSoccer.ChanceGameplay
             Vector2 direction = (goalPos - (Vector2)transform.position).normalized;
             direction = Quaternion.Euler(0, 0, Random.Range(-20f, 20f)) * direction;
 
-            targetPosition = (Vector2)transform.position + direction * 2.5f;
+            // Dribling hızını kullan
+            float moveDistance = dribblingSpeed * Time.deltaTime * 0.5f; // Daha kontrollü hareket
+            targetPosition = (Vector2)transform.position + direction * moveDistance;
             isMoving = true;
         }
 

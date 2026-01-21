@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using TitanSoccer.Data;
+using TitanSoccer.Social.Data;
 
 /// <summary>
 /// Ana kayıt dosyası - Tüm oyun verilerini içerir
@@ -31,6 +33,10 @@ public class SaveData
     [Header("Medya")]
     public MediaData mediaData;         // Haberler ve sosyal medya
     
+    [Header("Sosyal Medya")]
+    public SocialMediaProfile socialMediaProfile;  // Oyuncunun sosyal medya profili
+    public SocialMediaFeed socialMediaFeed;        // Tüm postların feed'i
+    
     public SaveData()
     {
         saveName = "New Career";
@@ -44,6 +50,8 @@ public class SaveData
         relationsData = new RelationsData();
         economyData = new EconomyData();
         mediaData = new MediaData();
+        socialMediaProfile = new SocialMediaProfile();
+        socialMediaFeed = new SocialMediaFeed();
     }
     
     /// <summary>

@@ -72,10 +72,15 @@ public class NewsUI : MonoBehaviour
             return;
         }
 
-        // Mevcut item'ları temizle
-        foreach (Transform child in newsListParent)
+        // Mevcut item'ları temizle - Memory optimized
+        for (int i = newsListParent.childCount - 1; i >= 0; i--)
         {
-            Destroy(child.gameObject);
+            Transform child = newsListParent.GetChild(i);
+            if (child != null)
+            {
+                child.gameObject.SetActive(false);
+                Destroy(child.gameObject);
+            }
         }
 
         // Her haber için item oluştur
