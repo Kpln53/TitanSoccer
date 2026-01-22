@@ -16,14 +16,30 @@ public class StandingsUI : MonoBehaviour
     public Transform standingsListParent;
     public GameObject standingsItemPrefab;
 
+    [Header("Fikstür")]
+    public Transform fixtureListParent;
+    public GameObject fixtureItemPrefab;
+    public TextMeshProUGUI currentWeekText;
+    public Button prevWeekButton;
+    public Button nextWeekButton;
+
     [Header("Geri Butonu")]
     public Button backButton;
 
+    private int displayWeek = 1;
+
     private void OnEnable()
     {
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
+        {
+            displayWeek = GameManager.Instance.CurrentSave.seasonData.currentWeek;
+        }
+        
         RefreshData();
-        if (backButton != null)
-            backButton.onClick.AddListener(OnBackButton);
+        
+        if (backButton != null) backButton.onClick.AddListener(OnBackButton);
+        if (prevWeekButton != null) prevWeekButton.onClick.AddListener(OnPrevWeek);
+        if (nextWeekButton != null) nextWeekButton.onClick.AddListener(OnNextWeek);
     }
 
     /// <summary>
@@ -46,6 +62,84 @@ public class StandingsUI : MonoBehaviour
 
         // Puan durumunu göster
         DisplayStandings(club.leagueName);
+
+        // Fikstürü göster
+        DisplayFixture();
+    }
+
+    private void OnPrevWeek()
+    {
+        if (displayWeek > 1)
+        {
+            displayWeek--;
+            DisplayFixture();
+        }
+    }
+
+    private void OnNextWeek()
+    {
+        // Maksimum hafta kontrolü (Örn: 34)
+        if (displayWeek < 34) 
+        {
+            displayWeek++;
+            DisplayFixture();
+        }
+    }
+
+    private void DisplayFixture()
+    {
+        if (fixtureListParent == null) return;
+        if (currentWeekText != null) currentWeekText.text = $"{displayWeek}. HAFTA";
+
+        // Temizle
+        foreach (Transform child in fixtureListParent) Destroy(child.gameObject);
+
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
+        {
+            var fixtures = GameManager.Instance.CurrentSave.seasonData.fixtures;
+            var weekMatches = fixtures.Where(m => m.weekNumber == displayWeek).ToList();
+
+            foreach (var match in weekMatches)
+            {
+                CreateFixtureItem(match);
+            }
+        }
+    }
+
+    private void CreateFixtureItem(MatchData match)
+    {
+        GameObject itemObj;
+        if (fixtureItemPrefab != null)
+        {
+            itemObj = Instantiate(fixtureItemPrefab, fixtureListParent);
+        }
+        else
+        {
+            // Fallback UI
+            itemObj = new GameObject("FixtureItem");
+            itemObj.transform.SetParent(fixtureListParent);
+            
+            RectTransform rt = itemObj.AddComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(0, 40);
+            
+            TextMeshProUGUI txt = itemObj.AddComponent<TextMeshProUGUI>();
+            txt.fontSize = 18;
+            txt.alignment = TextAlignmentOptions.Center;
+            
+            string score = match.isPlayed ? $"{match.homeScore} - {match.awayScore}" : "v";
+            txt.text = $"{match.homeTeamName}  {score}  {match.awayTeamName}";
+            
+            if (match.isPlayed) txt.color = Color.gray;
+            else txt.color = Color.white;
+        }
+        
+        // Prefab varsa
+        var texts = itemObj.GetComponentsInChildren<TextMeshProUGUI>();
+        if (texts.Length > 0)
+        {
+            string score = match.isPlayed ? $"{match.homeScore} - {match.awayScore}" : "-";
+            texts[0].text = $"{match.homeTeamName}  <color=#FFD700>{score}</color>  {match.awayTeamName}";
+        }
     }
 
     /// <summary>

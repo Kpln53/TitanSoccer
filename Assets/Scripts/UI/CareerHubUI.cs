@@ -33,11 +33,16 @@ public class CareerHubUI : MonoBehaviour
     [Header("Diğer Butonlar")]
     public Button goToMatchButton;
 
+    [Header("Alt Menü Efektleri")]
+    public RectTransform glowEffect; // Parlama efekti (hareket edecek obje)
+    public float glowMoveSpeed = 10f;
+
     [Header("Bildirimler")]
     public GameObject newsBadge;
     public TextMeshProUGUI newsBadgeText;
 
     private GameObject currentActivePanel;
+    private Vector2 targetGlowPosition;
 
     private void Start()
     {
@@ -103,32 +108,52 @@ public class CareerHubUI : MonoBehaviour
     {
         // Panel butonları
         if (homeButton != null)
-            homeButton.onClick.AddListener(() => ShowPanel(homePanel));
+            homeButton.onClick.AddListener(() => { ShowPanel(homePanel); MoveGlowTo(homeButton.GetComponent<RectTransform>()); });
 
         if (newsButton != null)
-            newsButton.onClick.AddListener(() => ShowPanel(newsPanel));
+            newsButton.onClick.AddListener(() => { ShowPanel(newsPanel); MoveGlowTo(newsButton.GetComponent<RectTransform>()); });
 
         if (marketButton != null)
-            marketButton.onClick.AddListener(() => ShowPanel(marketPanel));
+            marketButton.onClick.AddListener(() => { ShowPanel(marketPanel); MoveGlowTo(marketButton.GetComponent<RectTransform>()); });
 
         if (trainingButton != null)
-            trainingButton.onClick.AddListener(() => ShowPanel(trainingPanel));
+            trainingButton.onClick.AddListener(() => { ShowPanel(trainingPanel); MoveGlowTo(trainingButton.GetComponent<RectTransform>()); });
 
         if (lifeButton != null)
-            lifeButton.onClick.AddListener(() => ShowPanel(lifePanel));
+            lifeButton.onClick.AddListener(() => { ShowPanel(lifePanel); MoveGlowTo(lifeButton.GetComponent<RectTransform>()); });
 
         if (playerStatsButton != null)
-            playerStatsButton.onClick.AddListener(() => ShowPanel(playerStatsPanel));
+            playerStatsButton.onClick.AddListener(() => { ShowPanel(playerStatsPanel); MoveGlowTo(playerStatsButton.GetComponent<RectTransform>()); });
 
         if (standingsButton != null)
-            standingsButton.onClick.AddListener(() => ShowPanel(standingsPanel));
+            standingsButton.onClick.AddListener(() => ShowPanel(standingsPanel)); // Standings alt menüde değil
 
         if (socialMediaButton != null)
-            socialMediaButton.onClick.AddListener(() => ShowPanel(socialMediaPanel));
+            socialMediaButton.onClick.AddListener(() => { ShowPanel(socialMediaPanel); MoveGlowTo(socialMediaButton.GetComponent<RectTransform>()); });
 
         // Diğer butonlar
         if (goToMatchButton != null)
             goToMatchButton.onClick.AddListener(OnGoToMatchButton);
+            
+        // Başlangıçta glow'u home butonuna taşı
+        if (homeButton != null) MoveGlowTo(homeButton.GetComponent<RectTransform>());
+    }
+
+    private void Update()
+    {
+        if (glowEffect != null)
+        {
+            glowEffect.anchoredPosition = Vector2.Lerp(glowEffect.anchoredPosition, targetGlowPosition, Time.deltaTime * glowMoveSpeed);
+        }
+    }
+
+    private void MoveGlowTo(RectTransform target)
+    {
+        if (target == null || glowEffect == null) return;
+        
+        // Hedef butonun anchoredPosition'ını al (aynı parent altında olduklarını varsayıyoruz)
+        // Eğer farklı parentlardaysa world position dönüşümü gerekebilir ama genelde alt menüde aynı yerdelerdir.
+        targetGlowPosition = new Vector2(target.anchoredPosition.x, glowEffect.anchoredPosition.y);
     }
 
     /// <summary>

@@ -56,6 +56,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MatchChanceGameplay.unity
     guid: 2cbfb1fc0dbbca74d97c8644b8e40447
+  - enabled: 1
+    path: Assets/Scenes/TrainingGameplay.unity
+    guid: 0bea0f2d99cf1974194e9d8ac7ba76a5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

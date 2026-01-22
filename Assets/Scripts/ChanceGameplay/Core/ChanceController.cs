@@ -54,6 +54,10 @@ namespace TitanSoccer.ChanceGameplay
 
         // Setup verileri
         private ChanceSetupData setupData;
+        
+        // Antrenman Modu
+        private bool isTrainingMode = false;
+        private int trainingDifficulty = 1;
 
         private void Awake()
         {
@@ -71,10 +75,24 @@ namespace TitanSoccer.ChanceGameplay
                 slowMoObj.AddComponent<SlowMotionManager>();
                 Debug.Log("[ChanceController] SlowMotionManager created");
             }
+
+            // Kamerayı bul
+            if (chanceCamera == null)
+            {
+                chanceCamera = FindFirstObjectByType<ChanceCamera>();
+            }
         }
 
         private void Start()
         {
+            // Eğer Training sahnesindeysek (TrainingGameplayManager varsa), otomatik başlama
+            // TrainingManager kendisi StartTrainingMode çağıracak.
+            if (FindFirstObjectByType<TrainingGameplayManager>() != null)
+            {
+                Debug.Log("[ChanceController] Training Mode Detected. Waiting for manager...");
+                return;
+            }
+
             // MatchContext'ten veri al
             if (MatchContext.Instance != null)
             {
@@ -86,6 +104,66 @@ namespace TitanSoccer.ChanceGameplay
                 Debug.LogWarning("[ChanceController] MatchContext not found, using test mode");
                 InitializeTestMode();
             }
+        }
+
+        /// <summary>
+        /// Antrenman modunu başlat
+        /// </summary>
+        public void StartTrainingMode()
+        {
+            isTrainingMode = true;
+            trainingDifficulty = 1;
+            
+            // Temel setup verisi
+            setupData = new ChanceSetupData
+            {
+                chanceType = ChanceType.Attack,
+                playerPosition = PlayerPosition.SF,
+                playerOverall = 70,
+                shootingStat = 70,
+                // Diğer statlar varsayılan
+            };
+
+            ResetTrainingPosition(1);
+        }
+
+        /// <summary>
+        /// Antrenman pozisyonunu yenile
+        /// </summary>
+        public void ResetTrainingPosition(int difficulty)
+        {
+            trainingDifficulty = difficulty;
+            ClearField();
+            
+            // Zorluğa göre pozisyon belirle
+            float distance = 15f + (difficulty * 2f); // Mesafe artar
+            Vector2 playerPos = new Vector2(Random.Range(-5f, 5f), -distance); // Kaleye uzak
+            
+            // Oyuncu ve Top
+            SpawnPlayer(playerPos);
+            SpawnBall(playerPos + Vector2.up * 0.5f);
+            ballController.AttachToPlayer(playerController.gameObject);
+            playerController.GainBall();
+
+            // Kaleci (Zorluğa göre güçlenir)
+            SpawnGoalkeeper(new Vector2(0f, 10f)); // Üst kale
+            if (goalkeperAI != null)
+            {
+                // goalkeperAI.SetDifficulty(difficulty); // İleride eklenebilir
+            }
+
+            // Zorluk > 3 ise defans ekle
+            if (difficulty > 3)
+            {
+                SpawnOpponents(false); // Basit defans
+            }
+
+            // Kamera
+            chanceCamera?.SetTarget(playerController.transform, ChanceCamera.CameraMode.FollowPlayer);
+            
+            // Akış
+            flowState = GameFlowState.WaitingForInput;
+            SlowMotionManager.Instance?.EnableSlowMotion();
         }
 
         /// <summary>
@@ -647,11 +725,24 @@ namespace TitanSoccer.ChanceGameplay
 
             Debug.Log($"[ChanceController] Chance ended: {result}");
 
-            // Sonucu MatchContext'e yaz
-            UpdateMatchContext(result);
-
-            // 2 saniye sonra MatchSim'e dön
-            Invoke(nameof(ReturnToMatchSim), 2f);
+            if (isTrainingMode)
+            {
+                // Antrenman modu sonucu
+                if (result == ChanceOutcome.Goal)
+                {
+                    TrainingGameplayManager.Instance?.OnGoalScored();
+                }
+                else
+                {
+                    TrainingGameplayManager.Instance?.OnMiss();
+                }
+            }
+            else
+            {
+                // Normal maç sonucu
+                UpdateMatchContext(result);
+                Invoke(nameof(ReturnToMatchSim), 2f);
+            }
         }
 
         /// <summary>
@@ -801,7 +892,7 @@ namespace TitanSoccer.ChanceGameplay
             Debug.Log("[ChanceController] Chance skipped by user");
             
             // Pozisyonu "Missed" olarak bitir (ceza yok)
-            if (MatchContext.Instance != null)
+            if (MatchContext.Instance != null && !isTrainingMode)
             {
                 MatchContext.Instance.AddCommentary("Pozisyon sonuçsuz kaldı.");
             }

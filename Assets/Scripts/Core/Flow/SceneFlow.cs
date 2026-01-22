@@ -25,6 +25,11 @@ public static class SceneFlow
         SceneManager.LoadScene("PostMatch");
     }
 
+    public static void LoadTrainingGameplay()
+    {
+        SceneManager.LoadScene("TrainingGameplay");
+    }
+
     public static void LoadMainMenu()
     {
         if (GameStateManager.Instance != null)
