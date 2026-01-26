@@ -1,0 +1,663 @@
+fileFormatVersion: 2
+guid: c1e92b1ee01f59a40a2cba770ea3f6a2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7934144080179398935
+    second: Puan Durumu - Inter Bold_0
+  - first:
+      213: -6443802651330357266
+    second: Puan Durumu - Inter Bold_1
+  - first:
+      213: -6078452174183394899
+    second: Puan Durumu - Inter Bold_2
+  - first:
+      213: -9121306749314294737
+    second: Puan Durumu - Inter Bold_3
+  - first:
+      213: -994780091423144192
+    second: Puan Durumu - Inter Bold_4
+  - first:
+      213: -753980394818735643
+    second: Puan Durumu - Inter Bold_5
+  - first:
+      213: -8803871418828132984
+    second: Puan Durumu - Inter Bold_6
+  - first:
+      213: -1492832232332799636
+    second: Puan Durumu - Inter Bold_7
+  - first:
+      213: 5159467664885304659
+    second: Puan Durumu - Inter Bold_8
+  - first:
+      213: 714939030749143748
+    second: Puan Durumu - Inter Bold_9
+  - first:
+      213: -7291124489979804420
+    second: Puan Durumu - Inter Bold_10
+  - first:
+      213: -3139023028388835132
+    second: Puan Durumu - Inter Bold_11
+  - first:
+      213: 3032225813540382643
+    second: Puan Durumu - Inter Bold_12
+  - first:
+      213: 3072496213934728141
+    second: Puan Durumu - Inter Bold_13
+  - first:
+      213: 7299811193403702045
+    second: Puan Durumu - Inter Bold_14
+  - first:
+      213: 5079120617934971768
+    second: Puan Durumu - Inter Bold_15
+  - first:
+      213: -5472147642389551998
+    second: Puan Durumu - Inter Bold_16
+  - first:
+      213: 8196803422656489292
+    second: Puan Durumu - Inter Bold_17
+  - first:
+      213: 5151734285246081973
+    second: Puan Durumu - Inter Bold_18
+  - first:
+      213: 6105869001557492196
+    second: Puan Durumu - Inter Bold_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e67328fef144e190800000000000000
+      internalID: -7934144080179398935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_1
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 0
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee7dbbc11a30396a0800000000000000
+      internalID: -6443802651330357266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_2
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 0
+        width: 20
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da1199dd3fff4aba0800000000000000
+      internalID: -6078452174183394899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_3
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 0
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2c9fb796db9a6180800000000000000
+      internalID: -9121306749314294737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_4
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 0
+        width: 25
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 007c71507c4d132f0800000000000000
+      internalID: -994780091423144192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_5
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 0
+        width: 20
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e1783f53d25985f0800000000000000
+      internalID: -753980394818735643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_6
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88de888e69d52d580800000000000000
+      internalID: -8803871418828132984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_7
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 0
+        width: 20
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c61dc8a7ef4684be0800000000000000
+      internalID: -1492832232332799636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_8
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 0
+        width: 31
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35d4a93518c1a9740800000000000000
+      internalID: 5159467664885304659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_9
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 0
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c26dd3b249fbe900800000000000000
+      internalID: 714939030749143748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_10
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 10
+        width: 15
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf44a9908e8b0da90800000000000000
+      internalID: -7291124489979804420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_11
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 0
+        width: 8
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c0dc1bdf23ff64d0800000000000000
+      internalID: -3139023028388835132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_12
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 0
+        width: 20
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b728dedf41a41a20800000000000000
+      internalID: 3032225813540382643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_13
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 0
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc3ef4d1703b3aa20800000000000000
+      internalID: 3072496213934728141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_14
+      rect:
+        serializedVersion: 2
+        x: 307
+        y: 0
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1b7f36ba932e4560800000000000000
+      internalID: 7299811193403702045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_15
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 0
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 873606baa49ac7640800000000000000
+      internalID: 5079120617934971768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_16
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 0
+        width: 23
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28421e046b60f04b0800000000000000
+      internalID: -5472147642389551998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_17
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 0
+        width: 22
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c47652dc845e0c170800000000000000
+      internalID: 8196803422656489292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_18
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 0
+        width: 8
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bb2b419903ae7740800000000000000
+      internalID: 5151734285246081973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puan Durumu - Inter Bold_19
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 0
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e147e2b1876cb450800000000000000
+      internalID: 6105869001557492196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Puan Durumu - Inter Bold_0: -7934144080179398935
+      Puan Durumu - Inter Bold_1: -6443802651330357266
+      Puan Durumu - Inter Bold_10: -7291124489979804420
+      Puan Durumu - Inter Bold_11: -3139023028388835132
+      Puan Durumu - Inter Bold_12: 3032225813540382643
+      Puan Durumu - Inter Bold_13: 3072496213934728141
+      Puan Durumu - Inter Bold_14: 7299811193403702045
+      Puan Durumu - Inter Bold_15: 5079120617934971768
+      Puan Durumu - Inter Bold_16: -5472147642389551998
+      Puan Durumu - Inter Bold_17: 8196803422656489292
+      Puan Durumu - Inter Bold_18: 5151734285246081973
+      Puan Durumu - Inter Bold_19: 6105869001557492196
+      Puan Durumu - Inter Bold_2: -6078452174183394899
+      Puan Durumu - Inter Bold_3: -9121306749314294737
+      Puan Durumu - Inter Bold_4: -994780091423144192
+      Puan Durumu - Inter Bold_5: -753980394818735643
+      Puan Durumu - Inter Bold_6: -8803871418828132984
+      Puan Durumu - Inter Bold_7: -1492832232332799636
+      Puan Durumu - Inter Bold_8: 5159467664885304659
+      Puan Durumu - Inter Bold_9: 714939030749143748
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

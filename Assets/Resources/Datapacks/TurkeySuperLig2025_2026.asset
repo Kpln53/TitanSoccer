@@ -20,7 +20,7 @@ MonoBehaviour:
     t\xFCm ger\xE7ek oyuncular"
   packLogo: {fileID: 0}
   leagues:
-  - leagueName: "T\xFCrkiye S\xFCper Lig"
+  - leagueName: "S\xFCper Lig"
     leagueCountry: "T\xFCrkiye"
     leagueTier: 1
     leagueLogo: {fileID: 0}
@@ -32,6 +32,10 @@ MonoBehaviour:
       primaryColor: {r: 1, g: 0.85, b: 0, a: 1}
       secondaryColor: {r: 0.8, g: 0, b: 0, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Fernando Muslera
         position: 0
@@ -51,6 +55,8 @@ MonoBehaviour:
         handling: 81
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "G\xFCnay G\xFCven\xE7"
         position: 0
         overall: 67
@@ -69,6 +75,8 @@ MonoBehaviour:
         handling: 74
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Abd\xFClkerim Bardakc\u0131"
         position: 1
         overall: 75
@@ -87,6 +95,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Davinson S\xE1nchez"
         position: 1
         overall: 77
@@ -105,6 +115,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Ndombasi
         position: 1
         overall: 71
@@ -123,6 +135,8 @@ MonoBehaviour:
         handling: 0
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Emin Bayram
         position: 1
         overall: 68
@@ -141,6 +155,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Derrick K\xF6hn"
         position: 3
         overall: 72
@@ -159,6 +175,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Angeli\xF1o"
         position: 3
         overall: 73
@@ -177,6 +195,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Kaz\u0131mcan Karata\u015F"
         position: 3
         overall: 69
@@ -195,6 +215,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Sacha Boey
         position: 2
         overall: 74
@@ -213,6 +235,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Yusuf Demir
         position: 2
         overall: 70
@@ -231,6 +255,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Lucas Torreira
         position: 4
         overall: 76
@@ -249,6 +275,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Tanguy Ndombele
         position: 4
         overall: 74
@@ -267,6 +295,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Kaan Ayhan
         position: 4
         overall: 72
@@ -285,6 +315,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Berkan Kutlu
         position: 4
         overall: 70
@@ -303,6 +335,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Hakim Ziyech
         position: 5
         overall: 76
@@ -321,6 +355,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Dries Mertens
         position: 5
         overall: 73
@@ -339,6 +375,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Yusuf Demir
         position: 5
         overall: 71
@@ -357,6 +395,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Kerem Akt\xFCrko\u011Flu"
         position: 7
         overall: 74
@@ -375,6 +415,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Wilfried Zaha
         position: 7
         overall: 75
@@ -393,6 +435,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Milot Rashica
         position: 7
         overall: 73
@@ -411,6 +455,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Bar\u0131\u015F Alper Y\u0131lmaz"
         position: 6
         overall: 73
@@ -429,6 +475,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Yunus Akg\xFCn"
         position: 6
         overall: 71
@@ -447,6 +495,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Tet\xEA"
         position: 6
         overall: 72
@@ -465,6 +515,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Mauro Icardi
         position: 10
         overall: 79
@@ -483,6 +535,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Carlos Vinicius
         position: 10
         overall: 72
@@ -501,6 +555,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "C\xE9dric Bakambu"
         position: 10
         overall: 71
@@ -519,6 +575,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Halil Dervi\u015Fo\u011Flu"
         position: 10
         overall: 70
@@ -537,13 +595,20 @@ MonoBehaviour:
         handling: 0
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 73
+      cachedSquadValue: 0
     - teamName: "Fenerbah\xE7e"
       teamShortName: FB
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 1, g: 1, b: 0, a: 1}
       secondaryColor: {r: 0, g: 0.4, b: 0.8, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Dominik Livakovic
         position: 0
@@ -563,6 +628,8 @@ MonoBehaviour:
         handling: 81
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "\u0130rfan Can E\u011Fribayat"
         position: 0
         overall: 72
@@ -581,6 +648,8 @@ MonoBehaviour:
         handling: 74
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Alexander Djiku
         position: 1
         overall: 75
@@ -599,6 +668,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Rodrigo Bec\xE3o"
         position: 1
         overall: 74
@@ -617,6 +688,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "\xC7a\u011Flar S\xF6y\xFCnc\xFC"
         position: 1
         overall: 73
@@ -635,6 +708,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Serdar Aziz
         position: 1
         overall: 71
@@ -653,6 +728,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Ferdi Kad\u0131o\u011Flu"
         position: 3
         overall: 74
@@ -671,6 +748,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Jayden Oosterwolde
         position: 3
         overall: 71
@@ -689,6 +768,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Bright Osayi-Samuel
         position: 2
         overall: 73
@@ -707,6 +788,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Mert M\xFCld\xFCr"
         position: 2
         overall: 71
@@ -725,6 +808,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Sebastian Szymanski
         position: 5
         overall: 76
@@ -743,6 +828,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "\u0130rfan Can Kahveci"
         position: 5
         overall: 73
@@ -761,6 +848,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Miha Zajc
         position: 5
         overall: 71
@@ -779,6 +868,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Ismail Y\xFCksek"
         position: 4
         overall: 70
@@ -797,6 +888,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Mert Hakan Yanda\u015F"
         position: 4
         overall: 72
@@ -815,6 +908,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Fred
         position: 4
         overall: 75
@@ -833,6 +928,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Miguel Crespo
         position: 4
         overall: 70
@@ -851,6 +948,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Dusan Tadic
         position: 7
         overall: 75
@@ -869,6 +968,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Ryan Kent
         position: 7
         overall: 72
@@ -887,6 +988,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Lincoln
         position: 7
         overall: 72
@@ -905,6 +1008,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Cengiz \xDCnder"
         position: 6
         overall: 74
@@ -923,6 +1028,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Edin D\u017Eeko"
         position: 10
         overall: 78
@@ -941,6 +1048,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Michy Batshuayi
         position: 10
         overall: 73
@@ -959,6 +1068,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Joshua King
         position: 10
         overall: 71
@@ -977,6 +1088,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Sebastian Osigwe
         position: 10
         overall: 68
@@ -995,6 +1108,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Serdar Dursun
         position: 10
         overall: 70
@@ -1013,13 +1128,20 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 73
+      cachedSquadValue: 0
     - teamName: "Be\u015Fikta\u015F"
       teamShortName: BJK
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0, g: 0, b: 0, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "Mert G\xFCnok"
         position: 0
@@ -1039,6 +1161,8 @@ MonoBehaviour:
         handling: 63
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Ersin Destano\u011Flu"
         position: 0
         overall: 70
@@ -1057,6 +1181,8 @@ MonoBehaviour:
         handling: 63
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Arthur Theate
         position: 1
         overall: 75
@@ -1075,6 +1201,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Abd\xFClkerim"
         position: 1
         overall: 74
@@ -1093,6 +1221,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Eric Bailly
         position: 1
         overall: 72
@@ -1111,6 +1241,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Romain Sa\xEFss"
         position: 1
         overall: 71
@@ -1129,6 +1261,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Emrecan Uzunhan
         position: 1
         overall: 69
@@ -1147,6 +1281,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Arthur Masuaku
         position: 3
         overall: 72
@@ -1165,6 +1301,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "R\u0131dvan Y\u0131lmaz"
         position: 3
         overall: 71
@@ -1183,6 +1321,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Umut Mera\u015F"
         position: 3
         overall: 69
@@ -1201,6 +1341,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Valentin Rosier
         position: 2
         overall: 73
@@ -1219,6 +1361,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Onur Bulut
         position: 2
         overall: 70
@@ -1237,6 +1381,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Gedson Fernandes
         position: 4
         overall: 74
@@ -1255,6 +1401,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Al-Musrati
         position: 4
         overall: 73
@@ -1273,6 +1421,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Amir Had\u017Eiahmetovi\u0107"
         position: 4
         overall: 71
@@ -1291,6 +1441,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Salih U\xE7an"
         position: 5
         overall: 72
@@ -1309,6 +1461,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Alex Oxlade-Chamberlain
         position: 5
         overall: 73
@@ -1327,6 +1481,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Demir Ege T\u0131knaz"
         position: 5
         overall: 68
@@ -1345,6 +1501,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Ante Rebic
         position: 7
         overall: 74
@@ -1363,6 +1521,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Rachid Ghezzal
         position: 6
         overall: 72
@@ -1381,6 +1541,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Vincent Aboubakar
         position: 10
         overall: 75
@@ -1399,6 +1561,8 @@ MonoBehaviour:
         handling: 0
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Cenk Tosun
         position: 10
         overall: 73
@@ -1417,6 +1581,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Jackson Muleka
         position: 10
         overall: 71
@@ -1435,6 +1601,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Semih K\u0131l\u0131\xE7soy"
         position: 10
         overall: 70
@@ -1453,6 +1621,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Milutin Osmaji\u0107"
         position: 10
         overall: 70
@@ -1471,13 +1641,20 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 72
+      cachedSquadValue: 0
     - teamName: Trabzonspor
       teamShortName: TS
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0.8, g: 0, b: 0, a: 1}
       secondaryColor: {r: 0, g: 0.2, b: 0.6, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "U\u011Furcan \xC7ak\u0131r"
         position: 0
@@ -1497,6 +1674,8 @@ MonoBehaviour:
         handling: 74
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Mehmet Can Ayd\u0131n"
         position: 0
         overall: 68
@@ -1515,6 +1694,8 @@ MonoBehaviour:
         handling: 70
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Stefano Denswil
         position: 1
         overall: 72
@@ -1533,6 +1714,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Eren Elmal\u0131"
         position: 1
         overall: 70
@@ -1551,6 +1734,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Tayyib Talha Sanu\xE7"
         position: 1
         overall: 69
@@ -1569,6 +1754,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Enis Destan
         position: 3
         overall: 71
@@ -1587,6 +1774,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Muhammet Taha Tepe
         position: 3
         overall: 68
@@ -1605,6 +1794,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Abd\xFClkadir \xD6m\xFCr"
         position: 2
         overall: 73
@@ -1623,6 +1814,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Trezeguet
         position: 2
         overall: 72
@@ -1641,6 +1834,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Dimitris Kourbelis
         position: 4
         overall: 71
@@ -1659,6 +1854,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Manolis Siopis
         position: 4
         overall: 70
@@ -1677,6 +1874,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Enis Bardhi
         position: 5
         overall: 74
@@ -1695,6 +1894,8 @@ MonoBehaviour:
         handling: 0
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Edin Vi\u0161\u0107a"
         position: 5
         overall: 72
@@ -1713,6 +1914,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Anastasios Bakasetas
         position: 5
         overall: 73
@@ -1731,6 +1934,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Trezeguet
         position: 7
         overall: 73
@@ -1749,6 +1954,8 @@ MonoBehaviour:
         handling: 0
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Muhammet Taha Tepe
         position: 6
         overall: 69
@@ -1767,6 +1974,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Paul Onuachu
         position: 10
         overall: 75
@@ -1785,6 +1994,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Edin D\u017Eeko"
         position: 10
         overall: 74
@@ -1803,6 +2014,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Nicol\xE1s Pe\xF1a"
         position: 10
         overall: 71
@@ -1821,13 +2034,20 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 72
+      cachedSquadValue: 0
     - teamName: "Ba\u015Fak\u015Fehir"
       teamShortName: "BA\u015E"
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0.2, g: 0.4, b: 0.8, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Volkan Babacan
         position: 0
@@ -1847,6 +2067,8 @@ MonoBehaviour:
         handling: 68
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Leo Duarte
         position: 1
         overall: 71
@@ -1865,6 +2087,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Mahmut Tekdemir
         position: 4
         overall: 70
@@ -1883,6 +2107,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Lucas Lima
         position: 3
         overall: 71
@@ -1901,6 +2127,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Serdar G\xFCrler"
         position: 6
         overall: 70
@@ -1919,6 +2147,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Krzysztof Pi\u0105tek"
         position: 10
         overall: 73
@@ -1937,6 +2167,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Deniz T\xFCr\xFC\xE7"
         position: 5
         overall: 71
@@ -1955,6 +2187,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Edin Vi\u0161\u0107a"
         position: 7
         overall: 72
@@ -1973,6 +2207,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Patryk Szysz
         position: 1
         overall: 69
@@ -1991,6 +2227,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Okan Kocuk
         position: 0
         overall: 68
@@ -2009,6 +2247,8 @@ MonoBehaviour:
         handling: 64
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Emre Bel\xF6zo\u011Flu"
         position: 5
         overall: 69
@@ -2027,6 +2267,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Lucas Biglia
         position: 4
         overall: 70
@@ -2045,13 +2287,20 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 70
+      cachedSquadValue: 0
     - teamName: Alanyaspor
       teamShortName: ALA
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0, g: 0.6, b: 0.8, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "Ertu\u011Frul Ta\u015Fk\u0131ran"
         position: 0
@@ -2071,6 +2320,8 @@ MonoBehaviour:
         handling: 61
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Efecan Karaca
         position: 5
         overall: 71
@@ -2089,6 +2340,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Leroy Fer
         position: 4
         overall: 70
@@ -2107,6 +2360,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Nicolas Janvier
         position: 6
         overall: 69
@@ -2125,6 +2380,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Pape Ciss\xE9"
         position: 1
         overall: 71
@@ -2143,6 +2400,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Fatih Aksoy
         position: 1
         overall: 68
@@ -2161,6 +2420,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Yusuf \xD6zdemir"
         position: 3
         overall: 69
@@ -2179,6 +2440,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Jo\xE3o Novais"
         position: 5
         overall: 70
@@ -2197,6 +2460,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Flavio
         position: 10
         overall: 71
@@ -2215,6 +2480,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "O\u011Fuz Ayd\u0131n"
         position: 4
         overall: 68
@@ -2233,6 +2500,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Eren Karata\u015F"
         position: 10
         overall: 69
@@ -2251,13 +2520,20 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 70
+      cachedSquadValue: 0
     - teamName: Konyaspor
       teamShortName: KON
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0.9, g: 0.1, b: 0.1, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "Erhan Erent\xFCrk"
         position: 0
@@ -2277,6 +2553,8 @@ MonoBehaviour:
         handling: 70
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Soner Dikmen
         position: 1
         overall: 68
@@ -2295,6 +2573,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Amilton
         position: 4
         overall: 70
@@ -2313,6 +2593,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Francisco Calvo
         position: 1
         overall: 71
@@ -2331,6 +2613,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Mame Thiam
         position: 10
         overall: 72
@@ -2349,6 +2633,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Endri \xC7eki\xE7i"
         position: 5
         overall: 70
@@ -2367,6 +2653,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Bruno Paz
         position: 4
         overall: 69
@@ -2385,6 +2673,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Konrad Michalak
         position: 7
         overall: 70
@@ -2403,6 +2693,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Sokol Cikalleshi
         position: 10
         overall: 71
@@ -2421,6 +2713,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "U\u011Fur Demirok"
         position: 1
         overall: 68
@@ -2439,6 +2733,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Guilherme
         position: 0
         overall: 68
@@ -2457,13 +2753,20 @@ MonoBehaviour:
         handling: 67
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 70
+      cachedSquadValue: 0
     - teamName: Kayserispor
       teamShortName: KAY
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0, g: 0.4, b: 0.8, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Bilal Bayazit
         position: 0
@@ -2483,6 +2786,8 @@ MonoBehaviour:
         handling: 58
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Miguel Cardoso
         position: 6
         overall: 69
@@ -2501,6 +2806,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Mame Thiam
         position: 10
         overall: 71
@@ -2519,6 +2826,8 @@ MonoBehaviour:
         handling: 0
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Carlos Mane
         position: 7
         overall: 70
@@ -2537,6 +2846,8 @@ MonoBehaviour:
         handling: 0
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Aylton Boa Morte
         position: 5
         overall: 69
@@ -2555,6 +2866,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Onur Bulut
         position: 2
         overall: 69
@@ -2573,6 +2886,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Lionel Carole
         position: 3
         overall: 68
@@ -2591,6 +2906,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Ali Karimi
         position: 4
         overall: 70
@@ -2609,6 +2926,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Joseph Attamah
         position: 1
         overall: 69
@@ -2627,6 +2946,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Arif Kocaman
         position: 4
         overall: 68
@@ -2645,6 +2966,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "G\xF6khan De\u011Firmenci"
         position: 0
         overall: 67
@@ -2663,13 +2986,20 @@ MonoBehaviour:
         handling: 71
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 69
+      cachedSquadValue: 0
     - teamName: Antalyaspor
       teamShortName: ANT
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 1, g: 0.8, b: 0, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Helton Leite
         position: 0
@@ -2689,6 +3019,8 @@ MonoBehaviour:
         handling: 71
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Haji Wright
         position: 10
         overall: 73
@@ -2707,6 +3039,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Sam Larsson
         position: 7
         overall: 72
@@ -2725,6 +3059,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Adam Buksa
         position: 10
         overall: 71
@@ -2743,6 +3079,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Ufuk Akyol
         position: 2
         overall: 69
@@ -2761,6 +3099,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "\xD6mer Toprak"
         position: 1
         overall: 72
@@ -2779,6 +3119,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Fernando
         position: 4
         overall: 70
@@ -2797,6 +3139,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "G\xFCray Vural"
         position: 3
         overall: 69
@@ -2815,6 +3159,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Veysel Sar\u0131"
         position: 5
         overall: 70
@@ -2833,6 +3179,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Erdo\u011Fan Ye\u015Filyurt"
         position: 6
         overall: 69
@@ -2851,6 +3199,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "B\xFCnyamin Balc\u0131"
         position: 1
         overall: 68
@@ -2869,13 +3219,20 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 70
+      cachedSquadValue: 0
     - teamName: Gaziantep FK
       teamShortName: GAZ
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0.8, g: 0, b: 0, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "G\xFCnay G\xFCven\xE7"
         position: 0
@@ -2895,6 +3252,8 @@ MonoBehaviour:
         handling: 72
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Maximilian Beier
         position: 10
         overall: 70
@@ -2913,6 +3272,8 @@ MonoBehaviour:
         handling: 0
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Jo\xE3o Figueiredo"
         position: 5
         overall: 69
@@ -2931,6 +3292,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Marko Jevtovi\u0107"
         position: 4
         overall: 68
@@ -2949,6 +3312,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Furkan Soyalp
         position: 6
         overall: 68
@@ -2967,6 +3332,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Papy Djilobodji
         position: 1
         overall: 69
@@ -2985,6 +3352,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Stelios Kitsiou
         position: 2
         overall: 68
@@ -3003,6 +3372,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "J\xFAnior Morais"
         position: 1
         overall: 68
@@ -3021,6 +3392,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Mirza Cihan
         position: 3
         overall: 67
@@ -3039,6 +3412,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Og\xFCn \xD6z\xE7i\xE7ek"
         position: 4
         overall: 67
@@ -3057,6 +3432,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Mustafa Eskihella\xE7"
         position: 0
         overall: 66
@@ -3075,13 +3452,20 @@ MonoBehaviour:
         handling: 69
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 68
+      cachedSquadValue: 0
     - teamName: "Kas\u0131mpa\u015Fa"
       teamShortName: KAS
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 1, g: 0, b: 0, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "Eray Birni\xE7an"
         position: 0
@@ -3101,6 +3485,8 @@ MonoBehaviour:
         handling: 69
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Ayta\xE7 Kara"
         position: 4
         overall: 68
@@ -3119,6 +3505,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Mamadou Fall
         position: 1
         overall: 69
@@ -3137,6 +3525,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Valentin Eysseric
         position: 5
         overall: 69
@@ -3155,6 +3545,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Florent Hadergjonaj
         position: 2
         overall: 68
@@ -3173,6 +3565,8 @@ MonoBehaviour:
         handling: 0
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Yusuf Erdo\u011Fan"
         position: 7
         overall: 68
@@ -3191,6 +3585,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Haris Hajradinovi\u0107"
         position: 5
         overall: 69
@@ -3209,6 +3605,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Sad\u0131k \xC7iftp\u0131nar"
         position: 1
         overall: 68
@@ -3227,6 +3625,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Mortadha Ben Ouanes
         position: 10
         overall: 68
@@ -3245,6 +3645,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Tunahan Cing\xF6z"
         position: 3
         overall: 67
@@ -3263,6 +3665,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Kenneth Omeruo
         position: 1
         overall: 69
@@ -3281,13 +3685,20 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 68
+      cachedSquadValue: 0
     - teamName: "Fatih Karag\xFCmr\xFCk"
       teamShortName: FKG
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0, g: 0, b: 0.8, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Vincenzo Viviano
         position: 0
@@ -3307,6 +3718,8 @@ MonoBehaviour:
         handling: 68
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Fabio Borini
         position: 10
         overall: 71
@@ -3325,6 +3738,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Youn\xE8s Belhanda"
         position: 5
         overall: 72
@@ -3343,6 +3758,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Valentin Rosier
         position: 2
         overall: 72
@@ -3361,6 +3778,8 @@ MonoBehaviour:
         handling: 0
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Levent Mercan
         position: 1
         overall: 69
@@ -3379,6 +3798,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Emre Mor
         position: 6
         overall: 70
@@ -3397,6 +3818,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Olimpiu Moru\u021Ban"
         position: 5
         overall: 70
@@ -3415,6 +3838,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Alassane Ndao
         position: 3
         overall: 69
@@ -3433,6 +3858,8 @@ MonoBehaviour:
         handling: 0
         age: 30
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Davide Biraschi
         position: 1
         overall: 69
@@ -3451,6 +3878,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Salih Dursun
         position: 1
         overall: 68
@@ -3469,6 +3898,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Eray \u0130\u015Fcan"
         position: 0
         overall: 68
@@ -3487,13 +3918,20 @@ MonoBehaviour:
         handling: 62
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 70
+      cachedSquadValue: 0
     - teamName: "G\xF6ztepe"
       teamShortName: "G\xD6Z"
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0, g: 0.6, b: 0, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Beto
         position: 0
@@ -3513,6 +3951,8 @@ MonoBehaviour:
         handling: 64
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Franck Rib\xE9ry"
         position: 7
         overall: 69
@@ -3531,6 +3971,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Halil Akbunar
         position: 6
         overall: 70
@@ -3549,6 +3991,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Soner Aydo\u011Fdu"
         position: 4
         overall: 69
@@ -3567,6 +4011,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Stefano Napoleoni
         position: 10
         overall: 70
@@ -3585,6 +4031,8 @@ MonoBehaviour:
         handling: 0
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "At\u0131n\xE7 Nukan"
         position: 1
         overall: 68
@@ -3603,6 +4051,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Alpaslan \xD6zt\xFCrk"
         position: 1
         overall: 68
@@ -3621,6 +4071,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Murat Paluli
         position: 5
         overall: 68
@@ -3639,6 +4091,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Berkan Emir
         position: 3
         overall: 67
@@ -3657,6 +4111,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Titi
         position: 2
         overall: 68
@@ -3675,6 +4131,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Murat Cem Akp\u0131nar"
         position: 0
         overall: 66
@@ -3693,13 +4151,20 @@ MonoBehaviour:
         handling: 73
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 68
+      cachedSquadValue: 0
     - teamName: "\xC7aykur Rizespor"
       teamShortName: "R\u0130Z"
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0, g: 0.4, b: 0.8, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "G\xF6khan Akkan"
         position: 0
@@ -3719,6 +4184,8 @@ MonoBehaviour:
         handling: 65
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Yasin Pehlivan
         position: 1
         overall: 68
@@ -3737,6 +4204,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Jonas Svensson
         position: 2
         overall: 69
@@ -3755,6 +4224,8 @@ MonoBehaviour:
         handling: 0
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Martin Minchev
         position: 10
         overall: 70
@@ -3773,6 +4244,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Altin Kryeziu
         position: 4
         overall: 68
@@ -3791,6 +4264,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Eren Albayrak
         position: 3
         overall: 68
@@ -3809,6 +4284,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "G\xF6khan G\xF6n\xFCl"
         position: 2
         overall: 69
@@ -3827,6 +4304,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Yasin \xD6zt\xFCrk"
         position: 5
         overall: 68
@@ -3845,6 +4324,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Emirhan Top\xE7u"
         position: 7
         overall: 68
@@ -3863,6 +4344,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Muhammet Taha \u015Eahin"
         position: 10
         overall: 67
@@ -3881,6 +4364,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Alperen Uysal
         position: 0
         overall: 67
@@ -3899,13 +4384,20 @@ MonoBehaviour:
         handling: 75
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 68
+      cachedSquadValue: 0
     - teamName: Samsunspor
       teamShortName: SAM
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 1, g: 1, b: 1, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Okan Kocuk
         position: 0
@@ -3925,6 +4417,8 @@ MonoBehaviour:
         handling: 61
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Yasin \xD6ztekin"
         position: 6
         overall: 69
@@ -3943,6 +4437,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Emre K\u0131l\u0131n\xE7"
         position: 5
         overall: 70
@@ -3961,6 +4457,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Marius Mouandilmadji
         position: 10
         overall: 70
@@ -3979,6 +4477,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Ga\xEBtan Laura"
         position: 3
         overall: 68
@@ -3997,6 +4497,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Youssef A\xEFt Bennasser"
         position: 4
         overall: 69
@@ -4015,6 +4517,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Kingsley Schindler
         position: 6
         overall: 69
@@ -4033,6 +4537,8 @@ MonoBehaviour:
         handling: 0
         age: 32
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Moryk\xE9 Fofana"
         position: 7
         overall: 69
@@ -4051,6 +4557,8 @@ MonoBehaviour:
         handling: 0
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Erhan Kartal
         position: 1
         overall: 68
@@ -4069,6 +4577,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Moussa Guel
         position: 4
         overall: 68
@@ -4087,6 +4597,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Alioune Ndour
         position: 10
         overall: 68
@@ -4105,13 +4617,20 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 69
+      cachedSquadValue: 0
     - teamName: "Ey\xFCpspor"
       teamShortName: "EY\xDC"
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0.8, g: 0, b: 0, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: Alperen Uysal
         position: 0
@@ -4131,6 +4650,8 @@ MonoBehaviour:
         handling: 72
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Emre K\u0131l\u0131n\xE7"
         position: 5
         overall: 68
@@ -4149,6 +4670,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Mert \xC7elik"
         position: 1
         overall: 67
@@ -4167,6 +4690,8 @@ MonoBehaviour:
         handling: 0
         age: 20
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Burak S\xFCleyman"
         position: 2
         overall: 67
@@ -4185,6 +4710,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Kemal R\xFCzgar"
         position: 3
         overall: 67
@@ -4203,6 +4730,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Furkan Yaman
         position: 6
         overall: 68
@@ -4221,6 +4750,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Yasin D\xFClger"
         position: 4
         overall: 67
@@ -4239,6 +4770,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Emre K\u0131l\u0131n\xE7"
         position: 7
         overall: 67
@@ -4257,6 +4790,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Mert \xC7elik"
         position: 10
         overall: 67
@@ -4275,6 +4810,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Burak S\xFCleyman"
         position: 0
         overall: 66
@@ -4293,6 +4830,8 @@ MonoBehaviour:
         handling: 59
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Kemal R\xFCzgar"
         position: 1
         overall: 66
@@ -4311,13 +4850,20 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 67
+      cachedSquadValue: 0
     - teamName: Pendikspor
       teamShortName: PEN
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 0, g: 0.6, b: 0.2, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "Erdem \xD6zgen\xE7"
         position: 0
@@ -4337,6 +4883,8 @@ MonoBehaviour:
         handling: 58
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Halil Akbunar
         position: 6
         overall: 68
@@ -4355,6 +4903,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Thibault Moulin
         position: 4
         overall: 67
@@ -4373,6 +4923,8 @@ MonoBehaviour:
         handling: 0
         age: 26
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Leandro Kappel
         position: 10
         overall: 68
@@ -4391,6 +4943,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Erencan Yard\u0131mc\u0131"
         position: 5
         overall: 67
@@ -4409,6 +4963,8 @@ MonoBehaviour:
         handling: 0
         age: 29
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Murat Ak\xE7a"
         position: 1
         overall: 67
@@ -4427,6 +4983,8 @@ MonoBehaviour:
         handling: 0
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Alpaslan \xD6zt\xFCrk"
         position: 1
         overall: 67
@@ -4445,6 +5003,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Murat Ulu\xE7"
         position: 3
         overall: 66
@@ -4463,6 +5023,8 @@ MonoBehaviour:
         handling: 0
         age: 18
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Emre Ta\u015Fdemir"
         position: 2
         overall: 67
@@ -4481,6 +5043,8 @@ MonoBehaviour:
         handling: 0
         age: 25
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Berkay \xD6zt\xFCrk"
         position: 4
         overall: 66
@@ -4499,6 +5063,8 @@ MonoBehaviour:
         handling: 0
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Murat S\xF6zgelmez"
         position: 0
         overall: 65
@@ -4517,13 +5083,20 @@ MonoBehaviour:
         handling: 65
         age: 22
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 67
+      cachedSquadValue: 0
     - teamName: Hatayspor
       teamShortName: HAT
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 1, g: 0.8, b: 0, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
+      stadiumName: Stadyum
+      stadiumCapacity: 25000
+      transferBudget: 5000000
+      wageBudget: 500000
       players:
       - playerName: "Erce Karde\u015Fler"
         position: 0
@@ -4543,6 +5116,8 @@ MonoBehaviour:
         handling: 66
         age: 23
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Ayoub El Kaabi
         position: 10
         overall: 69
@@ -4561,6 +5136,8 @@ MonoBehaviour:
         handling: 0
         age: 19
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "R\xFAben Ribeiro"
         position: 5
         overall: 68
@@ -4579,6 +5156,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Carlos Strandberg
         position: 10
         overall: 68
@@ -4597,6 +5176,8 @@ MonoBehaviour:
         handling: 0
         age: 31
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Z\xE9 Lu\xEDs"
         position: 10
         overall: 68
@@ -4615,6 +5196,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Burak Camoglu
         position: 2
         overall: 67
@@ -4633,6 +5216,8 @@ MonoBehaviour:
         handling: 0
         age: 34
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Adama Traor\xE9"
         position: 7
         overall: 68
@@ -4651,6 +5236,8 @@ MonoBehaviour:
         handling: 0
         age: 28
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Kerim Al\u0131c\u0131"
         position: 4
         overall: 67
@@ -4669,6 +5256,8 @@ MonoBehaviour:
         handling: 0
         age: 24
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: Onur Ergun
         position: 1
         overall: 67
@@ -4687,6 +5276,8 @@ MonoBehaviour:
         handling: 0
         age: 27
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Burak \xD6ks\xFCz"
         position: 3
         overall: 66
@@ -4705,6 +5296,8 @@ MonoBehaviour:
         handling: 0
         age: 21
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       - playerName: "Kamil Ahmet \xC7\xF6rek\xE7i"
         position: 0
         overall: 65
@@ -4723,5 +5316,35 @@ MonoBehaviour:
         handling: 58
         age: 33
         nationality: "T\xFCrkiye"
+        marketValue: 500000
+        potential: 75
       cachedTeamPower: 67
+      cachedSquadValue: 0
+  - leagueName: Premier League
+    leagueCountry: "\u0130ngiltere"
+    leagueTier: 1
+    leagueLogo: {fileID: 0}
+    leaguePower: 50
+    teams: []
+  tournaments:
+  - tournamentName: "\u015Eampiyonlar Ligi"
+    country: International
+    logo: {fileID: 0}
+    format: 3
+    teamNames: []
+  - tournamentName: Avrupa Ligi
+    country: International
+    logo: {fileID: 0}
+    format: 3
+    teamNames: []
+  - tournamentName: Konferans Ligi
+    country: International
+    logo: {fileID: 0}
+    format: 3
+    teamNames: []
   standaloneTeams: []
+  rivalries:
+  - team1: Galatasaray
+    team2: "Fenerbah\xE7e"
+    derbyName: "\u0130stanbul Derbisi"
+    intensity: 10

@@ -350,14 +350,24 @@ namespace TitanSoccer.ChanceGameplay
             // 2. Kale bölgesine doğruysa → ŞUT
             if (ChanceController.Instance != null)
             {
-                Vector2 goalPos = ChanceController.Instance.GoalPosition;
+                // FieldSettings'ten kale pozisyonunu al
+                float goalY = 10f;
+                if (ChanceController.Instance.Field != null)
+                {
+                    goalY = ChanceController.Instance.CurrentChanceType == ChanceType.Attack 
+                        ? ChanceController.Instance.Field.GoalLineY 
+                        : -ChanceController.Instance.Field.GoalLineY;
+                }
+
+                Vector2 goalPos = new Vector2(0f, goalY);
                 Vector2 direction = (data.endPoint - data.startPoint).normalized;
                 Vector2 toGoal = (goalPos - data.startPoint).normalized;
 
                 float dotToGoal = Vector2.Dot(direction, toGoal);
                 
                 // Kaleye doğru mu ve yeterince uzun mu?
-                if (dotToGoal > 0.3f && data.length > 2f)
+                // Şut algılamayı kolaylaştır: dot > 0.3 ve length > 1.5
+                if (dotToGoal > 0.3f && data.length > 1.5f)
                 {
                     // Kale bölgesinde mi bitiyor?
                     if (ChanceController.Instance.IsInGoalArea(data.endPoint))
@@ -366,7 +376,9 @@ namespace TitanSoccer.ChanceGameplay
                     }
 
                     // Kaleye doğru uzun çizgi de şut sayılsın
-                    if (dotToGoal > 0.6f && data.length > 4f)
+                    // Kale yakınındaysak daha kolay şut çekilsin
+                    float distToGoal = Vector2.Distance(data.startPoint, goalPos);
+                    if (distToGoal < 15f && dotToGoal > 0.5f)
                     {
                         return ActionType.Shoot;
                     }

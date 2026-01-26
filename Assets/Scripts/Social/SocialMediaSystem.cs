@@ -118,13 +118,18 @@ namespace TitanSoccer.Social
 
         private void GenerateAIClubPosts()
         {
-            // Ligdeki rastgele takımlardan postlar (Örnek veriler)
-            string[] otherTeams = { "Galatasaray", "Fenerbahçe", "Beşiktaş", "Trabzonspor", "Man City", "Liverpool", "Bayern" };
-            
+            // Sadece DataPack'teki takımlardan post oluştur
+            if (DataPackManager.Instance == null || DataPackManager.Instance.activeDataPack == null) return;
+
+            var allTeams = DataPackManager.Instance.activeDataPack.GetAllTeams();
+            if (allTeams == null || allTeams.Count == 0) return;
+
             // 2 tane rastgele takım postu oluştur
             for (int i = 0; i < 2; i++)
             {
-                string team = otherTeams[Random.Range(0, otherTeams.Length)];
+                var randomTeam = allTeams[Random.Range(0, allTeams.Count)];
+                string team = randomTeam.teamName;
+
                 if (LastMatchContext != null && (team == LastMatchContext.homeTeamName || team == LastMatchContext.awayTeamName)) continue; // Bizim maçtaki takımlar olmasın
 
                 bool isWin = Random.value > 0.5f;

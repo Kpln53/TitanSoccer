@@ -27,6 +27,7 @@ public class MatchData
     
     [Header("Maç Tipi")]
     public MatchType matchType = MatchType.League; // Maç tipi
+    public int weekNumber = 0;         // Hafta numarası
     
     public enum MatchType
     {
@@ -52,9 +53,10 @@ public class MatchData
         playerShots = 0;
         isHomeTeam = false;
         matchType = MatchType.League;
+        weekNumber = 0;
     }
     
-    public MatchData(string homeTeam, string awayTeam, DateTime date, MatchType type = MatchType.League)
+    public MatchData(string homeTeam, string awayTeam, DateTime date, MatchType type = MatchType.League, int week = 0)
     {
         homeTeamName = homeTeam;
         awayTeamName = awayTeam;
@@ -69,6 +71,7 @@ public class MatchData
         playerShots = 0;
         isHomeTeam = false;
         matchType = type;
+        weekNumber = week;
     }
     
     /// <summary>
@@ -111,4 +114,3 @@ public class MatchData
         return isPlayed && homeScore == awayScore;
     }
 }
-

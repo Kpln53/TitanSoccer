@@ -75,6 +75,7 @@ public static class FixtureGenerator
         for (int round = 0; round < numRounds; round++)
         {
             DateTime matchDate = startDate.AddDays(round * 7); // Her hafta 1 maç
+            int weekNum = isSecondHalf ? (numRounds + round + 1) : (round + 1); // Hafta numarası hesapla
 
             for (int match = 0; match < matchesPerRound; match++)
             {
@@ -102,11 +103,37 @@ public static class FixtureGenerator
                     awayTeam = temp;
                 }
 
-                MatchData newMatch = new MatchData(homeTeam, awayTeam, matchDate, MatchData.MatchType.League);
+                // Maç tipini belirle (Derbi kontrolü)
+                MatchData.MatchType mType = MatchData.MatchType.League;
+                if (IsDerby(homeTeam, awayTeam))
+                {
+                    mType = MatchData.MatchType.Derby;
+                }
+
+                MatchData newMatch = new MatchData(homeTeam, awayTeam, matchDate, mType, weekNum);
                 fixtures.Add(newMatch);
             }
         }
 
         return fixtures;
+    }
+
+    private static bool IsDerby(string team1, string team2)
+    {
+        if (DataPackManager.Instance != null && DataPackManager.Instance.activeDataPack != null)
+        {
+            var rivalries = DataPackManager.Instance.activeDataPack.rivalries;
+            if (rivalries != null)
+            {
+                foreach (var r in rivalries)
+                {
+                    if ((r.team1 == team1 && r.team2 == team2) || (r.team1 == team2 && r.team2 == team1))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

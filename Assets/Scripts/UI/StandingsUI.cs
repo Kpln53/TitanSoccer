@@ -79,7 +79,9 @@ public class StandingsUI : MonoBehaviour
     private void OnNextWeek()
     {
         // Maksimum hafta kontrolü (Örn: 34)
-        if (displayWeek < 34) 
+        // DataPack'ten lig takım sayısını alıp hafta sayısını hesaplayabiliriz
+        // Şimdilik 38 hafta varsayalım (20 takım)
+        if (displayWeek < 38) 
         {
             displayWeek++;
             DisplayFixture();
@@ -340,4 +342,3 @@ public class StandingsUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 }
-

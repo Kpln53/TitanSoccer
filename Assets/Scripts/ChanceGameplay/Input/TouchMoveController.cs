@@ -115,12 +115,24 @@ namespace TitanSoccer.ChanceGameplay
         {
             if (ChanceController.Instance == null) return false;
 
-            Vector2 fieldSize = ChanceController.Instance.FieldSize;
-            float halfWidth = fieldSize.x / 2f;
-            float halfHeight = fieldSize.y / 2f;
+            // FieldSettings varsa onu kullan
+            if (ChanceController.Instance.Field != null)
+            {
+                var f = ChanceController.Instance.Field;
+                float halfWidth = f.width / 2f;
+                float halfHeight = f.length / 2f;
 
-            return position.x >= -halfWidth && position.x <= halfWidth &&
-                   position.y >= -halfHeight && position.y <= halfHeight;
+                return position.x >= -halfWidth && position.x <= halfWidth &&
+                       position.y >= -halfHeight && position.y <= halfHeight;
+            }
+
+            // Yoksa eski fieldSize'ı kullan
+            Vector2 fieldSize = ChanceController.Instance.FieldSize;
+            float hw = fieldSize.x / 2f;
+            float hh = fieldSize.y / 2f;
+
+            return position.x >= -hw && position.x <= hw &&
+                   position.y >= -hh && position.y <= hh;
         }
 
         /// <summary>

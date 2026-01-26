@@ -21,6 +21,11 @@ namespace TitanSoccer.ChanceGameplay
         [SerializeField] private float currentTimeScale = 1f;
         [SerializeField] private float targetTimeScale = 1f;
 
+        // Visual Effect
+        private UnityEngine.UI.Image overlayImage;
+        private float targetOverlayAlpha = 0f;
+        private float currentOverlayAlpha = 0f;
+
         // Events
         public event Action OnSlowMotionStart;
         public event Action OnSlowMotionEnd;
@@ -36,11 +41,38 @@ namespace TitanSoccer.ChanceGameplay
                 return;
             }
             Instance = this;
+
+            CreateVisualEffect();
+        }
+
+        private void CreateVisualEffect()
+        {
+            // Canvas oluştur
+            GameObject canvasObj = new GameObject("SlowMotionCanvas");
+            canvasObj.transform.SetParent(transform);
+            
+            Canvas canvas = canvasObj.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 90; // HUD'un altında (HUD 100)
+
+            // Image oluştur
+            GameObject imgObj = new GameObject("Overlay");
+            imgObj.transform.SetParent(canvasObj.transform, false);
+            
+            RectTransform rect = imgObj.AddComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+
+            overlayImage = imgObj.AddComponent<UnityEngine.UI.Image>();
+            overlayImage.color = new Color(0.1f, 0.1f, 0.1f, 0f); // Siyah/Gri, başlangıçta görünmez
+            overlayImage.raycastTarget = false;
         }
 
         private void Update()
         {
-            // Smooth geçiş
+            // Smooth geçiş (Time Scale)
             if (!Mathf.Approximately(currentTimeScale, targetTimeScale))
             {
                 currentTimeScale = Mathf.Lerp(currentTimeScale, targetTimeScale, Time.unscaledDeltaTime * transitionSpeed);
@@ -54,6 +86,18 @@ namespace TitanSoccer.ChanceGameplay
                 Time.timeScale = currentTimeScale;
                 Time.fixedDeltaTime = 0.02f * currentTimeScale; // Physics için
             }
+
+            // Visual Effect Update
+            if (overlayImage != null)
+            {
+                if (!Mathf.Approximately(currentOverlayAlpha, targetOverlayAlpha))
+                {
+                    currentOverlayAlpha = Mathf.Lerp(currentOverlayAlpha, targetOverlayAlpha, Time.unscaledDeltaTime * transitionSpeed * 2f);
+                    Color c = overlayImage.color;
+                    c.a = currentOverlayAlpha;
+                    overlayImage.color = c;
+                }
+            }
         }
 
         /// <summary>
@@ -65,6 +109,7 @@ namespace TitanSoccer.ChanceGameplay
 
             isSlowMotion = true;
             targetTimeScale = slowMotionScale;
+            targetOverlayAlpha = 0.6f; // %60 grileşme
             OnSlowMotionStart?.Invoke();
 
             Debug.Log("[SlowMotion] Enabled");
@@ -79,6 +124,7 @@ namespace TitanSoccer.ChanceGameplay
 
             isSlowMotion = false;
             targetTimeScale = normalTimeScale;
+            targetOverlayAlpha = 0f; // Normale dön
             OnSlowMotionEnd?.Invoke();
 
             Debug.Log("[SlowMotion] Disabled");
@@ -94,6 +140,15 @@ namespace TitanSoccer.ChanceGameplay
             targetTimeScale = normalTimeScale;
             Time.timeScale = normalTimeScale;
             Time.fixedDeltaTime = 0.02f;
+            
+            targetOverlayAlpha = 0f;
+            currentOverlayAlpha = 0f;
+            if (overlayImage != null)
+            {
+                Color c = overlayImage.color;
+                c.a = 0f;
+                overlayImage.color = c;
+            }
         }
 
         /// <summary>

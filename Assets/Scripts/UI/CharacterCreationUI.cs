@@ -34,7 +34,7 @@ public class CharacterCreationUI : MonoBehaviour
             positionDropdown.ClearOptions();
             positionDropdown.AddOptions(new System.Collections.Generic.List<string>
             {
-                "Kaleci (KL)", "Stoper (STP)", "Sağ Bek (SĞB)", "Sol Bek (SLB)",
+                "Stoper (STP)", "Sağ Bek (SĞB)", "Sol Bek (SLB)",
                 "Merkez Orta Defans (MDO)", "Merkez Orta Ofans (MOO)",
                 "Sağ Kanat (SĞK)", "Sol Kanat (SLK)", "Sağ Orta (SĞO)", "Sol Orta (SLO)",
                 "Santrafor (SF)"
@@ -384,19 +384,19 @@ public class CharacterCreationUI : MonoBehaviour
 
     private PlayerPosition ConvertPositionIndexToEnum(int index)
     {
+        // KL (Kaleci) kaldırıldığı için indexler kaydı
         return index switch
         {
-            0 => PlayerPosition.KL,
-            1 => PlayerPosition.STP,
-            2 => PlayerPosition.SĞB,
-            3 => PlayerPosition.SLB,
-            4 => PlayerPosition.MDO,
-            5 => PlayerPosition.MOO,
-            6 => PlayerPosition.SĞK,
-            7 => PlayerPosition.SLK,
-            8 => PlayerPosition.SĞO,
-            9 => PlayerPosition.SLO,
-            10 => PlayerPosition.SF,
+            0 => PlayerPosition.STP,
+            1 => PlayerPosition.SĞB,
+            2 => PlayerPosition.SLB,
+            3 => PlayerPosition.MDO,
+            4 => PlayerPosition.MOO,
+            5 => PlayerPosition.SĞK,
+            6 => PlayerPosition.SLK,
+            7 => PlayerPosition.SĞO,
+            8 => PlayerPosition.SLO,
+            9 => PlayerPosition.SF,
             _ => PlayerPosition.MOO
         };
     }

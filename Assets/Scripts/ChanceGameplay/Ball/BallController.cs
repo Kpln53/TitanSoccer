@@ -16,9 +16,18 @@ namespace TitanSoccer.ChanceGameplay
         [SerializeField] private float friction = 0.98f;
         [SerializeField] private float pickupRadius = 0.8f;  // Serbest topu alma mesafesi
 
+        [Header("Dribbling Ayarları")]
+        [SerializeField] private float dribbleKickForce = 3f; // Topa vurma gücü
+        [SerializeField] private float dribbleInterval = 0.3f; // Topa vurma sıklığı
+        [SerializeField] private float maxDribbleDistance = 1.5f; // Topun oyuncudan uzaklaşabileceği max mesafe
+
         [Header("Durum")]
         [SerializeField] private BallState currentState = BallState.Free;
         [SerializeField] private GameObject attachedPlayer;
+        
+        // Dribbling state
+        private float dribbleTimer;
+        private Vector2 lastDribbleDirection;
 
         // Uçuş verileri
         private Vector2 flightTarget;
@@ -152,7 +161,7 @@ namespace TitanSoccer.ChanceGameplay
         }
 
         /// <summary>
-        /// Oyuncuya bağlı durumu güncelle
+        /// Oyuncuya bağlı durumu güncelle (Dribbling)
         /// </summary>
         private void UpdateAttached()
         {
@@ -162,18 +171,79 @@ namespace TitanSoccer.ChanceGameplay
                 return;
             }
 
-            // Oyuncunun önünde pozisyon al
-            Vector2 playerPos = attachedPlayer.transform.position;
-            Vector2 offset = Vector2.up * attachOffset;
-
-            // Oyuncu hareket ediyorsa yönüne göre offset
             Rigidbody2D playerRb = attachedPlayer.GetComponent<Rigidbody2D>();
-            if (playerRb != null && playerRb.linearVelocity.magnitude > 0.1f)
+            Vector2 playerVelocity = playerRb != null ? playerRb.linearVelocity : Vector2.zero;
+            float playerSpeed = playerVelocity.magnitude;
+
+            // Eğer oyuncu duruyorsa veya çok yavaşsa, topu ayağında tut (manyetik)
+            if (playerSpeed < 0.5f)
             {
-                offset = playerRb.linearVelocity.normalized * attachOffset;
+                Vector2 targetPos = (Vector2)attachedPlayer.transform.position + (playerVelocity.normalized * 0.3f);
+                transform.position = Vector2.Lerp(transform.position, targetPos, Time.deltaTime * 10f);
+                rb.linearVelocity = Vector2.zero;
+                return;
             }
 
-            transform.position = Vector2.Lerp(transform.position, playerPos + offset, Time.deltaTime * 15f);
+            // Oyuncu hareket halindeyse "Kick and Chase" mekaniği
+            dribbleTimer -= Time.deltaTime;
+
+            // Top oyuncudan çok uzaklaştı mı?
+            float distToPlayer = Vector2.Distance(transform.position, attachedPlayer.transform.position);
+            
+            // Topun oyuncunun arkasında kalmasını engelle (Soft Clamp)
+            // Oyuncunun hareket yönüne göre topun minimum ileride olması gereken nokta
+            Vector2 playerDir = playerVelocity.normalized;
+            Vector2 toBall = (Vector2)transform.position - (Vector2)attachedPlayer.transform.position;
+            float dot = Vector2.Dot(playerDir, toBall);
+
+            // Eğer top oyuncunun arkasındaysa (dot < 0) veya çok yanındaysa, hafifçe öne it
+            if (dot < 0.2f)
+            {
+                // Topu oyuncunun önüne doğru yumuşakça çek
+                Vector2 targetPos = (Vector2)attachedPlayer.transform.position + (playerDir * 0.4f);
+                transform.position = Vector2.Lerp(transform.position, targetPos, Time.deltaTime * 5f);
+            }
+
+            // Topa vurma zamanı geldi mi?
+            if (dribbleTimer <= 0f && distToPlayer < 0.8f) // Mesafe toleransını artırdım (0.6 -> 0.8)
+            {
+                // Topa vur!
+                KickBallForward(playerVelocity);
+                
+                // Hıza göre interval ayarla (hızlı koşarken daha sık vur)
+                dribbleTimer = Mathf.Max(0.15f, 0.4f - (playerSpeed * 0.03f));
+            }
+
+            // Topun sürtünmesi (yavaşlaması) - Biraz azalttım ki top daha çok kaysın
+            rb.linearVelocity *= 0.97f;
+        }
+
+        /// <summary>
+        /// Topu ileri doğru dürt
+        /// </summary>
+        private void KickBallForward(Vector2 playerVelocity)
+        {
+            // Oyuncunun dribbling yeteneğini al (varsa)
+            float dribbleSkill = 70f;
+            var pc = attachedPlayer.GetComponent<PlayerController>();
+            if (pc != null && pc.Stats != null) dribbleSkill = pc.Stats.dribblingStat;
+
+            // Vuruş gücü (hıza ve yeteneğe bağlı)
+            float kickPower = playerVelocity.magnitude * 1.2f;
+            
+            // Yetenek arttıkça top daha yakın kalır (daha az güç)
+            float controlFactor = Mathf.Clamp01(dribbleSkill / 100f);
+            kickPower *= (1.5f - controlFactor * 0.5f); 
+
+            // Yön (biraz rastgelelik ekle - yeteneğe ters orantılı)
+            Vector2 direction = playerVelocity.normalized;
+            float randomAngle = (1f - controlFactor) * 15f; // Düşük yetenek = daha fazla sapma
+            direction = Quaternion.Euler(0, 0, UnityEngine.Random.Range(-randomAngle, randomAngle)) * direction;
+
+            // Fizik uygula
+            rb.linearVelocity = direction * kickPower;
+            
+            // Ses/Efekt eklenebilir
         }
 
         /// <summary>
@@ -241,8 +311,11 @@ namespace TitanSoccer.ChanceGameplay
                 var keeper = FindFirstObjectByType<GoalkeeperAI>();
                 if (keeper != null)
                 {
+                    // Kaleci müdahale mesafesi
                     float distToKeeper = Vector2.Distance(newPos, keeper.transform.position);
-                    if (distToKeeper < 1f)
+                    
+                    // Kaleci topa yakınsa ve henüz kurtarmadıysa
+                    if (distToKeeper < 1.5f)
                     {
                         // Kaleci müdahale edebilir
                         bool saved = keeper.TrySave(newPos, shotAccuracy);
@@ -255,9 +328,19 @@ namespace TitanSoccer.ChanceGameplay
                 }
             }
 
-            if (distToTarget <= arriveDistance * 2f)
+            // Kale çizgisini geçti mi? (Y ekseni kontrolü)
+            float goalLineY = 10f;
+            if (ChanceController.Instance != null && ChanceController.Instance.Field != null)
             {
-                // Hedefe ulaştı - gol veya kaçırma
+                goalLineY = ChanceController.Instance.Field.GoalLineY;
+            }
+
+            // Topun Y pozisyonu kale çizgisini geçti mi?
+            bool crossedLine = (shotTarget.y > 0 && newPos.y >= goalLineY) || (shotTarget.y < 0 && newPos.y <= -goalLineY);
+
+            if (crossedLine || distToTarget <= arriveDistance * 2f)
+            {
+                // Hedefe ulaştı veya çizgiyi geçti - gol veya kaçırma
                 DetermineShotResult();
             }
 

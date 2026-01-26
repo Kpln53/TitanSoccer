@@ -20,9 +20,15 @@ public class DataPack : ScriptableObject
     
     [Header("Ligler")]
     public List<LeagueData> leagues = new List<LeagueData>();
+
+    [Header("Turnuvalar")]
+    public List<TournamentData> tournaments = new List<TournamentData>();
     
     [Header("Standalone Takımlar (Lig dışı)")]
     public List<TeamData> standaloneTeams = new List<TeamData>();
+
+    [Header("Ezeli Rakipler (Derbiler)")]
+    public List<RivalryData> rivalries = new List<RivalryData>();
     
     /// <summary>
     /// Tüm takımları getir (liglerden + standalone)

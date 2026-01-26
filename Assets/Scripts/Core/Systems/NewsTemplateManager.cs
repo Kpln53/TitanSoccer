@@ -37,21 +37,44 @@ public static class NewsTemplateManager
     {
         templates = new Dictionary<NewsType, List<NewsTemplate>>();
         
-        // Maç Haberleri
+        // --- MAÇ HABERLERİ (GENEL) ---
         AddTemplate(NewsType.Match, 
             "⚽ {playerName} {goals} Golle Parladı!", 
             "{playerName}, {teamName} formasıyla {opponentTeam} karşısında {goals} gol atarak takımını {score} galibiyete taşıdı. Maç sonrası verdiği demeçte: 'Takım için elimden geleni yaptım' dedi.",
             "Spor Gazetesi", "Futbol Haberleri", "Maç Raporu");
-            
-        AddTemplate(NewsType.Match,
+
+        // --- GALİBİYET HABERLERİ ---
+        AddTemplate(NewsType.MatchWin,
             "🏆 {teamName} {score} Kazandı!",
-            "{teamName}, {opponentTeam} ile oynadığı zorlu maçı {score} kazanmayı başardı. {playerName}'in {goals} golü ve {assists} asisti maçın kaderini belirledi.",
+            "{teamName}, {opponentTeam} ile oynadığı zorlu maçı {score} kazanmayı başardı. {playerName}'in performansı maçın kaderini belirledi.",
             "Lig Haberleri", "Spor Merkezi");
-            
-        AddTemplate(NewsType.Match,
+
+        AddTemplate(NewsType.MatchWin,
+            "🔥 {teamName} Durdurulamıyor!",
+            "{teamName}, {opponentTeam} karşısında {score} gibi net bir skorla galip geldi. Taraftarlar maç sonu takımı ayakta alkışladı.",
+            "Fanatik", "Tribün Sesi");
+
+        // --- MAĞLUBİYET HABERLERİ ---
+        AddTemplate(NewsType.MatchLoss,
             "😞 {teamName} {score} Mağlup Oldu",
-            "{teamName}, {opponentTeam} karşısında {score} mağlup oldu. Takım bu sonuçla lig tablosunda {position}. sıraya düştü. Teknik direktör: 'Daha sıkı çalışacağız' açıklamasında bulundu.",
+            "{teamName}, {opponentTeam} karşısında {score} mağlup oldu. Takım bu sonuçla lig tablosunda puan kaybetti. Teknik direktör: 'Daha sıkı çalışacağız' açıklamasında bulundu.",
             "Spor Gazetesi", "Futbol Analiz");
+
+        AddTemplate(NewsType.MatchLoss,
+            "📉 {teamName} İçin Kötü Gece",
+            "{opponentTeam} deplasmanında {score} kaybeden {teamName}, sahadan üzgün ayrıldı. {playerName} maç sonu taraftarlardan özür diledi.",
+            "Maç Sonu", "Spor Manşet");
+
+        // --- BERABERLİK HABERLERİ ---
+        AddTemplate(NewsType.MatchDraw,
+            "🤝 {teamName} {score} Berabere Kaldı",
+            "{teamName} ile {opponentTeam} arasındaki mücadele {score} sona erdi. İki takım da sahadan birer puanla ayrıldı.",
+            "Lig Özeti", "Puan Durumu");
+
+        AddTemplate(NewsType.MatchDraw,
+            "⚖️ Puanlar Paylaşıldı: {score}",
+            "{teamName}, {opponentTeam} karşısında öne geçmesine rağmen skoru koruyamadı ve maç {score} bitti.",
+            "Maç Analizi", "Spor Gündemi");
             
         // Transfer Haberleri
         AddTemplate(NewsType.Transfer,
@@ -139,6 +162,13 @@ public static class NewsTemplateManager
     {
         if (!templates.ContainsKey(type) || templates[type].Count == 0)
         {
+            // Fallback: Eğer özel tip yoksa (örn MatchWin) ve Match varsa, Match'ten döndür
+            if (type == NewsType.MatchWin || type == NewsType.MatchLoss || type == NewsType.MatchDraw)
+            {
+                if (templates.ContainsKey(NewsType.Match) && templates[NewsType.Match].Count > 0)
+                    return templates[NewsType.Match][Random.Range(0, templates[NewsType.Match].Count)];
+            }
+            
             return GetDefaultTemplate(type);
         }
         
@@ -165,6 +195,9 @@ public static class NewsTemplateManager
         return type switch
         {
             NewsType.Match => "⚽",
+            NewsType.MatchWin => "🏆",
+            NewsType.MatchLoss => "😞",
+            NewsType.MatchDraw => "🤝",
             NewsType.Transfer => "💰",
             NewsType.Injury => "🏥",
             NewsType.Performance => "📊",
@@ -185,6 +218,9 @@ public static class NewsTemplateManager
         return type switch
         {
             NewsType.Match => "Maç",
+            NewsType.MatchWin => "Galibiyet",
+            NewsType.MatchLoss => "Mağlubiyet",
+            NewsType.MatchDraw => "Beraberlik",
             NewsType.Transfer => "Transfer",
             NewsType.Injury => "Sakatlık",
             NewsType.Performance => "Performans",

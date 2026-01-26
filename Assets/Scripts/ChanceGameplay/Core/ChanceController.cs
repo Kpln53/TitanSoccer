@@ -25,6 +25,7 @@ namespace TitanSoccer.ChanceGameplay
         [SerializeField] private GameObject goalkeeperPrefab;
 
         [Header("Saha Ayarları")]
+        [SerializeField] private FieldSettings fieldSettings;
         [SerializeField] private Vector2 fieldSize = new Vector2(30f, 20f);
         [SerializeField] private Vector2 goalPosition = new Vector2(0f, 10f);
         [SerializeField] private float penaltyAreaWidth = 12f;
@@ -32,8 +33,17 @@ namespace TitanSoccer.ChanceGameplay
 
         [Header("Oyun Durumu")]
         [SerializeField] private ChanceType currentChanceType;
+        [SerializeField] private ChanceScenario currentScenario;
         [SerializeField] private GameFlowState flowState;
         [SerializeField] private ChanceOutcome outcome;
+
+        public enum ChanceScenario
+        {
+            NormalAttack,
+            CounterAttack,
+            WingPlay,
+            OneOnOne
+        }
 
         [Header("Takımlar")]
         [SerializeField] private List<GameObject> teammates = new List<GameObject>();
@@ -48,6 +58,7 @@ namespace TitanSoccer.ChanceGameplay
         public BallController Ball => ballController;
         public Vector2 GoalPosition => goalPosition;
         public Vector2 FieldSize => fieldSize;
+        public FieldSettings Field => fieldSettings;
         public List<GameObject> Teammates => teammates;
         public List<GameObject> Opponents => opponents;
         public ChanceCamera ChanceCamera => chanceCamera;
@@ -80,6 +91,28 @@ namespace TitanSoccer.ChanceGameplay
             if (chanceCamera == null)
             {
                 chanceCamera = FindFirstObjectByType<ChanceCamera>();
+            }
+
+            // FieldSettings'i bul veya oluştur
+            if (fieldSettings == null)
+            {
+                fieldSettings = FindFirstObjectByType<FieldSettings>();
+                if (fieldSettings == null)
+                {
+                    var fieldObj = new GameObject("FieldSettings");
+                    fieldSettings = fieldObj.AddComponent<FieldSettings>();
+                }
+            }
+
+            // FieldGenerator'ı kontrol et
+            if (fieldSettings != null)
+            {
+                var generator = fieldSettings.GetComponent<FieldGenerator>();
+                if (generator == null)
+                {
+                    generator = fieldSettings.gameObject.AddComponent<FieldGenerator>();
+                }
+                generator.GenerateField();
             }
         }
 
@@ -260,24 +293,108 @@ namespace TitanSoccer.ChanceGameplay
         /// </summary>
         private void SetupAttackChance()
         {
-            // Oyuncu pozisyonu (mevkiye göre)
-            Vector2 playerPos = GetPlayerStartPosition(setupData.playerPosition, true);
-            SpawnPlayer(playerPos);
+            // Senaryo seç
+            SelectRandomScenario();
 
-            // Top oyuncuda başlar
-            SpawnBall(playerPos + Vector2.up * 0.3f);
-            ballController.AttachToPlayer(playerController.gameObject);
-            playerController.GainBall(); // ← EKLENEN: Oyuncuya topu ver!
+            // Oyuncu pozisyonu (senaryoya göre)
+            Vector2 playerPos = GetScenarioPlayerPosition();
+            SpawnPlayer(playerPos);
 
             // Takım arkadaşları
             SpawnTeammates(true);
 
             // Rakip savunma + kaleci
             SpawnOpponents(false);
-            SpawnGoalkeeper(new Vector2(goalPosition.x, goalPosition.y));
+            
+            float goalY = fieldSettings != null ? fieldSettings.GoalLineY : 10f;
+            SpawnGoalkeeper(new Vector2(0f, goalY));
 
-            // Kamera oyuncuya odaklansın
-            chanceCamera?.SetTarget(playerController.transform, ChanceCamera.CameraMode.FollowPlayer);
+            // Başlangıç pası için hazırlık
+            StartCoroutine(ExecuteStartPass(playerPos));
+        }
+
+        private void SelectRandomScenario()
+        {
+            float r = Random.value;
+            if (r < 0.4f) currentScenario = ChanceScenario.NormalAttack;
+            else if (r < 0.6f) currentScenario = ChanceScenario.CounterAttack;
+            else if (r < 0.8f) currentScenario = ChanceScenario.WingPlay;
+            else currentScenario = ChanceScenario.OneOnOne;
+
+            Debug.Log($"[ChanceController] Selected Scenario: {currentScenario}");
+        }
+
+        private Vector2 GetScenarioPlayerPosition()
+        {
+            float sX = fieldSettings != null ? fieldSettings.width / 30f : 1f;
+            float sY = fieldSettings != null ? fieldSettings.length / 20f : 1f;
+
+            switch (currentScenario)
+            {
+                case ChanceScenario.CounterAttack:
+                    // Orta sahaya yakın, koşu halinde
+                    return new Vector2(Random.Range(-5f, 5f) * sX, Random.Range(-5f, 0f) * sY);
+                
+                case ChanceScenario.WingPlay:
+                    // Kanatta
+                    float side = Random.value > 0.5f ? 1f : -1f;
+                    return new Vector2(side * Random.Range(8f, 12f) * sX, Random.Range(0f, 5f) * sY);
+                
+                case ChanceScenario.OneOnOne:
+                    // Defans arkasına sarkmış
+                    return new Vector2(Random.Range(-3f, 3f) * sX, Random.Range(5f, 8f) * sY);
+                
+                default: // NormalAttack
+                    // Ceza sahası önü
+                    return new Vector2(Random.Range(-5f, 5f) * sX, Random.Range(2f, 6f) * sY);
+            }
+        }
+
+        private System.Collections.IEnumerator ExecuteStartPass(Vector2 playerPos)
+        {
+            // 1. Pasör (Feeder) oluştur
+            Vector2 feederPos = playerPos + new Vector2(Random.Range(-5f, 5f), -Random.Range(8f, 12f));
+            
+            // Saha içinde tut
+            if (fieldSettings != null)
+            {
+                feederPos.x = Mathf.Clamp(feederPos.x, -fieldSettings.width/2 + 1, fieldSettings.width/2 - 1);
+                feederPos.y = Mathf.Clamp(feederPos.y, -fieldSettings.length/2 + 1, fieldSettings.length/2 - 1);
+            }
+
+            GameObject feeder = Instantiate(teammatePrefab != null ? teammatePrefab : playerPrefab, feederPos, Quaternion.identity);
+            feeder.name = "Feeder";
+            // Feeder'ı listeye ekle ki pas atılabilsin
+            teammates.Add(feeder);
+
+            // 2. Topu pasöre ver
+            SpawnBall(feederPos + Vector2.up * 0.5f);
+            ballController.AttachToPlayer(feeder);
+
+            // 3. Kamera pasöre odaklansın
+            chanceCamera?.SetTarget(feeder.transform, ChanceCamera.CameraMode.FollowPlayer);
+
+            // 4. Kısa bir bekleme (sahne otursun)
+            yield return new WaitForSeconds(1.0f);
+
+            // 5. Pas at!
+            Debug.Log("[ChanceController] Starting Pass!");
+            
+            // Pas hızı ve eğimi
+            float passSpeed = 12f;
+            if (currentScenario == ChanceScenario.CounterAttack) passSpeed = 18f; // Ara pası hızlı olsun
+            
+            ballController.Pass(playerController.gameObject, passSpeed, 0f, 1.0f); // %100 başarı
+            
+            // Kamera topu takip etsin
+            chanceCamera?.SetTarget(ballController.transform, ChanceCamera.CameraMode.FollowBall);
+
+            // 6. Oyuncu topu beklesin (hareket edebilir)
+            // Eğer kontra ataksa oyuncu ileri koşsun
+            if (currentScenario == ChanceScenario.CounterAttack || currentScenario == ChanceScenario.OneOnOne)
+            {
+                // PlayerController'a basit bir ileri koşu emri verilebilir (ileride eklenebilir)
+            }
         }
 
         /// <summary>
@@ -321,7 +438,8 @@ namespace TitanSoccer.ChanceGameplay
             }
 
             // Kaleci (bizim kalemiz - altta)
-            SpawnGoalkeeper(new Vector2(0f, -goalPosition.y));
+            float goalY = fieldSettings != null ? -fieldSettings.GoalLineY : -10f;
+            SpawnGoalkeeper(new Vector2(0f, goalY));
 
             // Kamera rakibe (toplu olan)
             if (opponents.Count > 0)
@@ -335,13 +453,8 @@ namespace TitanSoccer.ChanceGameplay
         /// </summary>
         private Vector2 GetPlayerStartPosition(PlayerPosition position, bool isAttack)
         {
-            float yBase = isAttack ? 0f : -5f;
-
-            // Defans mevkileri
-            bool isDefensePosition = position == PlayerPosition.STP || 
-                                     position == PlayerPosition.SĞB || 
-                                     position == PlayerPosition.SLB || 
-                                     position == PlayerPosition.MDO;
+            float sX = fieldSettings != null ? fieldSettings.width / 30f : 1f;
+            float sY = fieldSettings != null ? fieldSettings.length / 20f : 1f;
 
             if (isAttack)
             {
@@ -349,25 +462,25 @@ namespace TitanSoccer.ChanceGameplay
                 switch (position)
                 {
                     case PlayerPosition.SF:
-                        return new Vector2(Random.Range(-3f, 3f), Random.Range(3f, 6f));
+                        return new Vector2(Random.Range(-3f, 3f) * sX, Random.Range(3f, 6f) * sY);
                     case PlayerPosition.SĞK:
                     case PlayerPosition.SĞO:
-                        return new Vector2(Random.Range(4f, 7f), Random.Range(1f, 4f));
+                        return new Vector2(Random.Range(4f, 7f) * sX, Random.Range(1f, 4f) * sY);
                     case PlayerPosition.SLK:
                     case PlayerPosition.SLO:
-                        return new Vector2(Random.Range(-7f, -4f), Random.Range(1f, 4f));
+                        return new Vector2(Random.Range(-7f, -4f) * sX, Random.Range(1f, 4f) * sY);
                     case PlayerPosition.MOO:
-                        return new Vector2(Random.Range(-2f, 2f), Random.Range(0f, 3f));
+                        return new Vector2(Random.Range(-2f, 2f) * sX, Random.Range(0f, 3f) * sY);
                     case PlayerPosition.MDO:
-                        return new Vector2(Random.Range(-2f, 2f), Random.Range(-3f, 0f));
+                        return new Vector2(Random.Range(-2f, 2f) * sX, Random.Range(-3f, 0f) * sY);
                     case PlayerPosition.STP:
-                        return new Vector2(Random.Range(-1f, 1f), Random.Range(-5f, -3f));
+                        return new Vector2(Random.Range(-1f, 1f) * sX, Random.Range(-5f, -3f) * sY);
                     case PlayerPosition.SĞB:
-                        return new Vector2(Random.Range(5f, 8f), Random.Range(-4f, -1f));
+                        return new Vector2(Random.Range(5f, 8f) * sX, Random.Range(-4f, -1f) * sY);
                     case PlayerPosition.SLB:
-                        return new Vector2(Random.Range(-8f, -5f), Random.Range(-4f, -1f));
+                        return new Vector2(Random.Range(-8f, -5f) * sX, Random.Range(-4f, -1f) * sY);
                     default:
-                        return new Vector2(0f, 2f);
+                        return new Vector2(0f, 2f * sY);
                 }
             }
             else
@@ -376,16 +489,16 @@ namespace TitanSoccer.ChanceGameplay
                 switch (position)
                 {
                     case PlayerPosition.STP:
-                        return new Vector2(Random.Range(-2f, 2f), Random.Range(-7f, -5f));
+                        return new Vector2(Random.Range(-2f, 2f) * sX, Random.Range(-7f, -5f) * sY);
                     case PlayerPosition.SĞB:
-                        return new Vector2(Random.Range(4f, 7f), Random.Range(-6f, -4f));
+                        return new Vector2(Random.Range(4f, 7f) * sX, Random.Range(-6f, -4f) * sY);
                     case PlayerPosition.SLB:
-                        return new Vector2(Random.Range(-7f, -4f), Random.Range(-6f, -4f));
+                        return new Vector2(Random.Range(-7f, -4f) * sX, Random.Range(-6f, -4f) * sY);
                     case PlayerPosition.MDO:
-                        return new Vector2(Random.Range(-3f, 3f), Random.Range(-4f, -2f));
+                        return new Vector2(Random.Range(-3f, 3f) * sX, Random.Range(-4f, -2f) * sY);
                     default:
                         // Atak oyuncuları savunmada uzakta
-                        return new Vector2(Random.Range(-4f, 4f), Random.Range(-2f, 2f));
+                        return new Vector2(Random.Range(-4f, 4f) * sX, Random.Range(-2f, 2f) * sY);
                 }
             }
         }
@@ -525,22 +638,24 @@ namespace TitanSoccer.ChanceGameplay
         private List<Vector2> GetTeammatePositions(bool isAttack)
         {
             List<Vector2> positions = new List<Vector2>();
+            float sX = fieldSettings != null ? fieldSettings.width / 30f : 1f;
+            float sY = fieldSettings != null ? fieldSettings.length / 20f : 1f;
 
             if (isAttack)
             {
                 // Atak formasyonu - 3-4 takım arkadaşı
-                positions.Add(new Vector2(-5f, 4f));   // Sol kanat
-                positions.Add(new Vector2(5f, 4f));    // Sağ kanat
-                positions.Add(new Vector2(-2f, 1f));   // Sol orta
-                positions.Add(new Vector2(2f, 1f));    // Sağ orta
+                positions.Add(new Vector2(-5f * sX, 4f * sY));   // Sol kanat
+                positions.Add(new Vector2(5f * sX, 4f * sY));    // Sağ kanat
+                positions.Add(new Vector2(-2f * sX, 1f * sY));   // Sol orta
+                positions.Add(new Vector2(2f * sX, 1f * sY));    // Sağ orta
             }
             else
             {
                 // Savunma formasyonu
-                positions.Add(new Vector2(-4f, -6f));  // Sol bek
-                positions.Add(new Vector2(4f, -6f));   // Sağ bek
-                positions.Add(new Vector2(-1f, -5f));  // Sol stoper
-                positions.Add(new Vector2(1f, -5f));   // Sağ stoper
+                positions.Add(new Vector2(-4f * sX, -6f * sY));  // Sol bek
+                positions.Add(new Vector2(4f * sX, -6f * sY));   // Sağ bek
+                positions.Add(new Vector2(-1f * sX, -5f * sY));  // Sol stoper
+                positions.Add(new Vector2(1f * sX, -5f * sY));   // Sağ stoper
             }
 
             return positions;
@@ -552,21 +667,23 @@ namespace TitanSoccer.ChanceGameplay
         private List<Vector2> GetOpponentPositions(bool opponentIsAttacking)
         {
             List<Vector2> positions = new List<Vector2>();
+            float sX = fieldSettings != null ? fieldSettings.width / 30f : 1f;
+            float sY = fieldSettings != null ? fieldSettings.length / 20f : 1f;
 
             if (opponentIsAttacking)
             {
                 // Rakip atakta - önde
-                positions.Add(new Vector2(0f, 3f));    // Forvet
-                positions.Add(new Vector2(-4f, 1f));   // Sol kanat
-                positions.Add(new Vector2(4f, 1f));    // Sağ kanat
+                positions.Add(new Vector2(0f * sX, 3f * sY));    // Forvet
+                positions.Add(new Vector2(-4f * sX, 1f * sY));   // Sol kanat
+                positions.Add(new Vector2(4f * sX, 1f * sY));    // Sağ kanat
             }
             else
             {
                 // Rakip savunmada
-                positions.Add(new Vector2(-3f, 7f));   // Sol bek
-                positions.Add(new Vector2(3f, 7f));    // Sağ bek
-                positions.Add(new Vector2(-1f, 6f));   // Sol stoper
-                positions.Add(new Vector2(1f, 6f));    // Sağ stoper
+                positions.Add(new Vector2(-3f * sX, 7f * sY));   // Sol bek
+                positions.Add(new Vector2(3f * sX, 7f * sY));    // Sağ bek
+                positions.Add(new Vector2(-1f * sX, 6f * sY));   // Sol stoper
+                positions.Add(new Vector2(1f * sX, 6f * sY));    // Sağ stoper
             }
 
             return positions;
@@ -719,6 +836,9 @@ namespace TitanSoccer.ChanceGameplay
         /// </summary>
         public void EndChance(ChanceOutcome result)
         {
+            // Eğer zaten bittiyse tekrar çağırma
+            if (flowState == GameFlowState.Ended) return;
+
             outcome = result;
             flowState = GameFlowState.Ended;
             SlowMotionManager.Instance?.ResetToNormal();
@@ -905,10 +1025,18 @@ namespace TitanSoccer.ChanceGameplay
         /// </summary>
         public bool IsInGoalArea(Vector2 position)
         {
-            float goalY = currentChanceType == ChanceType.Attack ? goalPosition.y : -goalPosition.y;
-            return Mathf.Abs(position.x) < penaltyAreaWidth / 2f && 
-                   ((currentChanceType == ChanceType.Attack && position.y > goalY - penaltyAreaHeight) ||
-                    (currentChanceType == ChanceType.Defense && position.y < goalY + penaltyAreaHeight));
+            if (fieldSettings == null) return false;
+
+            float goalY = currentChanceType == ChanceType.Attack ? fieldSettings.GoalLineY : -fieldSettings.GoalLineY;
+            float pW = fieldSettings.penaltyAreaWidth;
+            float pL = fieldSettings.penaltyAreaLength;
+
+            bool inX = Mathf.Abs(position.x) < pW / 2f;
+            bool inY = currentChanceType == ChanceType.Attack 
+                ? position.y > (goalY - pL) 
+                : position.y < (goalY + pL);
+
+            return inX && inY;
         }
 
         private void OnDestroy()

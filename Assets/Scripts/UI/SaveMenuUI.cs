@@ -45,7 +45,25 @@ public class SaveMenuUI : MonoBehaviour
             // Tıklama olayı
             slotUI.slotButton.onClick.RemoveAllListeners();
             slotUI.slotButton.onClick.AddListener(() => OnSlotClicked(slotIndex, hasSave));
+
+            // Silme butonu olayı
+            if (slotUI.deleteButton != null)
+            {
+                slotUI.deleteButton.onClick.RemoveAllListeners();
+                slotUI.deleteButton.onClick.AddListener(() => OnDeleteClicked(slotIndex));
+            }
         }
+    }
+
+    private void OnDeleteClicked(int slotIndex)
+    {
+        // Kaydı sil
+        SaveSystem.DeleteSave(slotIndex);
+        
+        // UI'ı yenile
+        RefreshSlots();
+        
+        Debug.Log($"[SaveMenuUI] Slot {slotIndex} deleted.");
     }
 
     private void OnSlotClicked(int slotIndex, bool hasSave)

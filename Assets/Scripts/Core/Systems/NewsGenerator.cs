@@ -126,23 +126,26 @@ public class NewsGenerator : MonoBehaviour
     /// </summary>
     private void GenerateMatchResultNews(string playerName, string teamName, string opponentTeam, int teamScore, int opponentScore, float rating)
     {
-        NewsType newsType = NewsType.Match;
+        NewsType newsType;
         NewsTemplate template;
         
         if (teamScore > opponentScore)
         {
             // Galibiyet haberi
-            template = NewsTemplateManager.GetRandomTemplate(NewsType.Match);
+            newsType = NewsType.MatchWin;
+            template = NewsTemplateManager.GetRandomTemplate(NewsType.MatchWin);
         }
         else if (teamScore < opponentScore)
         {
             // Mağlubiyet haberi
-            template = NewsTemplateManager.GetRandomTemplate(NewsType.Match);
+            newsType = NewsType.MatchLoss;
+            template = NewsTemplateManager.GetRandomTemplate(NewsType.MatchLoss);
         }
         else
         {
             // Beraberlik haberi
-            template = NewsTemplateManager.GetRandomTemplate(NewsType.Match);
+            newsType = NewsType.MatchDraw;
+            template = NewsTemplateManager.GetRandomTemplate(NewsType.MatchDraw);
         }
         
         var values = new Dictionary<string, string>
@@ -329,8 +332,18 @@ public class NewsGenerator : MonoBehaviour
         if (save == null) return;
         
         string playerName = save.playerProfile?.playerName ?? "Oyuncu";
-        string[] teams = {"Barcelona", "Real Madrid", "Manchester United", "Bayern Munich", "PSG"};
-        string interestedTeam = teams[UnityEngine.Random.Range(0, teams.Length)];
+        
+        // Sadece DataPack'teki takımlardan söylenti üret
+        string interestedTeam = "Bilinmeyen Kulüp";
+        if (DataPackManager.Instance != null && DataPackManager.Instance.activeDataPack != null)
+        {
+            var allTeams = DataPackManager.Instance.activeDataPack.GetAllTeams();
+            if (allTeams != null && allTeams.Count > 0)
+            {
+                interestedTeam = allTeams[UnityEngine.Random.Range(0, allTeams.Count)].teamName;
+            }
+        }
+
         float amount = UnityEngine.Random.Range(10f, 50f);
         
         var template = NewsTemplateManager.GetRandomTemplate(NewsType.Rumour);

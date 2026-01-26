@@ -19,6 +19,7 @@ public class SaveSlotUI : MonoBehaviour
 
     [Header("Components")]
     public Button slotButton;
+    public Button deleteButton; // Silme butonu
     public Outline outline;
 
     public void Setup(bool hasSave, SaveData data)
@@ -37,6 +38,7 @@ public class SaveSlotUI : MonoBehaviour
             }
             
             if (outline) outline.effectColor = new Color(1f, 1f, 1f, 0.3f); // Beyazımsı
+            if (deleteButton) deleteButton.gameObject.SetActive(true); // Silme butonu aktif
         }
         else
         {
@@ -48,6 +50,7 @@ public class SaveSlotUI : MonoBehaviour
             if (emptySubtitleText) emptySubtitleText.text = "Boş Slot";
 
             if (outline) outline.effectColor = new Color(1f, 0.8f, 0.2f, 0.6f); // Altın rengi
+            if (deleteButton) deleteButton.gameObject.SetActive(false); // Silme butonu pasif
         }
     }
 

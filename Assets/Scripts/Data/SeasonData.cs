@@ -76,6 +76,7 @@ public class SeasonData
     
     [Header("Fikstür")]
     public List<MatchData> fixtures;   // Sezon maç programı
+    public int currentWeek = 1;        // Mevcut hafta
     
     [Header("Lig Puan Durumu")]
     public List<TeamStandingData> standings; // Lig puan durumu
@@ -108,6 +109,7 @@ public class SeasonData
         seasonStartDateString = seasonStartDate.ToString("yyyy-MM-dd");
         seasonEndDate = seasonStartDate.AddMonths(9); // ~9 ay sezon
         seasonEndDateString = seasonEndDate.ToString("yyyy-MM-dd");
+        currentWeek = 1;
     }
     
     /// <summary>
@@ -222,4 +224,3 @@ public class SeasonData
         CalculateAverageRating();
     }
 }
-

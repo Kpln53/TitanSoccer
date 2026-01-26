@@ -24,8 +24,8 @@ namespace TitanSoccer.ChanceGameplay
         [SerializeField] private float slideTackleRadius = 1.2f;
 
         [Header("Saha Sınırları")]
-        [SerializeField] private Vector2 fieldMin = new Vector2(-12f, -10f);
-        [SerializeField] private Vector2 fieldMax = new Vector2(12f, 10f);
+        [SerializeField] private Vector2 fieldMin = new Vector2(-15f, -20f);
+        [SerializeField] private Vector2 fieldMax = new Vector2(15f, 20f);
 
         [Header("Durum")]
         [SerializeField] private bool isSliding = false;
@@ -90,6 +90,15 @@ namespace TitanSoccer.ChanceGameplay
             if (SlideTackleGesture.Instance != null)
             {
                 SlideTackleGesture.Instance.OnSlideTackle += OnSlideTackleInput;
+            }
+
+            // Saha sınırlarını güncelle
+            if (ChanceController.Instance != null && ChanceController.Instance.Field != null)
+            {
+                var f = ChanceController.Instance.Field;
+                // Kenarlardan biraz boşluk bırak (0.5 birim)
+                fieldMin = new Vector2(-f.width / 2f + 0.5f, -f.length / 2f + 0.5f);
+                fieldMax = new Vector2(f.width / 2f - 0.5f, f.length / 2f - 0.5f);
             }
 
             CalculateSpeed();

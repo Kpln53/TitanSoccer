@@ -70,27 +70,55 @@ public class LeagueSimulationSystem : MonoBehaviour
         
         // Skor üretimi (Poisson dağılımı benzeri basit mantık)
         // Güç farkına göre gol beklentisi (xG)
-        float homeXG = 1.5f + (powerDiff / 20f);
-        float awayXG = 1.0f - (powerDiff / 20f);
+        // Temel gol beklentisi: 1.3
+        float baseGoals = 1.3f;
         
-        // Rastgelelik ekle
-        homeXG = Mathf.Max(0, homeXG + UnityEngine.Random.Range(-1.0f, 1.5f));
-        awayXG = Mathf.Max(0, awayXG + UnityEngine.Random.Range(-1.0f, 1.5f));
+        // Güç farkı etkisi: Her 10 puan fark ~0.2 gol farkı
+        float powerFactor = powerDiff / 50f; 
+        
+        float homeXG = baseGoals + powerFactor;
+        float awayXG = baseGoals - powerFactor;
+        
+        // Rastgelelik ekle (Form, şans vb.)
+        homeXG *= UnityEngine.Random.Range(0.7f, 1.4f);
+        awayXG *= UnityEngine.Random.Range(0.7f, 1.4f);
+        
+        // Negatif olamaz
+        homeXG = Mathf.Max(0.1f, homeXG);
+        awayXG = Mathf.Max(0.1f, awayXG);
 
-        match.homeScore = Mathf.RoundToInt(homeXG);
-        match.awayScore = Mathf.RoundToInt(awayXG);
+        // Poisson benzeri dağılım ile skor belirle
+        match.homeScore = GenerateScoreFromXG(homeXG);
+        match.awayScore = GenerateScoreFromXG(awayXG);
         match.isPlayed = true;
         
         // Beraberlik kontrolü (Güçler yakınsa beraberlik ihtimali artar)
-        if (Mathf.Abs(powerDiff) < 10 && UnityEngine.Random.value < 0.3f)
+        // Eğer güç farkı azsa ve skorlar farklıysa, bazen berabere bitir
+        if (Mathf.Abs(powerDiff) < 10 && match.homeScore != match.awayScore)
         {
-            if (match.homeScore != match.awayScore)
+            if (UnityEngine.Random.value < 0.25f) // %25 şansla beraberliğe zorla
             {
                 int drawScore = Mathf.Min(match.homeScore, match.awayScore);
                 match.homeScore = drawScore;
                 match.awayScore = drawScore;
             }
         }
+    }
+    
+    private int GenerateScoreFromXG(float xG)
+    {
+        // Basit bir Poisson simülasyonu
+        float L = Mathf.Exp(-xG);
+        float p = 1.0f;
+        int k = 0;
+
+        do
+        {
+            k++;
+            p *= UnityEngine.Random.value;
+        } while (p > L);
+
+        return k - 1;
     }
 
     private int GetTeamPower(string teamName)

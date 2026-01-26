@@ -14,10 +14,6 @@ namespace TitanSoccer.ChanceGameplay
         [SerializeField] private float diveRange = 3f;          // Dalış mesafesi
         [SerializeField] private float positioningSpeed = 5f;   // Pozisyon alma hızı
 
-        [Header("Kale Boyutları")]
-        [SerializeField] private float goalWidth = 5f;
-        [SerializeField] private float goalLineY = 10f;
-
         [Header("Durum")]
         [SerializeField] private bool isDiving = false;
         [SerializeField] private bool hasSaved = false;
@@ -60,10 +56,17 @@ namespace TitanSoccer.ChanceGameplay
         {
             if (ChanceController.Instance?.Ball == null) return;
 
+            // FieldSettings'den değerleri al
+            float currentGoalWidth = 7.32f;
+            if (ChanceController.Instance.Field != null)
+            {
+                currentGoalWidth = ChanceController.Instance.Field.goalWidth;
+            }
+
             Vector2 ballPos = ChanceController.Instance.Ball.transform.position;
             
             // Topun X pozisyonuna göre kaleci X pozisyonu
-            float targetX = Mathf.Clamp(ballPos.x * 0.4f, -goalWidth / 2f + 0.5f, goalWidth / 2f - 0.5f);
+            float targetX = Mathf.Clamp(ballPos.x * 0.4f, -currentGoalWidth / 2f + 0.5f, currentGoalWidth / 2f - 0.5f);
             Vector2 targetPos = new Vector2(targetX, basePosition.y);
 
             // Yumuşak hareket
@@ -99,12 +102,18 @@ namespace TitanSoccer.ChanceGameplay
         {
             if (isDiving) return hasSaved;
 
+            // FieldSettings'den değerleri al
+            float currentGoalWidth = 7.32f;
+            if (ChanceController.Instance != null && ChanceController.Instance.Field != null)
+            {
+                currentGoalWidth = ChanceController.Instance.Field.goalWidth;
+            }
+
             // Şutun kale içinde olup olmadığını kontrol et
             float shotX = shotPosition.x;
-            float shotY = shotPosition.y;
-
-            bool isOnTarget = Mathf.Abs(shotX) <= goalWidth / 2f && 
-                             Mathf.Abs(shotY - goalLineY) < 2f;
+            
+            // Kale genişliği kontrolü
+            bool isOnTarget = Mathf.Abs(shotX) <= currentGoalWidth / 2f;
 
             if (!isOnTarget)
             {
@@ -145,6 +154,14 @@ namespace TitanSoccer.ChanceGameplay
             if (saved)
             {
                 Debug.Log("[Goalkeeper] SAVED!");
+                
+                // Topu tutma efekti
+                // BallController'da ShotSaved çağrılacak ve top serbest kalacak
+                // Görsel olarak topu kalecinin eline ışınlayabiliriz
+                if (ChanceController.Instance != null && ChanceController.Instance.Ball != null)
+                {
+                    ChanceController.Instance.Ball.transform.position = transform.position;
+                }
             }
             else
             {

@@ -79,7 +79,10 @@ public enum NewsType
     Injury,             // Sakatlık haberleri
     Achievement,        // Başarı haberleri
     Rumour,             // Söylenti haberleri
-    Match,              // Maç haberleri
+    Match,              // Genel Maç haberleri
+    MatchWin,           // Galibiyet haberleri
+    MatchLoss,          // Mağlubiyet haberleri
+    MatchDraw,          // Beraberlik haberleri
     Contract,           // Sözleşme haberleri
     Performance,        // Performans haberleri
     TeamManagement      // Takım yönetimi haberleri

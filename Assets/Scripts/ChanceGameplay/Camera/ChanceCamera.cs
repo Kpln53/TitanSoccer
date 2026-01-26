@@ -19,10 +19,10 @@ namespace TitanSoccer.ChanceGameplay
         [SerializeField] private float wideZoom = 12f;
 
         [Header("Sınırlar")]
-        [SerializeField] private float minX = -12f;
-        [SerializeField] private float maxX = 12f;
-        [SerializeField] private float minY = -10f;
-        [SerializeField] private float maxY = 12f;
+        [SerializeField] private float minX = -15f;
+        [SerializeField] private float maxX = 15f;
+        [SerializeField] private float minY = -20f;
+        [SerializeField] private float maxY = 20f;
 
         [Header("Durum")]
         [SerializeField] private CameraMode currentMode = CameraMode.FollowPlayer;
@@ -62,11 +62,34 @@ namespace TitanSoccer.ChanceGameplay
             if (initialized) return;
             
             // ChanceController hazır mı?
-            if (ChanceController.Instance != null && ChanceController.Instance.Player != null)
+            if (ChanceController.Instance != null)
             {
-                SetTarget(ChanceController.Instance.Player.transform, CameraMode.FollowPlayer);
-                initialized = true;
-                Debug.Log("[ChanceCamera] Initialized - following player");
+                // Sınırları güncelle
+                if (ChanceController.Instance.Field != null)
+                {
+                    var f = ChanceController.Instance.Field;
+                    // Kamera sınırları sahadan biraz daha küçük olmalı ki kamera dışarı çıkmasın
+                    // Ancak ortografik size'a göre ayarlanmalı
+                    float vertExtent = cam.orthographicSize;
+                    float horzExtent = vertExtent * Screen.width / Screen.height;
+
+                    // Sınırları çok daha geniş tut (siyah alanlar görünebilir)
+                    // Böylece oyuncu her zaman rahatça görülebilir
+                    float margin = 5f; // Daha büyük margin
+
+                    // Sahanın dışına da çıkabilsin kamera
+                    minX = -f.width / 2f - margin;
+                    maxX = f.width / 2f + margin;
+                    minY = -f.length / 2f - margin;
+                    maxY = f.length / 2f + margin;
+                }
+
+                if (ChanceController.Instance.Player != null)
+                {
+                    SetTarget(ChanceController.Instance.Player.transform, CameraMode.FollowPlayer);
+                    initialized = true;
+                    Debug.Log("[ChanceCamera] Initialized - following player");
+                }
             }
         }
 

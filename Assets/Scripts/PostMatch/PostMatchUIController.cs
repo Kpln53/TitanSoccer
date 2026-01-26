@@ -163,96 +163,38 @@ public class PostMatchUIController : MonoBehaviour
         otherMatches.Clear();
 
         if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave()) return;
-        if (DataPackManager.Instance == null || DataPackManager.Instance.activeDataPack == null) return;
-
+        
         SaveData save = GameManager.Instance.CurrentSave;
         string playerClub = save.clubData?.clubName ?? "";
-        MatchContext ctx = MatchContext.Instance;
+        int currentWeek = save.seasonData.currentWeek;
 
-        if (save.seasonData?.fixtures == null) return;
+        // LeagueSimulationSystem kullanarak haftanın diğer maçlarını simüle et
+        if (LeagueSimulationSystem.Instance != null)
+        {
+            LeagueSimulationSystem.Instance.SimulateWeek(currentWeek, playerClub);
+        }
+        else
+        {
+            // Fallback: Eğer sistem yoksa manuel simüle et (eski yöntem)
+            Debug.LogWarning("[PostMatchUI] LeagueSimulationSystem not found, using fallback simulation.");
+            // ... (Eski kod buraya gelebilir ama gerek yok, sistem olmalı)
+        }
 
-        // Bu hafta oynanması gereken diğer maçları bul (aynı gün/hafta)
-        // Bizim maçımızla aynı tarihli maçlar - LINQ yerine foreach kullan
-        var todaysMatches = new List<MatchData>();
-        int matchCount = 0;
+        // Simüle edilen maçları UI için listeye ekle
+        var weekMatches = save.seasonData.fixtures.Where(m => m.weekNumber == currentWeek && m.isPlayed && (m.homeTeamName != playerClub && m.awayTeamName != playerClub)).ToList();
         
-        foreach (var match in save.seasonData.fixtures)
+        foreach (var match in weekMatches)
         {
-            if (!match.isPlayed && 
-                match.homeTeamName != playerClub && 
-                match.awayTeamName != playerClub &&
-                matchCount < 8) // Max 8 maç
-            {
-                todaysMatches.Add(match);
-                matchCount++;
-            }
+            otherMatches.Add(new SimulatedMatch 
+            { 
+                homeTeamName = match.homeTeamName, 
+                awayTeamName = match.awayTeamName, 
+                homeScore = match.homeScore, 
+                awayScore = match.awayScore 
+            });
         }
 
-        foreach (var match in todaysMatches)
-        {
-            // Takım güçlerini al
-            TeamData homeTeam = DataPackManager.Instance.GetTeam(match.homeTeamName);
-            TeamData awayTeam = DataPackManager.Instance.GetTeam(match.awayTeamName);
-
-            int homePower = homeTeam?.GetTeamPower() ?? 70;
-            int awayPower = awayTeam?.GetTeamPower() ?? 70;
-
-            // Simüle et
-            SimulatedMatch simMatch = SimulateMatch(match.homeTeamName, match.awayTeamName, homePower, awayPower);
-            otherMatches.Add(simMatch);
-
-            // Fikstürü güncelle
-            match.homeScore = simMatch.homeScore;
-            match.awayScore = simMatch.awayScore;
-            match.isPlayed = true;
-
-            // Puan durumunu güncelle
-            save.seasonData.RecordMatchResult(match.homeTeamName, match.awayTeamName, simMatch.homeScore, simMatch.awayScore);
-        }
-
-        // Oyuncunun takımının pozisyonunu güncelle
-        save.seasonData.UpdatePlayerLeaguePosition(playerClub);
-
-        Debug.Log($"[PostMatchUI] Simulated {otherMatches.Count} other matches");
-    }
-
-    /// <summary>
-    /// Tek bir maçı simüle et
-    /// </summary>
-    private SimulatedMatch SimulateMatch(string homeName, string awayName, int homePower, int awayPower)
-    {
-        SimulatedMatch match = new SimulatedMatch
-        {
-            homeTeamName = homeName,
-            awayTeamName = awayName
-        };
-
-        // Güç farkına göre gol olasılıkları
-        float homeAdvantage = 5f; // Ev sahibi avantajı
-        float totalPower = homePower + awayPower + homeAdvantage;
-        float homeChance = (homePower + homeAdvantage) / totalPower;
-
-        // Toplam gol sayısı (1-5 arası)
-        int totalGoals = Random.Range(1, 6);
-
-        // Golleri dağıt
-        for (int i = 0; i < totalGoals; i++)
-        {
-            if (Random.value < homeChance)
-                match.homeScore++;
-            else
-                match.awayScore++;
-        }
-
-        // %15 beraberlik şansı
-        if (Random.value < 0.15f && match.homeScore != match.awayScore)
-        {
-            int avg = (match.homeScore + match.awayScore) / 2;
-            match.homeScore = avg;
-            match.awayScore = avg;
-        }
-
-        return match;
+        Debug.Log($"[PostMatchUI] Displaying {otherMatches.Count} other matches from Week {currentWeek}");
     }
 
     private void RefreshUI()
