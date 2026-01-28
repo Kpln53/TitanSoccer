@@ -175,6 +175,9 @@ public class CharacterCreationUI : MonoBehaviour
         // Yaş otomatik belirlenecek (18-22 arası rastgele)
         newPlayerProfile.age = UnityEngine.Random.Range(18, 23);
 
+        // Avatar ID (1 veya 2 şimdilik)
+        newPlayerProfile.avatarId = UnityEngine.Random.Range(1, 3);
+
         // Overall otomatik belirlenecek (60-75 arası rastgele)
         int randomOverall = UnityEngine.Random.Range(60, 76);
         newPlayerProfile.overall = randomOverall;

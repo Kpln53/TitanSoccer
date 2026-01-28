@@ -8,9 +8,14 @@ using TMPro;
 public class TopPanelUI : MonoBehaviour
 {
     [Header("Oyuncu Bilgileri")]
+    public Image playerAvatarImage; // Oyuncu resmi
     public TextMeshProUGUI playerNameText;
     public TextMeshProUGUI clubNameText;
     public TextMeshProUGUI ageText; // Yaş bilgisi
+
+    [Header("Avatar Kaynakları")]
+    public Sprite defaultAvatar;
+    public System.Collections.Generic.List<Sprite> avatarSprites;
 
     [Header("Durum")]
     public TextMeshProUGUI moralText;
@@ -43,6 +48,20 @@ public class TopPanelUI : MonoBehaviour
 
         if (clubNameText != null && saveData.clubData != null)
             clubNameText.text = saveData.clubData.clubName;
+
+        // Avatar
+        if (playerAvatarImage != null && saveData.playerProfile != null)
+        {
+            int avatarId = saveData.playerProfile.avatarId;
+            if (avatarSprites != null && avatarId > 0 && avatarId <= avatarSprites.Count)
+            {
+                playerAvatarImage.sprite = avatarSprites[avatarId - 1];
+            }
+            else if (defaultAvatar != null)
+            {
+                playerAvatarImage.sprite = defaultAvatar;
+            }
+        }
 
         // Yaş bilgisi (görselde "Yaş: 18" formatında)
         if (ageText != null && saveData.playerProfile != null)

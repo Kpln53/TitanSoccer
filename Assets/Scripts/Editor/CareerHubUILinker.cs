@@ -127,6 +127,12 @@ public class CareerHubUILinker : Editor
         // Sahneyi dirty olarak işaretle
         UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
 
+        // TopPanelUI referanslarını da bağla
+        if (careerHubUI.topPanel != null)
+        {
+            LinkTopPanelReferences(careerHubUI.topPanel);
+        }
+
         if (linkedCount > 0)
         {
             Debug.Log($"[CareerHubUILinker] ✅ {linkedCount} referans başarıyla bağlandı! Sahneyi kaydetmeyi unutma (Ctrl+S)");
@@ -137,6 +143,40 @@ public class CareerHubUILinker : Editor
         }
 
         Selection.activeGameObject = careerHubUI.gameObject;
+    }
+
+    private static void LinkTopPanelReferences(TopPanelUI topPanel)
+    {
+        SerializedObject serializedTopPanel = new SerializedObject(topPanel);
+        bool changed = false;
+
+        // Avatar Image'ı bul (KüçükResim)
+        // Hiyerarşi: TopPanel -> SolTaraf -> KüçükResim
+        Transform solTaraf = topPanel.transform.Find("SolTaraf");
+        if (solTaraf != null)
+        {
+            Transform kucukResim = solTaraf.Find("KüçükResim");
+            if (kucukResim != null)
+            {
+                Image avatarImage = kucukResim.GetComponent<Image>();
+                if (avatarImage != null)
+                {
+                    var prop = serializedTopPanel.FindProperty("playerAvatarImage");
+                    if (prop != null && prop.objectReferenceValue == null)
+                    {
+                        prop.objectReferenceValue = avatarImage;
+                        changed = true;
+                        Debug.Log("[CareerHubUILinker] ✅ TopPanel Avatar Image bağlandı");
+                    }
+                }
+            }
+        }
+
+        if (changed)
+        {
+            serializedTopPanel.ApplyModifiedProperties();
+            EditorUtility.SetDirty(topPanel);
+        }
     }
 
     [MenuItem("TitanSoccer/UI/Create Social Media Button in BottomNav")]

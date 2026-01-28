@@ -66,7 +66,10 @@ public enum BonusType
     CleanSheet,         // Temiz sayfa bonusu (kaleci/defans için)
     SeasonEnd,          // Sezon sonu bonusu
     TeamSuccess,        // Takım başarısı bonusu
-    Loyalty             // Sadakat bonusu
+    Loyalty,            // Sadakat bonusu
+    WinBonus,           // Galibiyet bonusu
+    CleanSheetBonus,    // Gol yememe bonusu
+    ChampionshipBonus   // Şampiyonluk bonusu
 }
 
 /// <summary>

@@ -557,6 +557,21 @@ public class TeamOfferUI : MonoBehaviour
             saveData.clubData.contract.contractDuration = selectedOffer.contractDuration;
             saveData.clubData.contract.playingTime = selectedOffer.playingTime;
             
+            // Bonusları hesapla ve kaydet (ShowOfferDetail ile aynı mantık)
+            int goalBonus = Mathf.Max(500, Mathf.RoundToInt(selectedOffer.salary * 0.125f));
+            int assistBonus = Mathf.Max(250, Mathf.RoundToInt(selectedOffer.salary * 0.05f));
+            int winBonus = Mathf.Max(1000, Mathf.RoundToInt(selectedOffer.salary * 0.25f));
+
+            if (saveData.clubData.contract.bonuses == null)
+                saveData.clubData.contract.bonuses = new List<ContractBonus>();
+            
+            saveData.clubData.contract.bonuses.Clear();
+            saveData.clubData.contract.bonuses.Add(new ContractBonus(BonusType.GoalBonus, goalBonus));
+            saveData.clubData.contract.bonuses.Add(new ContractBonus(BonusType.AssistBonus, assistBonus));
+            saveData.clubData.contract.bonuses.Add(new ContractBonus(BonusType.WinBonus, winBonus));
+
+            Debug.Log($"[TeamOfferUI] Bonuses saved: Goal={goalBonus}, Assist={assistBonus}, Win={winBonus}");
+
             // Fallback fikstür ve puan durumu oluşturma
             if (DataPackManager.Instance != null && !string.IsNullOrEmpty(saveData.clubData.leagueName))
             {

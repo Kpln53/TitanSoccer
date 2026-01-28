@@ -13,6 +13,7 @@ public class PlayerProfile
     public PlayerPosition position;    // Pozisyon
     public int age;                    // Yaş
     public string nationality;         // Uyruk
+    public int avatarId;               // Avatar ID (0: Default, 1+: Specific avatars)
     
     [Header("Yetenekler (0-100)")]
     public int passingSkill = 50;
@@ -52,6 +53,9 @@ public class PlayerProfile
     [Header("Takım Bilgileri")]
     public string currentClubName;     // Mevcut kulüp adı
     public string currentLeagueName;   // Mevcut lig adı
+
+    [Header("Kariyer Geçmişi")]
+    public List<CareerHistoryEntry> careerHistory; // Sezonluk kariyer geçmişi
     
     public PlayerProfile()
     {
@@ -59,9 +63,11 @@ public class PlayerProfile
         position = PlayerPosition.MOO;
         age = 25;
         nationality = "Unknown";
+        avatarId = 0;
         overall = 50;
         currentInjury = null;
         injuryHistory = new List<InjuryRecord>();
+        careerHistory = new List<CareerHistoryEntry>();
     }
     
     /// <summary>
