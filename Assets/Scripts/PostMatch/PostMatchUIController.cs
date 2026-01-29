@@ -168,20 +168,42 @@ public class PostMatchUIController : MonoBehaviour
         string playerClub = save.clubData?.clubName ?? "";
         int currentWeek = save.seasonData.currentWeek;
 
+        Debug.Log($"[PostMatchUI] Simulating other matches for Week {currentWeek}...");
+
         // LeagueSimulationSystem kullanarak haftanın diğer maçlarını simüle et
         if (LeagueSimulationSystem.Instance != null)
         {
             LeagueSimulationSystem.Instance.SimulateWeek(currentWeek, playerClub);
+            
+            // ⚠️ ÖNEMLİ: Simülasyon sonrası kaydet!
+            save.UpdateSaveDate();
+            SaveSystem.SaveGame(save, GameManager.Instance.CurrentSaveSlotIndex);
+            Debug.Log($"[PostMatchUI] Week {currentWeek} simulation saved to disk.");
         }
         else
         {
-            // Fallback: Eğer sistem yoksa manuel simüle et (eski yöntem)
-            Debug.LogWarning("[PostMatchUI] LeagueSimulationSystem not found, using fallback simulation.");
-            // ... (Eski kod buraya gelebilir ama gerek yok, sistem olmalı)
+            // Fallback: Eğer sistem yoksa oluştur
+            Debug.LogWarning("[PostMatchUI] LeagueSimulationSystem not found, creating it...");
+            GameObject simSystemObj = new GameObject("LeagueSimulationSystem");
+            simSystemObj.AddComponent<LeagueSimulationSystem>();
+            
+            // Tekrar dene
+            if (LeagueSimulationSystem.Instance != null)
+            {
+                LeagueSimulationSystem.Instance.SimulateWeek(currentWeek, playerClub);
+                save.UpdateSaveDate();
+                SaveSystem.SaveGame(save, GameManager.Instance.CurrentSaveSlotIndex);
+                Debug.Log($"[PostMatchUI] Week {currentWeek} simulation saved (after creating system).");
+            }
         }
 
         // Simüle edilen maçları UI için listeye ekle
-        var weekMatches = save.seasonData.fixtures.Where(m => m.weekNumber == currentWeek && m.isPlayed && (m.homeTeamName != playerClub && m.awayTeamName != playerClub)).ToList();
+        var weekMatches = save.seasonData.fixtures
+            .Where(m => m.weekNumber == currentWeek && 
+                       m.isPlayed && 
+                       m.homeTeamName != playerClub && 
+                       m.awayTeamName != playerClub)
+            .ToList();
         
         foreach (var match in weekMatches)
         {
@@ -357,13 +379,56 @@ public class PostMatchUIController : MonoBehaviour
         // Listleri temizle
         otherMatches?.Clear();
         
+        // Haftayı ilerlet
+        if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
+        {
+            SaveData save = GameManager.Instance.CurrentSave;
+            save.seasonData.currentWeek++;
+            
+            // Kaydet
+            save.UpdateSaveDate();
+            SaveSystem.SaveGame(save, GameManager.Instance.CurrentSaveSlotIndex);
+            
+            Debug.Log($"[PostMatchUI] Week advanced to: {save.seasonData.currentWeek}");
+        }
+        
         // MatchContext'i temizle (maç bitti)
         if (MatchContext.Instance != null)
         {
             MatchContext.Instance.Clear();
         }
 
-        SceneFlow.LoadCareerHub();
+        // Sezon sonu kontrolü
+        if (CheckSeasonEnd())
+        {
+            Debug.Log("[PostMatchUI] Season ended! Loading SeasonEnd scene...");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("SeasonEnd");
+        }
+        else
+        {
+            SceneFlow.LoadCareerHub();
+        }
+    }
+
+    /// <summary>
+    /// Sezon bitti mi kontrol et
+    /// </summary>
+    private bool CheckSeasonEnd()
+    {
+        if (GameManager.Instance == null || !GameManager.Instance.HasCurrentSave()) return false;
+        
+        SaveData data = GameManager.Instance.CurrentSave;
+        if (data.seasonData == null || data.seasonData.fixtures == null) return false;
+
+        // Tüm maçlar oynandı mı?
+        bool anyUnplayed = data.seasonData.fixtures.Any(m => !m.isPlayed);
+        
+        if (!anyUnplayed)
+        {
+            return true;
+        }
+
+        return false;
     }
     
     /// <summary>
