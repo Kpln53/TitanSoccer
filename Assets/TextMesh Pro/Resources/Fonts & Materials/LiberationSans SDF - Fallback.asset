@@ -10006,6 +10006,7 @@ MonoBehaviour:
       m_FeatureLookupFlags: 0
     - m_FirstAdjustmentRecord:
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
         m_GlyphIndex: 90
         m_GlyphValueRecord:
@@ -10038,6 +10039,8 @@ MonoBehaviour:
       m_FeatureLookupFlags: 0
     - m_FirstAdjustmentRecord:
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         m_GlyphIndex: 58
         m_GlyphValueRecord:
           m_XPlacement: 0
@@ -10045,6 +10048,7 @@ MonoBehaviour:
           m_XAdvance: -1.5537109
           m_YAdvance: 0
       m_SecondAdjustmentRecord:
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         m_GlyphIndex: 16
 =======
@@ -10131,6 +10135,9 @@ MonoBehaviour:
           m_YAdvance: 0
       m_SecondAdjustmentRecord:
         m_GlyphIndex: 29
+>>>>>>> Stashed changes
+=======
+        m_GlyphIndex: 82
 >>>>>>> Stashed changes
         m_GlyphValueRecord:
           m_XPlacement: 0
