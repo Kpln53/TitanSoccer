@@ -12,6 +12,7 @@ public class HomePanelUI : MonoBehaviour
     public TextMeshProUGUI matchCardTitle;      // matchCardTitle - "SONRAKİ MAÇ"
     public TextMeshProUGUI matchTeamsText;      // matchTeamsText - "Takım A vs Takım B"
     public TextMeshProUGUI matchTypeText;       // matchTypeText - "Lig Maçı - 15 Ocak 2026"
+    public Image teamLogo;                      // TeamLogo - Rakip takımın logosu
     public Button goToMatchButton;              // goToMatchButton - Maça git butonu
     
     [Header("Diğer Butonlar")]
@@ -93,6 +94,10 @@ public class HomePanelUI : MonoBehaviour
             if (goToMatchButton != null)
                 goToMatchButton.interactable = false;
             
+            // Logo'yu gizle
+            if (teamLogo != null)
+                teamLogo.gameObject.SetActive(false);
+            
             Debug.LogWarning("[HomePanelUI] No fixtures found in seasonData!");
             return;
         }
@@ -106,11 +111,16 @@ public class HomePanelUI : MonoBehaviour
 
         if (nextMatch != null)
         {
+            // Rakip takımı belirle
+            string opponentTeamName = nextMatch.homeTeamName == playerClub 
+                ? nextMatch.awayTeamName 
+                : nextMatch.homeTeamName;
+            
             // Takımları göster
             if (matchTeamsText != null)
             {
                 matchTeamsText.text = $"{nextMatch.homeTeamName}  vs  {nextMatch.awayTeamName}";
-        }
+            }
 
             // Maç tipi ve tarih
             if (matchTypeText != null)
@@ -128,10 +138,13 @@ public class HomePanelUI : MonoBehaviour
                 matchTypeText.text = $"{matchTypeStr} • {dateStr} • {homeAway}";
             }
             
+            // Rakip takımın logosunu yükle
+            LoadOpponentLogo(opponentTeamName);
+            
             if (goToMatchButton != null)
                 goToMatchButton.interactable = true;
             
-            Debug.Log($"[HomePanelUI] Next match: {nextMatch.homeTeamName} vs {nextMatch.awayTeamName}");
+            Debug.Log($"[HomePanelUI] Next match: {nextMatch.homeTeamName} vs {nextMatch.awayTeamName}, Opponent: {opponentTeamName}");
         }
         else
         {
@@ -144,7 +157,47 @@ public class HomePanelUI : MonoBehaviour
             if (goToMatchButton != null)
                 goToMatchButton.interactable = false;
             
+            // Logo'yu gizle
+            if (teamLogo != null)
+                teamLogo.gameObject.SetActive(false);
+            
             Debug.Log("[HomePanelUI] No upcoming matches for player's club.");
+        }
+    }
+    
+    /// <summary>
+    /// Rakip takımın logosunu yükle
+    /// </summary>
+    private void LoadOpponentLogo(string teamName)
+    {
+        if (teamLogo == null)
+        {
+            Debug.LogWarning("[HomePanelUI] teamLogo Image is not assigned!");
+            return;
+        }
+        
+        // DataPackManager'dan takım logosunu al
+        if (DataPackManager.Instance != null)
+        {
+            TeamData team = DataPackManager.Instance.GetTeam(teamName);
+            if (team != null && team.teamLogo != null)
+            {
+                teamLogo.sprite = team.teamLogo;
+                teamLogo.gameObject.SetActive(true);
+                Debug.Log($"[HomePanelUI] Loaded logo for team: {teamName}");
+            }
+            else
+            {
+                // Logo bulunamadı, placeholder göster veya gizle
+                teamLogo.sprite = null;
+                teamLogo.gameObject.SetActive(false);
+                Debug.LogWarning($"[HomePanelUI] Logo not found for team: {teamName}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[HomePanelUI] DataPackManager instance not found!");
+            teamLogo.gameObject.SetActive(false);
         }
     }
 

@@ -23,7 +23,7 @@ MonoBehaviour:
   - leagueName: "S\xFCper Lig"
     leagueCountry: "T\xFCrkiye"
     leagueTier: 1
-    leagueLogo: {fileID: 0}
+    leagueLogo: {fileID: -6187359051618970818, guid: 7306cc9ce9571554687ceebe3f2ad953, type: 3}
     leaguePower: 70
     teams:
     - teamName: Galatasaray
@@ -31,8 +31,8 @@ MonoBehaviour:
       teamCountry: "T\xFCrkiye"
       primaryColor: {r: 1, g: 0.85, b: 0, a: 1}
       secondaryColor: {r: 0.8, g: 0, b: 0, a: 1}
-      teamLogo: {fileID: 0}
-      stadiumName: Stadyum
+      teamLogo: {fileID: -2711046582598886975, guid: 04c3af1995ecb7c48af17aadaf3deeb8, type: 3}
+      stadiumName: Ali Sami Yen Spor Kompleksi
       stadiumCapacity: 25000
       transferBudget: 5000000
       wageBudget: 500000
@@ -1138,7 +1138,7 @@ MonoBehaviour:
       primaryColor: {r: 0, g: 0, b: 0, a: 1}
       secondaryColor: {r: 1, g: 1, b: 1, a: 1}
       teamLogo: {fileID: 0}
-      stadiumName: Stadyum
+      stadiumName: "T\xFCpra\u015F Stadyumu"
       stadiumCapacity: 25000
       transferBudget: 5000000
       wageBudget: 500000
@@ -5087,13 +5087,13 @@ MonoBehaviour:
         potential: 75
       cachedTeamPower: 67
       cachedSquadValue: 0
-    - teamName: Hatayspor
-      teamShortName: HAT
+    - teamName: Kocaelispor
+      teamShortName: KOC
       teamCountry: "T\xFCrkiye"
-      primaryColor: {r: 1, g: 0.8, b: 0, a: 1}
-      secondaryColor: {r: 1, g: 1, b: 1, a: 1}
-      teamLogo: {fileID: 0}
-      stadiumName: Stadyum
+      primaryColor: {r: 0, g: 0.49056602, b: 0.16544807, a: 1}
+      secondaryColor: {r: 0, g: 0, b: 0, a: 1}
+      teamLogo: {fileID: -2248649607846580510, guid: 2157aea877f1de3428fbfacb3c9a6a1b, type: 3}
+      stadiumName: Kocaeli Stadyumu
       stadiumCapacity: 25000
       transferBudget: 5000000
       wageBudget: 500000
@@ -5158,7 +5158,7 @@ MonoBehaviour:
         nationality: "T\xFCrkiye"
         marketValue: 500000
         potential: 75
-      - playerName: Carlos Strandberg
+      - playerName: Bruno Petkovic
         position: 10
         overall: 68
         passingSkill: 67

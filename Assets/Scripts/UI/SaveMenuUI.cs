@@ -16,6 +16,8 @@ public class SaveMenuUI : MonoBehaviour
 
     public void RefreshSlots()
     {
+        Debug.Log("[SaveMenuUI] RefreshSlots called");
+        
         // Slotları bul (eğer liste boşsa)
         if (saveSlots == null || saveSlots.Count == 0)
         {
@@ -27,6 +29,11 @@ public class SaveMenuUI : MonoBehaviour
                     SaveSlotUI slot = child.GetComponent<SaveSlotUI>();
                     if (slot != null) saveSlots.Add(slot);
                 }
+                Debug.Log($"[SaveMenuUI] Found {saveSlots.Count} save slots");
+            }
+            else
+            {
+                Debug.LogWarning("[SaveMenuUI] slotsContainer is NULL!");
             }
         }
 
@@ -35,16 +42,54 @@ public class SaveMenuUI : MonoBehaviour
             int slotIndex = i;
             SaveSlotUI slotUI = saveSlots[i];
             
+            if (slotUI == null)
+            {
+                Debug.LogWarning($"[SaveMenuUI] Slot {i} is NULL!");
+                continue;
+            }
+            
             // Slot verisini kontrol et
             bool hasSave = SaveSystem.HasSave(slotIndex);
             SaveData data = hasSave ? SaveSystem.LoadGame(slotIndex) : null;
 
+            Debug.Log($"[SaveMenuUI] Slot {i}: hasSave={hasSave}");
+
             // UI Güncelle
             slotUI.Setup(hasSave, data);
 
-            // Tıklama olayı
-            slotUI.slotButton.onClick.RemoveAllListeners();
-            slotUI.slotButton.onClick.AddListener(() => OnSlotClicked(slotIndex, hasSave));
+            // Tıklama olayları - Hem empty hem filled button'a listener ekle
+            
+            // Empty button (yeni kariyer)
+            if (slotUI.emptyButton != null)
+            {
+                slotUI.emptyButton.onClick.RemoveAllListeners();
+                slotUI.emptyButton.onClick.AddListener(() => OnSlotClicked(slotIndex, false));
+                Debug.Log($"[SaveMenuUI] Empty button listener added to slot {slotIndex}. Interactable: {slotUI.emptyButton.interactable}");
+            }
+            else
+            {
+                Debug.LogWarning($"[SaveMenuUI] Slot {slotIndex} emptyButton is NULL!");
+            }
+            
+            // Filled button (kayıtlı oyun)
+            if (slotUI.filledButton != null)
+            {
+                slotUI.filledButton.onClick.RemoveAllListeners();
+                slotUI.filledButton.onClick.AddListener(() => OnSlotClicked(slotIndex, true));
+                Debug.Log($"[SaveMenuUI] Filled button listener added to slot {slotIndex}. Interactable: {slotUI.filledButton.interactable}");
+            }
+            else
+            {
+                Debug.LogWarning($"[SaveMenuUI] Slot {slotIndex} filledButton is NULL!");
+            }
+            
+            // Fallback: Eski slotButton sistemi (eğer yeni butonlar yoksa)
+            if (slotUI.slotButton != null && slotUI.emptyButton == null && slotUI.filledButton == null)
+            {
+                slotUI.slotButton.onClick.RemoveAllListeners();
+                slotUI.slotButton.onClick.AddListener(() => OnSlotClicked(slotIndex, hasSave));
+                Debug.Log($"[SaveMenuUI] Fallback slotButton listener added to slot {slotIndex}. Interactable: {slotUI.slotButton.interactable}");
+            }
 
             // Silme butonu olayı
             if (slotUI.deleteButton != null)
@@ -68,15 +113,18 @@ public class SaveMenuUI : MonoBehaviour
 
     private void OnSlotClicked(int slotIndex, bool hasSave)
     {
+        Debug.Log($"[SaveMenuUI] Slot {slotIndex} clicked. HasSave: {hasSave}");
+        
         if (GameManager.Instance == null)
         {
-            Debug.LogError("GameManager instance is null! Cannot proceed.");
+            Debug.LogError("[SaveMenuUI] GameManager instance is null! Cannot proceed.");
             return;
         }
 
         if (hasSave)
         {
             // Kayıtlı oyunu yükle
+            Debug.Log($"[SaveMenuUI] Loading saved game from slot {slotIndex}...");
             SaveData data = SaveSystem.LoadGame(slotIndex);
             GameManager.Instance.SetCurrentSave(data, slotIndex);
             SceneFlow.LoadCareerHub();
@@ -84,6 +132,7 @@ public class SaveMenuUI : MonoBehaviour
         else
         {
             // Yeni oyun başlat -> Karakter Oluşturma
+            Debug.Log($"[SaveMenuUI] Starting new career in slot {slotIndex}...");
             GameManager.Instance.SetSaveSlotIndex(slotIndex);
             UnityEngine.SceneManagement.SceneManager.LoadScene("CharacterCreation");
         }

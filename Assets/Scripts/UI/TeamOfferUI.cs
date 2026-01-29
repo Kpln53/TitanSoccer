@@ -21,6 +21,7 @@ public class TeamOfferUI : MonoBehaviour
 
     [Header("Detay Paneli")]
     public GameObject detailPanel;
+    public Image detailTeamLogo;               // DetailTeamLogo - Detay panelindeki takım logosu
     public TextMeshProUGUI detailTeamNameText;     // DetailTeamName (sahne: DetailTeamName)
     public TextMeshProUGUI detailSalaryText;       // DetailSalary (sahne: DetailSalary)
     public TextMeshProUGUI detailDurationText;     // DetailDuration (sahne: DetailDuration)
@@ -325,6 +326,22 @@ public class TeamOfferUI : MonoBehaviour
         Debug.Log($"[TeamOfferUI] UpdateOfferCard: Updating card '{cardObj.name}' with offer from '{offer.clubName}'");
         cardObj.SetActive(true);
 
+        // TeamLogo'yu bul ve güncelle
+        Image teamLogoImage = cardObj.transform.Find("TeamLogo")?.GetComponent<Image>();
+        if (teamLogoImage == null)
+        {
+            // Recursive search
+            teamLogoImage = cardObj.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name.Contains("Logo") || img.name.Contains("TeamLogo"));
+        }
+        if (teamLogoImage != null)
+        {
+            LoadTeamLogo(teamLogoImage, offer.clubName);
+        }
+        else
+        {
+            Debug.LogWarning($"[TeamOfferUI] TeamLogo Image not found in card '{cardObj.name}'!");
+        }
+
         // TeamNameText'i bul ve güncelle (hem direkt child hem de recursive search)
         TextMeshProUGUI teamNameText = cardObj.transform.Find("TeamNameText")?.GetComponent<TextMeshProUGUI>();
         if (teamNameText == null)
@@ -467,6 +484,12 @@ public class TeamOfferUI : MonoBehaviour
         if (detailPanel != null)
             detailPanel.SetActive(true);
 
+        // Takım logosu
+        if (detailTeamLogo != null)
+        {
+            LoadTeamLogo(detailTeamLogo, offer.clubName);
+        }
+
         // Takım adı
         if (detailTeamNameText != null)
             detailTeamNameText.text = offer.clubName;
@@ -506,6 +529,42 @@ public class TeamOfferUI : MonoBehaviour
             int winBonus = Mathf.Max(1000, Mathf.RoundToInt(offer.salary * 0.25f)); // Maaşın %25'i, min 1000
             
             detailBonusText.text = $"Gol: {goalBonus:N0} € / Asist: {assistBonus:N0} € / Galibiyet: {winBonus:N0} €";
+        }
+    }
+    
+    /// <summary>
+    /// Takım logosunu yükle
+    /// </summary>
+    private void LoadTeamLogo(Image logoImage, string teamName)
+    {
+        if (logoImage == null)
+        {
+            Debug.LogWarning("[TeamOfferUI] logoImage is null!");
+            return;
+        }
+        
+        // DataPackManager'dan takım logosunu al
+        if (DataPackManager.Instance != null)
+        {
+            TeamData team = DataPackManager.Instance.GetTeam(teamName);
+            if (team != null && team.teamLogo != null)
+            {
+                logoImage.sprite = team.teamLogo;
+                logoImage.gameObject.SetActive(true);
+                Debug.Log($"[TeamOfferUI] Loaded logo for team: {teamName}");
+            }
+            else
+            {
+                // Logo bulunamadı, placeholder göster veya gizle
+                logoImage.sprite = null;
+                logoImage.gameObject.SetActive(false);
+                Debug.LogWarning($"[TeamOfferUI] Logo not found for team: {teamName}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[TeamOfferUI] DataPackManager instance not found!");
+            logoImage.gameObject.SetActive(false);
         }
     }
 

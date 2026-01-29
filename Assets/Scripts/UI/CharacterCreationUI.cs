@@ -10,20 +10,113 @@ public class CharacterCreationUI : MonoBehaviour
     [Header("Oyuncu Bilgileri")]
     public TMP_InputField playerNameInput;     // İsim input'u (sahne: playerNameInput)
     public TMP_InputField playerSurnameInput;  // Soyisim input'u (sahne: playerSurnameInput)
-    public TMP_Dropdown positionDropdown;      // Pozisyon dropdown'ı
+    public TMP_Dropdown positionDropdown;      // Pozisyon dropdown'ı (ESKİ - artık kullanılmıyor)
     public TMP_Dropdown nationalityDropdown;   // Millet dropdown'ı
     public TMP_Dropdown leagueDropdown;        // Lig dropdown'ı
+
+    [Header("Pozisyon Butonları - Normal Haller")]
+    public GameObject defNormal;    // DEF (normal)
+    public GameObject dosNormal;    // DOS (normal)
+    public GameObject osNormal;     // OS (normal)
+    public GameObject sfNormal;     // SF (normal)
+    
+    [Header("Pozisyon Butonları - Basılı Haller")]
+    public GameObject defPressed;   // DEF (Basılı)
+    public GameObject dosPressed;   // DOS (Basılı)
+    public GameObject osPressed;    // OS (Basılı)
+    public GameObject sfPressed;    // SF (Basılı)
 
     [Header("Butonlar")]
     public Button createButton;
     public Button backButton;
 
     private PlayerProfile newPlayerProfile;
+    private PlayerPosition selectedPosition = PlayerPosition.MOO; // Varsayılan: Orta Saha
 
     private void Start()
     {
+        // Referanslar bağlı değilse otomatik bul
+        AutoFindPositionButtons();
+        
         SetupUI();
         SetupButtons();
+    }
+    
+    /// <summary>
+    /// Pozisyon butonlarını otomatik bul (Inspector'da bağlı değilse)
+    /// </summary>
+    private void AutoFindPositionButtons()
+    {
+        // Mevki parent objesini bul
+        Transform mevkiParent = GameObject.Find("Mevki")?.transform;
+        
+        if (mevkiParent == null)
+        {
+            // Canvas altında ara
+            Canvas canvas = FindFirstObjectByType<Canvas>();
+            if (canvas != null)
+            {
+                mevkiParent = canvas.transform.Find("Mevki");
+            }
+        }
+        
+        if (mevkiParent == null)
+        {
+            Debug.LogError("[CharacterCreationUI] Mevki parent not found! Cannot auto-find position buttons.");
+            return;
+        }
+        
+        Debug.Log($"[CharacterCreationUI] Mevki parent found: {mevkiParent.name}");
+        
+        // Normal butonları bul
+        if (defNormal == null)
+        {
+            defNormal = mevkiParent.Find("DEF")?.gameObject;
+            Debug.Log($"[CharacterCreationUI] Auto-found defNormal: {(defNormal != null ? "SUCCESS" : "FAILED")}");
+        }
+        
+        if (dosNormal == null)
+        {
+            dosNormal = mevkiParent.Find("DOS")?.gameObject;
+            Debug.Log($"[CharacterCreationUI] Auto-found dosNormal: {(dosNormal != null ? "SUCCESS" : "FAILED")}");
+        }
+        
+        if (osNormal == null)
+        {
+            osNormal = mevkiParent.Find("OS")?.gameObject;
+            Debug.Log($"[CharacterCreationUI] Auto-found osNormal: {(osNormal != null ? "SUCCESS" : "FAILED")}");
+        }
+        
+        if (sfNormal == null)
+        {
+            sfNormal = mevkiParent.Find("SF")?.gameObject;
+            Debug.Log($"[CharacterCreationUI] Auto-found sfNormal: {(sfNormal != null ? "SUCCESS" : "FAILED")}");
+        }
+        
+        // Basılı butonları bul
+        if (defPressed == null)
+        {
+            defPressed = mevkiParent.Find("DEF (Basılı)")?.gameObject;
+            Debug.Log($"[CharacterCreationUI] Auto-found defPressed: {(defPressed != null ? "SUCCESS" : "FAILED")}");
+        }
+        
+        if (dosPressed == null)
+        {
+            dosPressed = mevkiParent.Find("DOS (Basılı)")?.gameObject;
+            Debug.Log($"[CharacterCreationUI] Auto-found dosPressed: {(dosPressed != null ? "SUCCESS" : "FAILED")}");
+        }
+        
+        if (osPressed == null)
+        {
+            osPressed = mevkiParent.Find("OS (Basılı)")?.gameObject;
+            Debug.Log($"[CharacterCreationUI] Auto-found osPressed: {(osPressed != null ? "SUCCESS" : "FAILED")}");
+        }
+        
+        if (sfPressed == null)
+        {
+            sfPressed = mevkiParent.Find("SF (Basılı)")?.gameObject;
+            Debug.Log($"[CharacterCreationUI] Auto-found sfPressed: {(sfPressed != null ? "SUCCESS" : "FAILED")}");
+        }
     }
 
     private void SetupUI()
@@ -114,11 +207,155 @@ public class CharacterCreationUI : MonoBehaviour
 
     private void SetupButtons()
     {
+        Debug.Log("[CharacterCreationUI] SetupButtons called");
+        
         if (createButton != null)
             createButton.onClick.AddListener(OnCreateButton);
 
         if (backButton != null)
             backButton.onClick.AddListener(OnBackButton);
+            
+        // Pozisyon butonlarına listener ekle (Normal ve Basılı hallerin ikisine de)
+        Debug.Log($"[CharacterCreationUI] Setting up position buttons...");
+        Debug.Log($"[CharacterCreationUI] defNormal: {(defNormal != null ? "EXISTS" : "NULL")}");
+        Debug.Log($"[CharacterCreationUI] dosNormal: {(dosNormal != null ? "EXISTS" : "NULL")}");
+        Debug.Log($"[CharacterCreationUI] osNormal: {(osNormal != null ? "EXISTS" : "NULL")}");
+        Debug.Log($"[CharacterCreationUI] sfNormal: {(sfNormal != null ? "EXISTS" : "NULL")}");
+        
+        SetupPositionButton(defNormal, PlayerPosition.STP, "DEF Normal");
+        SetupPositionButton(defPressed, PlayerPosition.STP, "DEF Pressed");
+        
+        SetupPositionButton(dosNormal, PlayerPosition.MDO, "DOS Normal");
+        SetupPositionButton(dosPressed, PlayerPosition.MDO, "DOS Pressed");
+        
+        SetupPositionButton(osNormal, PlayerPosition.MOO, "OS Normal");
+        SetupPositionButton(osPressed, PlayerPosition.MOO, "OS Pressed");
+        
+        SetupPositionButton(sfNormal, PlayerPosition.SF, "SF Normal");
+        SetupPositionButton(sfPressed, PlayerPosition.SF, "SF Pressed");
+            
+        // Başlangıçta OS'yi seçili yap
+        Debug.Log("[CharacterCreationUI] Selecting default position: OS");
+        SelectPosition(PlayerPosition.MOO);
+    }
+    
+    /// <summary>
+    /// Pozisyon butonuna listener ekle
+    /// </summary>
+    private void SetupPositionButton(GameObject buttonObj, PlayerPosition position, string debugName)
+    {
+        if (buttonObj == null)
+        {
+            Debug.LogWarning($"[CharacterCreationUI] {debugName} is NULL!");
+            return;
+        }
+        
+        Button btn = buttonObj.GetComponent<Button>();
+        if (btn != null)
+        {
+            btn.onClick.AddListener(() => {
+                Debug.Log($"[CharacterCreationUI] Button clicked: {debugName}");
+                SelectPosition(position);
+            });
+            Debug.Log($"[CharacterCreationUI] Listener added to {debugName}");
+        }
+        else
+        {
+            Debug.LogWarning($"[CharacterCreationUI] {debugName} has no Button component!");
+        }
+    }
+    
+    /// <summary>
+    /// Pozisyon seç ve görünümü güncelle
+    /// </summary>
+    private void SelectPosition(PlayerPosition position)
+    {
+        Debug.Log($"[CharacterCreationUI] SelectPosition called with: {position}");
+        selectedPosition = position;
+        
+        // Tüm butonları normal hale getir
+        Debug.Log("[CharacterCreationUI] Resetting all buttons to normal...");
+        ShowNormalButton(defNormal, defPressed);
+        ShowNormalButton(dosNormal, dosPressed);
+        ShowNormalButton(osNormal, osPressed);
+        ShowNormalButton(sfNormal, sfPressed);
+        
+        // Seçilen pozisyonu basılı hale getir
+        switch (position)
+        {
+            case PlayerPosition.STP:
+                Debug.Log("[CharacterCreationUI] Showing DEF as pressed");
+                ShowPressedButton(defNormal, defPressed);
+                Debug.Log("[CharacterCreationUI] Position selected: DEF (Defans)");
+                break;
+            case PlayerPosition.MDO:
+                Debug.Log("[CharacterCreationUI] Showing DOS as pressed");
+                ShowPressedButton(dosNormal, dosPressed);
+                Debug.Log("[CharacterCreationUI] Position selected: DOS (Defansif Orta Saha)");
+                break;
+            case PlayerPosition.MOO:
+                Debug.Log("[CharacterCreationUI] Showing OS as pressed");
+                ShowPressedButton(osNormal, osPressed);
+                Debug.Log("[CharacterCreationUI] Position selected: OS (Orta Saha)");
+                break;
+            case PlayerPosition.SF:
+                Debug.Log("[CharacterCreationUI] Showing SF as pressed");
+                ShowPressedButton(sfNormal, sfPressed);
+                Debug.Log("[CharacterCreationUI] Position selected: SF (Santrafor)");
+                break;
+        }
+    }
+    
+    /// <summary>
+    /// Normal butonu göster, basılı olanı gizle
+    /// </summary>
+    private void ShowNormalButton(GameObject normalObj, GameObject pressedObj)
+    {
+        if (normalObj != null)
+        {
+            normalObj.SetActive(true);
+            Debug.Log($"[CharacterCreationUI] {normalObj.name} set to ACTIVE");
+        }
+        else
+        {
+            Debug.LogWarning("[CharacterCreationUI] normalObj is NULL in ShowNormalButton");
+        }
+        
+        if (pressedObj != null)
+        {
+            pressedObj.SetActive(false);
+            Debug.Log($"[CharacterCreationUI] {pressedObj.name} set to INACTIVE");
+        }
+        else
+        {
+            Debug.LogWarning("[CharacterCreationUI] pressedObj is NULL in ShowNormalButton");
+        }
+    }
+    
+    /// <summary>
+    /// Basılı butonu göster, normal olanı gizle
+    /// </summary>
+    private void ShowPressedButton(GameObject normalObj, GameObject pressedObj)
+    {
+        if (normalObj != null)
+        {
+            normalObj.SetActive(false);
+            Debug.Log($"[CharacterCreationUI] {normalObj.name} set to INACTIVE");
+        }
+        else
+        {
+            Debug.LogWarning("[CharacterCreationUI] normalObj is NULL in ShowPressedButton");
+        }
+        
+        if (pressedObj != null)
+        {
+            pressedObj.SetActive(true);
+            Debug.Log($"[CharacterCreationUI] {pressedObj.name} set to ACTIVE");
+        }
+        else
+        {
+            Debug.LogWarning("[CharacterCreationUI] pressedObj is NULL in ShowPressedButton");
+        }
     }
 
     private void OnCreateButton()
@@ -152,15 +389,9 @@ public class CharacterCreationUI : MonoBehaviour
             playerName = fullName
         };
 
-        // Pozisyon seç
-        if (positionDropdown != null)
-        {
-            newPlayerProfile.position = ConvertPositionIndexToEnum(positionDropdown.value);
-        }
-        else
-        {
-            newPlayerProfile.position = PlayerPosition.MOO; // Varsayılan
-        }
+        // Pozisyon seç (YENİ: Butonlardan seçilen pozisyon)
+        newPlayerProfile.position = selectedPosition;
+        Debug.Log($"[CharacterCreationUI] Selected position: {selectedPosition}");
 
         // Millet seç
         if (nationalityDropdown != null && nationalityDropdown.options.Count > 0)
@@ -406,14 +637,8 @@ public class CharacterCreationUI : MonoBehaviour
 
     private void OnBackButton()
     {
-        if (GameStateManager.Instance != null)
-        {
-            GameStateManager.Instance.ReturnToPreviousState();
-        }
-        else
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("SaveSlots");
-        }
+        // MainMenu'ye dön
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 }
 
