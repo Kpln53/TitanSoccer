@@ -35,11 +35,99 @@ public class StandingsUI : MonoBehaviour
             displayWeek = GameManager.Instance.CurrentSave.seasonData.currentWeek;
         }
         
-        RefreshData();
+        // Butonları otomatik bul (eğer bağlı değilse)
+        FindButtonsIfNeeded();
         
-        if (backButton != null) backButton.onClick.AddListener(OnBackButton);
-        if (prevWeekButton != null) prevWeekButton.onClick.AddListener(OnPrevWeek);
-        if (nextWeekButton != null) nextWeekButton.onClick.AddListener(OnNextWeek);
+        SetupButtons();
+        RefreshData();
+    }
+
+    /// <summary>
+    /// Butonları otomatik bul (eğer Inspector'da bağlanmamışsa)
+    /// </summary>
+    private void FindButtonsIfNeeded()
+    {
+        // FixtureHeader altındaki butonları bul
+        Transform fixtureHeader = transform.Find("FixtureArea/FixtureHeader");
+        if (fixtureHeader != null)
+        {
+            Button[] buttons = fixtureHeader.GetComponentsInChildren<Button>();
+            
+            if (buttons.Length >= 2)
+            {
+                // Sol button (x pozisyonu küçük olan) = Prev
+                // Sağ button (x pozisyonu büyük olan) = Next
+                if (buttons[0].transform.localPosition.x < buttons[1].transform.localPosition.x)
+                {
+                    if (prevWeekButton == null) prevWeekButton = buttons[0];
+                    if (nextWeekButton == null) nextWeekButton = buttons[1];
+                }
+                else
+                {
+                    if (prevWeekButton == null) prevWeekButton = buttons[1];
+                    if (nextWeekButton == null) nextWeekButton = buttons[0];
+                }
+                
+                Debug.Log($"[StandingsUI] Buttons auto-found: Prev={prevWeekButton?.name}, Next={nextWeekButton?.name}");
+            }
+            else
+            {
+                Debug.LogWarning($"[StandingsUI] Found {buttons.Length} buttons in FixtureHeader, expected 2!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[StandingsUI] FixtureHeader not found!");
+        }
+        
+        // currentWeekText'i de bul
+        if (currentWeekText == null && fixtureHeader != null)
+        {
+            currentWeekText = fixtureHeader.GetComponentInChildren<TextMeshProUGUI>();
+            if (currentWeekText != null)
+            {
+                Debug.Log("[StandingsUI] currentWeekText auto-found!");
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        RemoveButtonListeners();
+    }
+
+    private void SetupButtons()
+    {
+        // Önce mevcut listener'ları temizle
+        RemoveButtonListeners();
+        
+        // Yeni listener'ları ekle
+        if (backButton != null)
+        {
+            backButton.onClick.AddListener(OnBackButton);
+            Debug.Log($"[StandingsUI] Back button setup. Interactable: {backButton.interactable}");
+        }
+        
+        if (prevWeekButton != null)
+        {
+            prevWeekButton.onClick.AddListener(OnPrevWeek);
+            prevWeekButton.interactable = true; // Aktif yap
+            Debug.Log($"[StandingsUI] Prev week button setup. Interactable: {prevWeekButton.interactable}");
+        }
+        
+        if (nextWeekButton != null)
+        {
+            nextWeekButton.onClick.AddListener(OnNextWeek);
+            nextWeekButton.interactable = true; // Aktif yap
+            Debug.Log($"[StandingsUI] Next week button setup. Interactable: {nextWeekButton.interactable}");
+        }
+    }
+
+    private void RemoveButtonListeners()
+    {
+        if (backButton != null) backButton.onClick.RemoveListener(OnBackButton);
+        if (prevWeekButton != null) prevWeekButton.onClick.RemoveListener(OnPrevWeek);
+        if (nextWeekButton != null) nextWeekButton.onClick.RemoveListener(OnNextWeek);
     }
 
     /// <summary>
@@ -69,29 +157,47 @@ public class StandingsUI : MonoBehaviour
 
     private void OnPrevWeek()
     {
+        Debug.Log($"[StandingsUI] OnPrevWeek called. Current week: {displayWeek}");
         if (displayWeek > 1)
         {
             displayWeek--;
+            Debug.Log($"[StandingsUI] Week changed to: {displayWeek}");
             DisplayFixture();
+        }
+        else
+        {
+            Debug.Log("[StandingsUI] Already at week 1, cannot go back.");
         }
     }
 
     private void OnNextWeek()
     {
+        Debug.Log($"[StandingsUI] OnNextWeek called. Current week: {displayWeek}");
         // Maksimum hafta kontrolü (Örn: 34)
         // DataPack'ten lig takım sayısını alıp hafta sayısını hesaplayabiliriz
         // Şimdilik 38 hafta varsayalım (20 takım)
         if (displayWeek < 38) 
         {
             displayWeek++;
+            Debug.Log($"[StandingsUI] Week changed to: {displayWeek}");
             DisplayFixture();
+        }
+        else
+        {
+            Debug.Log("[StandingsUI] Already at week 38, cannot go forward.");
         }
     }
 
     private void DisplayFixture()
     {
-        if (fixtureListParent == null) return;
-        if (currentWeekText != null) currentWeekText.text = $"{displayWeek}. HAFTA";
+        if (fixtureListParent == null)
+        {
+            Debug.LogWarning("[StandingsUI] fixtureListParent is null!");
+            return;
+        }
+        
+        if (currentWeekText != null) 
+            currentWeekText.text = $"{displayWeek}. HAFTA";
 
         // Temizle
         foreach (Transform child in fixtureListParent) Destroy(child.gameObject);
@@ -99,13 +205,49 @@ public class StandingsUI : MonoBehaviour
         if (GameManager.Instance != null && GameManager.Instance.HasCurrentSave())
         {
             var fixtures = GameManager.Instance.CurrentSave.seasonData.fixtures;
-            var weekMatches = fixtures.Where(m => m.weekNumber == displayWeek).ToList();
-
-            foreach (var match in weekMatches)
+            
+            if (fixtures == null || fixtures.Count == 0)
             {
-                CreateFixtureItem(match);
+                Debug.LogWarning("[StandingsUI] No fixtures found in seasonData!");
+                CreateNoFixtureMessage();
+                return;
+            }
+            
+            var weekMatches = fixtures.Where(m => m.weekNumber == displayWeek).ToList();
+            
+            Debug.Log($"[StandingsUI] Displaying week {displayWeek}: Found {weekMatches.Count} matches.");
+
+            if (weekMatches.Count == 0)
+            {
+                CreateNoFixtureMessage();
+            }
+            else
+            {
+                foreach (var match in weekMatches)
+                {
+                    CreateFixtureItem(match);
+                }
             }
         }
+        else
+        {
+            Debug.LogWarning("[StandingsUI] GameManager or CurrentSave is null!");
+        }
+    }
+
+    private void CreateNoFixtureMessage()
+    {
+        GameObject msgObj = new GameObject("NoFixtureMessage");
+        msgObj.transform.SetParent(fixtureListParent);
+        
+        RectTransform rt = msgObj.AddComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(0, 60);
+        
+        TextMeshProUGUI txt = msgObj.AddComponent<TextMeshProUGUI>();
+        txt.text = "Bu hafta için fikstür bulunamadı.";
+        txt.fontSize = 16;
+        txt.alignment = TextAlignmentOptions.Center;
+        txt.color = Color.gray;
     }
 
     private void CreateFixtureItem(MatchData match)
